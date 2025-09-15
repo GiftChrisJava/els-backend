@@ -1,4 +1,4 @@
-import { ROLE_HIERARCHY, UserRole } from "@core/constants/roles.constants";
+import { ROLE_HIERARCHY, UserRole } from "@core/constants/role.constants";
 import { UserStatus } from "@core/constants/status.constants";
 import { IUser, User } from "@modules/auth/models/user.model";
 import { AppError } from "@shared/errors/AppError";
@@ -708,8 +708,10 @@ export class SystemAdminService {
 
     // Check database
     try {
-      await mongoose.connection.db.admin().ping();
-      health.database = true;
+      if (mongoose.connection.db) {
+        await mongoose.connection.db.admin().ping();
+        health.database = true;
+      }
     } catch (error) {
       logger.error("Database health check failed:", error);
     }

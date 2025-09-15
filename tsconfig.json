@@ -14,6 +14,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "moduleResolution": "node",
+    "baseUrl": "./src",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

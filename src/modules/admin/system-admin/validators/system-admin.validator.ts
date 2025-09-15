@@ -1,4 +1,4 @@
-import { UserRole } from "@core/constants/roles.constants";
+import { UserRole } from "@core/constants/role.constants";
 import { UserStatus } from "@core/constants/status.constants";
 import Joi from "joi";
 

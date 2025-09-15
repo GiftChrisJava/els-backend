@@ -382,7 +382,9 @@ export class AuthService {
     }
   }
 
-  async getCurrentUser(userId: string): Promise<IUser> {
+  async getCurrentUser(
+    userId: string | mongoose.Types.ObjectId
+  ): Promise<IUser> {
     try {
       const user = await User.findById(userId);
 
@@ -392,6 +394,65 @@ export class AuthService {
 
       return user;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateProfile(
+    userId: string | mongoose.Types.ObjectId,
+    updates: {
+      firstName?: string;
+      lastName?: string;
+      phoneNumber?: string;
+      company?: string;
+    }
+  ): Promise<IUser> {
+    try {
+      const user = await User.findByIdAndUpdate(
+        userId,
+        { $set: updates },
+        { new: true, runValidators: true }
+      );
+
+      if (!user) {
+        throw AppError.notFound("User not found");
+      }
+
+      logger.info(`User profile updated: ${user.email}`);
+      return user;
+    } catch (error) {
+      logger.error("Update profile error:", error);
+      throw error;
+    }
+  }
+
+  async changePassword(
+    userId: string | mongoose.Types.ObjectId,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> {
+    try {
+      const user = await User.findById(userId);
+
+      if (!user) {
+        throw AppError.notFound("User not found");
+      }
+
+      // Verify current password
+      const isCurrentPasswordValid = await user.comparePassword(
+        currentPassword
+      );
+      if (!isCurrentPasswordValid) {
+        throw AppError.badRequest("Current password is incorrect");
+      }
+
+      // Update password
+      user.password = newPassword;
+      await user.save();
+
+      logger.info(`Password changed for user: ${user.email}`);
+    } catch (error) {
+      logger.error("Change password error:", error);
       throw error;
     }
   }

@@ -1,4 +1,4 @@
-import { UserRole } from "@core/constants/roles.constants";
+import { UserRole } from "@core/constants/role.constants";
 import { authenticate } from "@modules/auth/middlewares/auth.middleware";
 import {
   hasMinimumRole,

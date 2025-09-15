@@ -1,6 +1,6 @@
 import { appConfig } from "@config/app.config";
 import { DatabaseConnection } from "@config/database.config";
-import { UserRole } from "@core/constants/roles.constants";
+import { UserRole } from "@core/constants/role.constants";
 import { UserStatus } from "@core/constants/status.constants";
 import { User } from "@modules/auth/models/user.model";
 import { logger } from "@shared/utils/logger.util";

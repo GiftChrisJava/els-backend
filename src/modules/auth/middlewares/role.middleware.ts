@@ -2,7 +2,7 @@ import {
   ROLE_HIERARCHY,
   ROLE_PERMISSIONS,
   UserRole,
-} from "@core/constants/roles.constants";
+} from "@core/constants/role.constants";
 import { AppError } from "@shared/errors/AppError";
 import { logger } from "@shared/utils/logger.util";
 import { NextFunction, Request, Response } from "express";
