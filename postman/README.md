@@ -5,26 +5,32 @@ This directory contains Postman collections and environments for testing the Ene
 ## Files Included
 
 ### Collections
+
 - `Energy-Solutions-API.postman_collection.json` - Main API collection with all endpoints
 
 ### Environments
+
 - `Energy-Solutions-Development.postman_environment.json` - Development environment variables
 - `Energy-Solutions-Production.postman_environment.json` - Production environment variables
 
 ## Quick Setup
 
 ### 1. Import Collection and Environments
+
 1. Open Postman
 2. Click **Import** button
 3. Select all JSON files in this directory
 4. Import them into your Postman workspace
 
 ### 2. Select Environment
+
 - Choose **Energy Solutions - Development** for local testing
 - Choose **Energy Solutions - Production** for production testing
 
 ### 3. Update Environment Variables
+
 Update the following variables as needed:
+
 - `testEmail` - Your test user email
 - `testPassword` - Your test user password
 - `adminEmail` - Admin email (default: admin@energysolutions.mw)
@@ -33,18 +39,21 @@ Update the following variables as needed:
 ## Authentication Flow
 
 ### For Regular Users
+
 1. **Register User** - Creates a new user account
 2. **Verify Email** - Verify email with 6-digit code (check your email)
 3. **Login** - Authenticate and get tokens
 4. Use authenticated endpoints
 
 ### For Admin Users
+
 1. **Admin Login** - Login with admin credentials
 2. Use admin endpoints
 
 ## Endpoint Categories
 
 ### 🔐 Authentication
+
 - **POST** `/api/auth/register` - Register new user
 - **POST** `/api/auth/verify-email` - Verify email address
 - **POST** `/api/auth/login` - User login
@@ -58,6 +67,7 @@ Update the following variables as needed:
 - **POST** `/api/auth/logout` - Logout user
 
 ### 👨‍💼 System Admin
+
 - **GET** `/api/admin/system/dashboard` - Dashboard statistics
 - **GET** `/api/admin/system/health` - System health check
 - **GET** `/api/admin/system/users` - Get all users with filters
@@ -73,12 +83,14 @@ Update the following variables as needed:
 - **GET** `/api/admin/system/activity-logs` - Get activity logs
 
 ### 🏥 Health Check
+
 - **GET** `/health` - Basic health check
 - **GET** `/api` - API information
 
 ## Automatic Token Management
 
 The collection includes automatic token management:
+
 - Tokens are automatically extracted from login responses
 - Tokens are automatically used in subsequent requests
 - Both user and admin tokens are managed separately
@@ -86,16 +98,19 @@ The collection includes automatic token management:
 ## Environment Variables
 
 ### Base Configuration
+
 - `baseUrl` - API base URL
 - `apiVersion` - API version
 
 ### Authentication
+
 - `accessToken` - Current user access token
 - `refreshToken` - Current user refresh token
 - `adminAccessToken` - Admin access token
 - `adminRefreshToken` - Admin refresh token
 
 ### Test Data
+
 - `testEmail` - Test user email
 - `testPassword` - Test user password
 - `adminEmail` - Admin email
@@ -104,6 +119,7 @@ The collection includes automatic token management:
 - `resetCode` - Password reset code
 
 ### User IDs
+
 - `userId` - Current user ID
 - `adminUserId` - Admin user ID
 - `newAdminId` - Newly created admin ID
@@ -111,6 +127,7 @@ The collection includes automatic token management:
 ## Testing Workflow
 
 ### 1. User Registration Flow
+
 1. Run **Register User**
 2. Check email for verification code
 3. Update `verificationCode` variable
@@ -118,16 +135,19 @@ The collection includes automatic token management:
 5. Access token will be automatically set
 
 ### 2. User Login Flow
+
 1. Run **Login** request
 2. Tokens will be automatically set
 3. Use authenticated endpoints
 
 ### 3. Admin Testing Flow
+
 1. Run **Admin Login**
 2. Admin tokens will be automatically set
 3. Test admin endpoints
 
 ### 4. Password Reset Flow
+
 1. Run **Forgot Password**
 2. Check email for reset code
 3. Update `resetCode` variable
@@ -136,6 +156,7 @@ The collection includes automatic token management:
 ## Rate Limiting
 
 Be aware of rate limits:
+
 - Login: 5 requests per 15 minutes
 - Register: 5 requests per 15 minutes
 - Password operations: 3 requests per 15-60 minutes
@@ -144,6 +165,7 @@ Be aware of rate limits:
 ## Error Responses
 
 All endpoints return consistent error responses:
+
 ```json
 {
   "success": false,
@@ -159,6 +181,7 @@ All endpoints return consistent error responses:
 ## Success Responses
 
 All endpoints return consistent success responses:
+
 ```json
 {
   "success": true,
@@ -180,7 +203,8 @@ All endpoints return consistent success responses:
 
 ## Security Notes
 
-⚠️ **Important**: 
+⚠️ **Important**:
+
 - Never commit production credentials to version control
 - Update default passwords before production use
 - Use environment-specific configurations
@@ -189,6 +213,7 @@ All endpoints return consistent success responses:
 ## Support
 
 For issues or questions about the API:
+
 - Check the API documentation
 - Review error responses for details
 - Contact the development team

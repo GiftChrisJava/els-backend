@@ -20,18 +20,14 @@
       "listen": "prerequest",
       "script": {
         "type": "text/javascript",
-        "exec": [
-          ""
-        ]
+        "exec": [""]
       }
     },
     {
       "listen": "test",
       "script": {
         "type": "text/javascript",
-        "exec": [
-          ""
-        ]
+        "exec": [""]
       }
     }
   ],
@@ -574,7 +570,14 @@
             "url": {
               "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}/suspend",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "{{userId}}", "suspend"]
+              "path": [
+                "api",
+                "admin",
+                "system",
+                "users",
+                "{{userId}}",
+                "suspend"
+              ]
             }
           }
         },
@@ -591,7 +594,14 @@
             "url": {
               "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}/activate",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "{{userId}}", "activate"]
+              "path": [
+                "api",
+                "admin",
+                "system",
+                "users",
+                "{{userId}}",
+                "activate"
+              ]
             }
           }
         },
