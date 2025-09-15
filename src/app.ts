@@ -1,5 +1,5 @@
+// import bodyParser from "body-parser";
 import compression from "compression";
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, Request, Response } from "express";
 import mongoSanitize from "express-mongo-sanitize";
@@ -11,11 +11,14 @@ import { notFoundHandler } from "./shared/middlewares/not-found.middleware";
 import { rateLimiter } from "./shared/middlewares/rate-limit.middleware";
 import { loggerStream } from "./shared/utils/logger.util";
 
-// Extend Express Request interface to include 'id'
+// Extend Express Request interface to include custom properties
 declare global {
   namespace Express {
     interface Request {
       id?: string;
+      user?: any;
+      sessionId?: string;
+      role?: string;
     }
   }
 }
@@ -79,13 +82,13 @@ class App {
     // Body parsing middlewares
     this.app.use(express.json({ limit: "10mb" }));
     this.app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-    this.app.use(cookieParser());
+    // this.app.use(bodyParser());
 
     // MongoDB query sanitization
     this.app.use(
       mongoSanitize({
         replaceWith: "_",
-        onSanitize: ({ req, key }) => {
+        onSanitize: ({ key }) => {
           console.warn(`Attempted NoSQL injection blocked in ${key}`);
         },
       })
@@ -120,7 +123,7 @@ class App {
 
   private initializeRoutes(): void {
     // Health check endpoint
-    this.app.get("/health", (req: Request, res: Response) => {
+    this.app.get("/health", (res: Response) => {
       res.status(200).json({
         status: "healthy",
         timestamp: new Date().toISOString(),
@@ -131,7 +134,7 @@ class App {
     });
 
     // API version endpoint
-    this.app.get("/api", (req: Request, res: Response) => {
+    this.app.get("/api", (res: Response) => {
       res.json({
         name: appConfig.appName,
         version: "1.0.0",

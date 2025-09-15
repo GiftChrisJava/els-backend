@@ -3,7 +3,7 @@ import { AppError } from "../../shared/errors/AppError";
 
 export const notFoundHandler = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ): void => {
   const message = `Cannot ${req.method} ${req.originalUrl}`;

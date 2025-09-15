@@ -109,7 +109,6 @@ const sessionSchema = new Schema<ISession, SessionModel, ISessionMethods>(
       default: function () {
         return new Date(Date.now() + 60 * 60 * 1000); // 1 hour
       },
-      index: true,
     },
     refreshExpiresAt: {
       type: Date,
@@ -117,7 +116,6 @@ const sessionSchema = new Schema<ISession, SessionModel, ISessionMethods>(
       default: function () {
         return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
       },
-      index: true,
     },
   },
   {

@@ -97,7 +97,6 @@ const verificationSchema = new Schema<
           Date.now() + appConfig.verification.expiryMinutes * 60 * 1000
         );
       },
-      index: true,
     },
     attempts: {
       type: Number,

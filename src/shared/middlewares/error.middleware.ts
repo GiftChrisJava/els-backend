@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { appConfig } from "../../config/app.config";
 import { AppError } from "../../shared/errors/AppError";
 import { logger } from "../../shared/utils/logger.util";
@@ -19,8 +19,7 @@ interface ErrorResponse {
 export const errorHandler = (
   err: Error | AppError,
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ): void => {
   let error = { ...err } as any;
   error.message = err.message;
@@ -32,7 +31,7 @@ export const errorHandler = (
     url: req.originalUrl,
     method: req.method,
     ip: req.ip,
-    user: req.user?.email,
+    user: (req as any).user?.email,
   });
 
   // Mongoose bad ObjectId

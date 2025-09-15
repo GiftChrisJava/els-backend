@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import rateLimit from "express-rate-limit";
 import { appConfig } from "../../config/app.config";
 import { AppError } from "../../shared/errors/AppError";
@@ -34,10 +34,10 @@ export const rateLimiter = (
       keyGenerator: (req: Request) => {
         // Use IP address and user ID if authenticated
         const ip = req.ip || req.connection.remoteAddress || "unknown";
-        const userId = req.user?._id || "anonymous";
+        const userId = (req as any).user?._id || "anonymous";
         return `${ip}-${userId}`;
       },
-      handler: (req: Request, res: Response) => {
+      handler: () => {
         throw AppError.tooManyRequests(
           options.message ||
             `Too many ${name} requests. Please wait ${windowMinutes} minutes before trying again.`
@@ -49,7 +49,7 @@ export const rateLimiter = (
           return true;
         }
         // Skip for system admins (optional)
-        if (req.user?.role === "system-admin") {
+        if ((req as any).user?.role === "system-admin") {
           return true;
         }
         return false;
