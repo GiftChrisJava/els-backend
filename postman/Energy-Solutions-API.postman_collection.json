@@ -74,9 +74,9 @@
               "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"phoneNumber\": \"+265999123456\",\n  \"company\": \"Test Company\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/register",
+              "raw": "{{baseUrl}}/api/v1/auth/register",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "register"]
+              "path": ["api", "v1", "auth", "register"]
             }
           }
         },
@@ -112,9 +112,9 @@
               "raw": "{\n  \"code\": \"{{verificationCode}}\",\n  \"email\": \"{{testEmail}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/verify-email",
+              "raw": "{{baseUrl}}/api/v1/auth/verify-email",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "verify-email"]
+              "path": ["api", "v1", "auth", "verify-email"]
             }
           }
         },
@@ -155,9 +155,9 @@
               "raw": "{\n  \"email\": \"{{testEmail}}\",\n  \"password\": \"{{testPassword}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
+              "raw": "{{baseUrl}}/api/v1/auth/login",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
+              "path": ["api", "v1", "auth", "login"]
             }
           }
         },
@@ -197,9 +197,9 @@
               "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
+              "raw": "{{baseUrl}}/api/v1/auth/login",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
+              "path": ["api", "v1", "auth", "login"]
             }
           }
         },
@@ -235,9 +235,9 @@
               "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/refresh-token",
+              "raw": "{{baseUrl}}/api/v1/auth/refresh-token",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "refresh-token"]
+              "path": ["api", "v1", "auth", "refresh-token"]
             }
           }
         },
@@ -256,9 +256,9 @@
               "raw": "{\n  \"email\": \"{{testEmail}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/forgot-password",
+              "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "forgot-password"]
+              "path": ["api", "v1", "auth", "forgot-password"]
             }
           }
         },
@@ -277,9 +277,9 @@
               "raw": "{\n  \"code\": \"{{resetCode}}\",\n  \"email\": \"{{testEmail}}\",\n  \"newPassword\": \"{{newPassword}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/reset-password",
+              "raw": "{{baseUrl}}/api/v1/auth/reset-password",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "reset-password"]
+              "path": ["api", "v1", "auth", "reset-password"]
             }
           }
         },
@@ -298,9 +298,9 @@
               "raw": "{\n  \"email\": \"{{testEmail}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/resend-verification",
+              "raw": "{{baseUrl}}/api/v1/auth/resend-verification",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "resend-verification"]
+              "path": ["api", "v1", "auth", "resend-verification"]
             }
           }
         },
@@ -315,9 +315,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/auth/me",
+              "raw": "{{baseUrl}}/api/v1/auth/me",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "me"]
+              "path": ["api", "v1", "auth", "me"]
             }
           }
         },
@@ -340,9 +340,9 @@
               "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"Name\",\n  \"phoneNumber\": \"+265999654321\",\n  \"company\": \"Updated Company\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/me",
+              "raw": "{{baseUrl}}/api/v1/auth/me",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "me"]
+              "path": ["api", "v1", "auth", "me"]
             }
           }
         },
@@ -365,9 +365,9 @@
               "raw": "{\n  \"currentPassword\": \"{{testPassword}}\",\n  \"newPassword\": \"{{newPassword}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/change-password",
+              "raw": "{{baseUrl}}/api/v1/auth/change-password",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "change-password"]
+              "path": ["api", "v1", "auth", "change-password"]
             }
           }
         },
@@ -382,9 +382,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/auth/logout",
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "logout"]
+              "path": ["api", "v1", "auth", "logout"]
             }
           }
         }
@@ -404,9 +404,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/dashboard",
+              "raw": "{{baseUrl}}/api/v1/admin/system/dashboard",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "dashboard"]
+              "path": ["api", "v1", "admin", "system", "dashboard"]
             }
           }
         },
@@ -421,9 +421,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/health",
+              "raw": "{{baseUrl}}/api/v1/admin/system/health",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "health"]
+              "path": ["api", "v1", "admin", "system", "health"]
             }
           }
         },
@@ -438,9 +438,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users?page=1&limit=10&role=CUSTOMER&status=ACTIVE&search=test",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users?page=1&limit=10&role=CUSTOMER&status=ACTIVE&search=test",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users"],
+              "path": ["api", "v1", "admin", "system", "users"],
               "query": [
                 {
                   "key": "page",
@@ -477,9 +477,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/{{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "{{userId}}"]
+              "path": ["api", "v1", "admin", "system", "users", "{{userId}}"]
             }
           }
         },
@@ -518,9 +518,9 @@
               "raw": "{\n  \"email\": \"salesadmin@energysolutions.mw\",\n  \"password\": \"SalesAdmin@123\",\n  \"firstName\": \"Sales\",\n  \"lastName\": \"Administrator\",\n  \"role\": \"SALES_ADMIN\",\n  \"phoneNumber\": \"+265999888777\",\n  \"company\": \"Energy Solutions\",\n  \"permissions\": [\"users.read\", \"users.create\", \"users.update\"]\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users"]
+              "path": ["api", "v1", "admin", "system", "users"]
             }
           }
         },
@@ -543,9 +543,9 @@
               "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"User\",\n  \"phoneNumber\": \"+265999111222\",\n  \"company\": \"Updated Company\",\n  \"status\": \"ACTIVE\",\n  \"permissions\": [\"users.read\"]\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/{{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "{{userId}}"]
+              "path": ["api", "v1", "admin", "system", "users", "{{userId}}"]
             }
           }
         },
@@ -568,10 +568,11 @@
               "raw": "{\n  \"reason\": \"Policy violation - inappropriate behavior\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}/suspend",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/{{userId}}/suspend",
               "host": ["{{baseUrl}}"],
               "path": [
                 "api",
+                "v1",
                 "admin",
                 "system",
                 "users",
@@ -592,10 +593,11 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}/activate",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/{{userId}}/activate",
               "host": ["{{baseUrl}}"],
               "path": [
                 "api",
+                "v1",
                 "admin",
                 "system",
                 "users",
@@ -624,9 +626,9 @@
               "raw": "{\n  \"role\": \"WEB_ADMIN\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}/role",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/{{userId}}/role",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "{{userId}}", "role"]
+              "path": ["api", "v1", "admin", "system", "users", "{{userId}}", "role"]
             }
           }
         },
@@ -641,9 +643,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/{{userId}}",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/{{userId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "{{userId}}"]
+              "path": ["api", "v1", "admin", "system", "users", "{{userId}}"]
             }
           }
         },
@@ -666,9 +668,9 @@
               "raw": "{\n  \"userIds\": [\"{{userId}}\", \"{{newAdminId}}\"],\n  \"updates\": {\n    \"status\": \"ACTIVE\",\n    \"permissions\": [\"users.read\"]\n  }\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/bulk-update",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/bulk-update",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "bulk-update"]
+              "path": ["api", "v1", "admin", "system", "users", "bulk-update"]
             }
           }
         },
@@ -683,9 +685,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/export?format=csv&role=CUSTOMER&status=ACTIVE",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/export?format=csv&role=CUSTOMER&status=ACTIVE",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "export"],
+              "path": ["api", "v1", "admin", "system", "users", "export"],
               "query": [
                 {
                   "key": "format",
@@ -714,9 +716,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/users/export?format=json",
+              "raw": "{{baseUrl}}/api/v1/admin/system/users/export?format=json",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "users", "export"],
+              "path": ["api", "v1", "admin", "system", "users", "export"],
               "query": [
                 {
                   "key": "format",
@@ -737,9 +739,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/admin/system/activity-logs?page=1&limit=10&type=AUTH&severity=INFO&module=auth",
+              "raw": "{{baseUrl}}/api/v1/admin/system/activity-logs?page=1&limit=10&type=AUTH&severity=INFO&module=auth",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "system", "activity-logs"],
+              "path": ["api", "v1", "admin", "system", "activity-logs"],
               "query": [
                 {
                   "key": "page",

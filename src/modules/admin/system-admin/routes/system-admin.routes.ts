@@ -31,6 +31,13 @@ router.get(
   systemAdminController.getAllUsers
 );
 
+// Export - Must come before :userId route
+router.get(
+  "/users/export",
+  hasMinimumRole(UserRole.SALES_ADMIN),
+  systemAdminController.exportUsers
+);
+
 router.get(
   "/users/:userId",
   hasMinimumRole(UserRole.SALES_ADMIN),
@@ -84,13 +91,6 @@ router.post(
   isSystemAdmin,
   validateRequest(validators.bulkUpdateSchema),
   systemAdminController.bulkUpdateUsers
-);
-
-// Export
-router.get(
-  "/users/export",
-  hasMinimumRole(UserRole.SALES_ADMIN),
-  systemAdminController.exportUsers
 );
 
 // Activity logs

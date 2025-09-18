@@ -1,3 +1,4 @@
+import { appConfig } from "@config/app.config";
 import { ROLE_HIERARCHY, UserRole } from "@core/constants/role.constants";
 import { UserStatus } from "@core/constants/status.constants";
 import { IUser, User } from "@modules/auth/models/user.model";
@@ -54,14 +55,36 @@ export class SystemAdminService {
     this.emailUtil = new EmailUtil();
   }
 
+  // Helper method to handle transactions in development vs production
+  private async executeWithOptionalTransaction<T>(
+    operation: (session?: mongoose.ClientSession) => Promise<T>
+  ): Promise<T> {
+    if (appConfig.isDevelopment()) {
+      // Skip transactions in development
+      return await operation();
+    } else {
+      // Use transactions in production
+      const session = await mongoose.startSession();
+      session.startTransaction();
+
+      try {
+        const result = await operation(session);
+        await session.commitTransaction();
+        return result;
+      } catch (error) {
+        await session.abortTransaction();
+        throw error;
+      } finally {
+        session.endSession();
+      }
+    }
+  }
+
   async createAdmin(
     creatorId: mongoose.Types.ObjectId,
     dto: CreateAdminDto
   ): Promise<IUser> {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
+    return await this.executeWithOptionalTransaction(async (session) => {
       // Check if creator has permission to create this role
       const creator = await User.findById(creatorId);
       if (!creator) {
@@ -96,30 +119,31 @@ export class SystemAdminService {
         createdBy: creatorId,
       });
 
-      await newAdmin.save({ session });
+      await newAdmin.save(session ? { session } : {});
 
       // Log activity
-      await ActivityLog.create(
-        [
-          {
-            type: ActivityType.ADMIN_CREATED,
-            severity: ActivitySeverity.INFO,
-            userId: creatorId,
-            targetUserId: newAdmin._id,
-            description: `Admin created: ${newAdmin.email} with role ${newAdmin.role}`,
-            module: "system-admin",
-            action: "create-admin",
-            metadata: {
-              createdAdmin: {
-                id: newAdmin._id,
-                email: newAdmin.email,
-                role: newAdmin.role,
-              },
-            },
+      const activityData = {
+        type: ActivityType.ADMIN_CREATED,
+        severity: ActivitySeverity.INFO,
+        userId: creatorId,
+        targetUserId: newAdmin._id,
+        description: `Admin created: ${newAdmin.email} with role ${newAdmin.role}`,
+        module: "system-admin",
+        action: "create-admin",
+        metadata: {
+          createdAdmin: {
+            id: newAdmin._id,
+            email: newAdmin.email,
+            role: newAdmin.role,
           },
-        ],
-        { session }
-      );
+        },
+      };
+
+      if (session) {
+        await ActivityLog.create([activityData], { session });
+      } else {
+        await ActivityLog.create(activityData);
+      }
 
       // Send welcome email to new admin
       await this.emailUtil.sendAdminWelcomeEmail(
@@ -129,17 +153,10 @@ export class SystemAdminService {
         newAdmin.role
       );
 
-      await session.commitTransaction();
-
       logger.info(`New admin created: ${newAdmin.email} by ${creator.email}`);
 
       return newAdmin;
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 
   async updateUser(
@@ -147,10 +164,7 @@ export class SystemAdminService {
     userId: string,
     dto: UpdateUserDto
   ): Promise<IUser> {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
+    return await this.executeWithOptionalTransaction(async (session) => {
       const admin = await User.findById(adminId);
       if (!admin) {
         throw AppError.notFound("Admin not found");
@@ -198,50 +212,41 @@ export class SystemAdminService {
       Object.assign(user, dto);
       user.lastModifiedBy = adminId;
 
-      await user.save({ session });
+      await user.save(session ? { session } : {});
 
       // Log activity
-      await ActivityLog.create(
-        [
-          {
-            type: ActivityType.USER_UPDATED,
-            severity: ActivitySeverity.INFO,
-            userId: adminId,
-            targetUserId: user._id,
-            description: `User updated: ${user.email}`,
-            module: "system-admin",
-            action: "update-user",
-            metadata: {
-              before: originalValues,
-              after: dto,
-              changes: Object.keys(dto),
-            },
-          },
-        ],
-        { session }
-      );
+      const activityData = {
+        type: ActivityType.USER_UPDATED,
+        severity: ActivitySeverity.INFO,
+        userId: adminId,
+        targetUserId: user._id,
+        description: `User updated: ${user.email}`,
+        module: "system-admin",
+        action: "update-user",
+        metadata: {
+          before: originalValues,
+          after: dto,
+          changes: Object.keys(dto),
+        },
+      };
 
-      await session.commitTransaction();
+      if (session) {
+        await ActivityLog.create([activityData], { session });
+      } else {
+        await ActivityLog.create(activityData);
+      }
 
       logger.info(`User ${user.email} updated by ${admin.email}`);
 
       return user;
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 
   async deleteUser(
     adminId: mongoose.Types.ObjectId,
     userId: string
   ): Promise<void> {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
+    return await this.executeWithOptionalTransaction(async (session) => {
       const admin = await User.findById(adminId);
       if (!admin) {
         throw AppError.notFound("Admin not found");
@@ -274,40 +279,34 @@ export class SystemAdminService {
       user.deletedAt = new Date();
       user.lastModifiedBy = adminId;
 
-      await user.save({ session });
+      await user.save(session ? { session } : {});
 
       // Log activity
-      await ActivityLog.create(
-        [
-          {
-            type: ActivityType.USER_DELETED,
-            severity: ActivitySeverity.WARNING,
-            userId: adminId,
-            targetUserId: user._id,
-            description: `User deleted: ${user.email}`,
-            module: "system-admin",
-            action: "delete-user",
-            metadata: {
-              deletedUser: {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-              },
-            },
+      const activityData = {
+        type: ActivityType.USER_DELETED,
+        severity: ActivitySeverity.WARNING,
+        userId: adminId,
+        targetUserId: user._id,
+        description: `User deleted: ${user.email}`,
+        module: "system-admin",
+        action: "delete-user",
+        metadata: {
+          deletedUser: {
+            id: user._id,
+            email: user.email,
+            role: user.role,
           },
-        ],
-        { session }
-      );
+        },
+      };
 
-      await session.commitTransaction();
+      if (session) {
+        await ActivityLog.create([activityData], { session });
+      } else {
+        await ActivityLog.create(activityData);
+      }
 
       logger.warn(`User ${user.email} deleted by ${admin.email}`);
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 
   async suspendUser(
@@ -315,10 +314,7 @@ export class SystemAdminService {
     userId: string,
     reason: string
   ): Promise<IUser> {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
+    return await this.executeWithOptionalTransaction(async (session) => {
       const user = await User.findById(userId);
       if (!user) {
         throw AppError.notFound("User not found");
@@ -327,46 +323,37 @@ export class SystemAdminService {
       user.status = UserStatus.SUSPENDED;
       user.lastModifiedBy = adminId;
 
-      await user.save({ session });
+      await user.save(session ? { session } : {});
 
       // Log activity
-      await ActivityLog.create(
-        [
-          {
-            type: ActivityType.USER_SUSPENDED,
-            severity: ActivitySeverity.WARNING,
-            userId: adminId,
-            targetUserId: user._id,
-            description: `User suspended: ${user.email}`,
-            module: "system-admin",
-            action: "suspend-user",
-            metadata: { reason },
-          },
-        ],
-        { session }
-      );
+      const activityData = {
+        type: ActivityType.USER_SUSPENDED,
+        severity: ActivitySeverity.WARNING,
+        userId: adminId,
+        targetUserId: user._id,
+        description: `User suspended: ${user.email}`,
+        module: "system-admin",
+        action: "suspend-user",
+        metadata: { reason },
+      };
 
-      await session.commitTransaction();
+      if (session) {
+        await ActivityLog.create([activityData], { session });
+      } else {
+        await ActivityLog.create(activityData);
+      }
 
       logger.warn(`User ${user.email} suspended. Reason: ${reason}`);
 
       return user;
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 
   async activateUser(
     adminId: mongoose.Types.ObjectId,
     userId: string
   ): Promise<IUser> {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
+    return await this.executeWithOptionalTransaction(async (session) => {
       const user = await User.findById(userId);
       if (!user) {
         throw AppError.notFound("User not found");
@@ -377,35 +364,29 @@ export class SystemAdminService {
       user.emailVerifiedAt = user.emailVerifiedAt || new Date();
       user.lastModifiedBy = adminId;
 
-      await user.save({ session });
+      await user.save(session ? { session } : {});
 
       // Log activity
-      await ActivityLog.create(
-        [
-          {
-            type: ActivityType.USER_ACTIVATED,
-            severity: ActivitySeverity.INFO,
-            userId: adminId,
-            targetUserId: user._id,
-            description: `User activated: ${user.email}`,
-            module: "system-admin",
-            action: "activate-user",
-          },
-        ],
-        { session }
-      );
+      const activityData = {
+        type: ActivityType.USER_ACTIVATED,
+        severity: ActivitySeverity.INFO,
+        userId: adminId,
+        targetUserId: user._id,
+        description: `User activated: ${user.email}`,
+        module: "system-admin",
+        action: "activate-user",
+      };
 
-      await session.commitTransaction();
+      if (session) {
+        await ActivityLog.create([activityData], { session });
+      } else {
+        await ActivityLog.create(activityData);
+      }
 
       logger.info(`User ${user.email} activated`);
 
       return user;
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 
   async getAllUsers(
@@ -592,10 +573,7 @@ export class SystemAdminService {
     userId: string,
     newRole: UserRole
   ): Promise<IUser> {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
+    return await this.executeWithOptionalTransaction(async (session) => {
       const admin = await User.findById(adminId);
       if (!admin) {
         throw AppError.notFound("Admin not found");
@@ -622,41 +600,35 @@ export class SystemAdminService {
       user.role = newRole;
       user.lastModifiedBy = adminId;
 
-      await user.save({ session });
+      await user.save(session ? { session } : {});
 
       // Log activity
-      await ActivityLog.create(
-        [
-          {
-            type: ActivityType.USER_ROLE_CHANGED,
-            severity: ActivitySeverity.WARNING,
-            userId: adminId,
-            targetUserId: user._id,
-            description: `User role changed from ${oldRole} to ${newRole}`,
-            module: "system-admin",
-            action: "change-role",
-            metadata: {
-              before: { role: oldRole },
-              after: { role: newRole },
-            },
-          },
-        ],
-        { session }
-      );
+      const activityData = {
+        type: ActivityType.USER_ROLE_CHANGED,
+        severity: ActivitySeverity.WARNING,
+        userId: adminId,
+        targetUserId: user._id,
+        description: `User role changed from ${oldRole} to ${newRole}`,
+        module: "system-admin",
+        action: "change-role",
+        metadata: {
+          before: { role: oldRole },
+          after: { role: newRole },
+        },
+      };
 
-      await session.commitTransaction();
+      if (session) {
+        await ActivityLog.create([activityData], { session });
+      } else {
+        await ActivityLog.create(activityData);
+      }
 
       logger.info(
         `User ${user.email} role changed from ${oldRole} to ${newRole}`
       );
 
       return user;
-    } catch (error) {
-      await session.abortTransaction();
-      throw error;
-    } finally {
-      session.endSession();
-    }
+    });
   }
 
   async bulkUpdateUsers(
@@ -687,15 +659,59 @@ export class SystemAdminService {
   }
 
   async exportUsers(filters: any, format: "csv" | "json"): Promise<any> {
-    const users = await User.find(filters).select("-password");
+    // Build proper MongoDB query from filters
+    const query: any = {};
 
-    if (format === "json") {
-      return users;
+    // Map role filter
+    if (filters.role) {
+      // Handle different role formats (e.g., "CUSTOMER" -> "customer")
+      const roleMap: { [key: string]: string } = {
+        CUSTOMER: "customer",
+        SYSTEM_ADMIN: "system-admin",
+        SALES_ADMIN: "sales-admin",
+        WEB_ADMIN: "web-admin",
+        HELPDESK: "helpdesk",
+      };
+      query.role = roleMap[filters.role] || filters.role.toLowerCase();
     }
 
-    // Convert to CSV
-    const csv = this.convertToCSV(users);
-    return csv;
+    // Map status filter
+    if (filters.status) {
+      // Handle different status formats (e.g., "ACTIVE" -> "active")
+      const statusMap: { [key: string]: string } = {
+        ACTIVE: "active",
+        INACTIVE: "inactive",
+        SUSPENDED: "suspended",
+        PENDING_VERIFICATION: "pending-verification",
+        DELETED: "deleted",
+      };
+      query.status = statusMap[filters.status] || filters.status.toLowerCase();
+    }
+
+    // Handle search filter
+    if (filters.search) {
+      query.$or = [
+        { firstName: { $regex: filters.search, $options: "i" } },
+        { lastName: { $regex: filters.search, $options: "i" } },
+        { email: { $regex: filters.search, $options: "i" } },
+        { company: { $regex: filters.search, $options: "i" } },
+      ];
+    }
+
+    try {
+      const users = await User.find(query).select("-password");
+
+      if (format === "json") {
+        return users;
+      }
+
+      // Convert to CSV
+      const csv = this.convertToCSV(users);
+      return csv;
+    } catch (error) {
+      logger.error("Error exporting users:", error);
+      throw AppError.internal("Failed to export users");
+    }
   }
 
   async getSystemHealth(): Promise<any> {
