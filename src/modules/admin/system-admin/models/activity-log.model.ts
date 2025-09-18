@@ -22,6 +22,13 @@ export enum ActivityType {
   ADMIN_DELETED = "admin-deleted",
   ADMIN_PERMISSION_CHANGED = "admin-permission-changed",
 
+  // Content Management (Web Admin)
+  CONTENT_CREATED = "content-created",
+  CONTENT_UPDATED = "content-updated",
+  CONTENT_DELETED = "content-deleted",
+  CONTENT_PUBLISHED = "content-published",
+  CONTENT_UNPUBLISHED = "content-unpublished",
+
   // System
   SYSTEM_SETTING_CHANGED = "system-setting-changed",
   DATABASE_BACKUP = "database-backup",

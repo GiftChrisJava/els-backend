@@ -62,7 +62,8 @@ export class ResponseUtil {
     page: number,
     limit: number,
     total: number,
-    message: string = "Success"
+    message: string = "Success",
+    additionalData?: any
   ): Response {
     const totalPages = Math.ceil(total / limit);
     const hasNext = page < totalPages;
@@ -80,6 +81,7 @@ export class ResponseUtil {
         hasNext,
         hasPrev,
       },
+      ...additionalData,
       timestamp: new Date().toISOString(),
     };
 

@@ -1,0 +1,205 @@
+import { authenticate } from "@modules/auth/middlewares/auth.middleware";
+import { hasRole } from "@modules/auth/middlewares/role.middleware";
+import { validateRequest } from "@shared/middlewares/validation.middleware";
+import { Router } from "express";
+import { UserRole } from "../../../../core/constants/role.constants";
+import { WebAdminController } from "../controller/web-admin.controller";
+import * as validators from "../validator/web-admin.validator";
+
+const router = Router();
+const webAdminController = new WebAdminController();
+
+// All routes require authentication
+router.use(authenticate);
+
+// Dashboard
+router.get(
+  "/dashboard",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getDashboardStats
+);
+
+// =============== SERVICES ROUTES ===============
+
+router.get(
+  "/services",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getServices
+);
+
+router.get(
+  "/services/:serviceId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getServiceById
+);
+
+router.post(
+  "/services",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.createServiceSchema),
+  webAdminController.createService
+);
+
+router.patch(
+  "/services/:serviceId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.updateServiceSchema),
+  webAdminController.updateService
+);
+
+router.delete(
+  "/services/:serviceId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.deleteService
+);
+
+// =============== PROJECTS ROUTES ===============
+
+router.get(
+  "/projects",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getProjects
+);
+
+router.get(
+  "/projects/:projectId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getProjectById
+);
+
+router.post(
+  "/projects",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.createProjectSchema),
+  webAdminController.createProject
+);
+
+router.patch(
+  "/projects/:projectId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.updateProjectSchema),
+  webAdminController.updateProject
+);
+
+router.delete(
+  "/projects/:projectId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.deleteProject
+);
+
+router.post(
+  "/projects/:projectId/publish",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.publishProject
+);
+
+// =============== STAFF ROUTES ===============
+
+router.get(
+  "/staff",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getStaff
+);
+
+router.get(
+  "/staff/:staffId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getStaffById
+);
+
+router.post(
+  "/staff",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.createStaffSchema),
+  webAdminController.createStaff
+);
+
+router.patch(
+  "/staff/:staffId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.updateStaffSchema),
+  webAdminController.updateStaff
+);
+
+router.delete(
+  "/staff/:staffId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.deleteStaff
+);
+
+// =============== TESTIMONIALS ROUTES ===============
+
+router.get(
+  "/testimonials",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getTestimonials
+);
+
+router.post(
+  "/testimonials",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.createTestimonialSchema),
+  webAdminController.createTestimonial
+);
+
+router.post(
+  "/testimonials/:testimonialId/approve",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.approveTestimonial
+);
+
+router.post(
+  "/testimonials/:testimonialId/reject",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.rejectTestimonialSchema),
+  webAdminController.rejectTestimonial
+);
+
+// =============== LANDING SLIDES ROUTES ===============
+
+router.get(
+  "/slides",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getSlides
+);
+
+router.post(
+  "/slides",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.createSlideSchema),
+  webAdminController.createSlide
+);
+
+router.patch(
+  "/slides/:slideId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.updateSlideSchema),
+  webAdminController.updateSlide
+);
+
+router.delete(
+  "/slides/:slideId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.deleteSlide
+);
+
+router.post(
+  "/slides/reorder",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(validators.reorderSlidesSchema),
+  webAdminController.reorderSlides
+);
+
+router.post(
+  "/slides/:slideId/activate",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.activateSlide
+);
+
+router.post(
+  "/slides/:slideId/deactivate",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.deactivateSlide
+);
+
+export default router;

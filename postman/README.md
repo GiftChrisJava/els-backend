@@ -1,157 +1,227 @@
-# Postman Collection for Energy Solutions API
+# Energy Solutions API - Postman Collection
 
-This directory contains Postman collections and environments for testing the Energy Solutions Backend API.
+This folder contains Postman collections and environments for testing the Energy Solutions API.
 
-## Files Included
+## Files
 
-### Collections
-
-- `Energy-Solutions-API.postman_collection.json` - Main API collection with all endpoints
-
-### Environments
-
+- `Energy-Solutions-API.postman_collection.json` - Complete API collection with all endpoints
 - `Energy-Solutions-Development.postman_environment.json` - Development environment variables
 - `Energy-Solutions-Production.postman_environment.json` - Production environment variables
 
-## Quick Setup
+## How to Use
 
-### 1. Import Collection and Environments
-
-1. Open Postman
-2. Click **Import** button
-3. Select all JSON files in this directory
-4. Import them into your Postman workspace
-
-### 2. Select Environment
-
-- Choose **Energy Solutions - Development** for local testing
-- Choose **Energy Solutions - Production** for production testing
-
-### 3. Update Environment Variables
-
-Update the following variables as needed:
-
-- `testEmail` - Your test user email
-- `testPassword` - Your test user password
-- `adminEmail` - Admin email (default: admin@energysolutions.mw)
-- `adminPassword` - Admin password (default: Admin@123456)
+1. Import the collection and environment files into Postman
+2. Select the appropriate environment (Development or Production)
+3. Update the environment variables with your specific values:
+   - `baseURL`: API server URL
+   - `userEmail` and `userPassword`: Regular user credentials
+   - `adminEmail` and `adminPassword`: System admin credentials
+   - `webAdminEmail` and `webAdminPassword`: Web admin credentials
 
 ## Authentication Flow
 
-### For Regular Users
+### System Admin Authentication
 
-1. **Register User** - Creates a new user account
-2. **Verify Email** - Verify email with 6-digit code (check your email)
-3. **Login** - Authenticate and get tokens
-4. Use authenticated endpoints
+1. Run "Login Admin" request to get tokens
+2. Tokens are automatically saved to environment variables
+3. Use "Refresh Admin Token" when access token expires
 
-### For Admin Users
+### Web Admin Authentication
 
-1. **Admin Login** - Login with admin credentials
-2. Use admin endpoints
+1. Run "Login Web Admin" request to get tokens
+2. Tokens are automatically saved to environment variables
+3. Use "Refresh Web Admin Token" when access token expires
 
-## Endpoint Categories
+### User Authentication
 
-### 🔐 Authentication
+1. Run "Login User" request to get tokens
+2. Tokens are automatically saved to environment variables
+3. Use "Refresh User Token" when access token expires
 
-- **POST** `/api/auth/register` - Register new user
-- **POST** `/api/auth/verify-email` - Verify email address
-- **POST** `/api/auth/login` - User login
-- **POST** `/api/auth/refresh-token` - Refresh access token
-- **POST** `/api/auth/forgot-password` - Request password reset
-- **POST** `/api/auth/reset-password` - Reset password with code
-- **POST** `/api/auth/resend-verification` - Resend verification code
-- **GET** `/api/auth/me` - Get current user profile
-- **PATCH** `/api/auth/me` - Update user profile
-- **POST** `/api/auth/change-password` - Change password
-- **POST** `/api/auth/logout` - Logout user
+## Collection Structure
 
-### 👨‍💼 System Admin
+### Authentication
 
-- **GET** `/api/admin/system/dashboard` - Dashboard statistics
-- **GET** `/api/admin/system/health` - System health check
-- **GET** `/api/admin/system/users` - Get all users with filters
-- **GET** `/api/admin/system/users/:id` - Get user by ID
-- **POST** `/api/admin/system/users` - Create new admin
-- **PATCH** `/api/admin/system/users/:id` - Update user
-- **DELETE** `/api/admin/system/users/:id` - Delete user
-- **POST** `/api/admin/system/users/:id/suspend` - Suspend user
-- **POST** `/api/admin/system/users/:id/activate` - Activate user
-- **PATCH** `/api/admin/system/users/:id/role` - Change user role
-- **POST** `/api/admin/system/users/bulk-update` - Bulk update users
-- **GET** `/api/admin/system/users/export` - Export users (CSV/JSON)
-- **GET** `/api/admin/system/activity-logs` - Get activity logs
+- Admin login/logout/refresh
+- Web admin login/logout/refresh
+- User registration/login/logout/refresh
+- Password reset functionality
+- Email verification
 
-### 🏥 Health Check
+### System Admin Management
 
-- **GET** `/health` - Basic health check
-- **GET** `/api` - API information
+- Activity logs viewing
+- User management
+- System statistics
 
-## Automatic Token Management
+### Web Admin Management
 
-The collection includes automatic token management:
+Complete content management system with CRUD operations for:
 
-- Tokens are automatically extracted from login responses
-- Tokens are automatically used in subsequent requests
-- Both user and admin tokens are managed separately
+#### Services Management
+
+- Create, read, update, delete services
+- Upload service images
+- Manage service status (draft, published, archived)
+- Featured services management
+- Service categories and pricing
+
+#### Projects Management
+
+- Create, read, update, delete projects
+- Upload project images and documents
+- Project status management
+- Featured projects showcase
+- Project categories and client information
+
+#### Staff Management
+
+- Add, edit, remove staff members
+- Upload staff photos
+- Manage staff roles and departments
+- Social media links
+- Staff bio and contact information
+
+#### Testimonials Management
+
+- Create, approve, reject testimonials
+- Client testimonial moderation
+- Featured testimonials selection
+- Testimonial categories and ratings
+
+#### Landing Page Slides
+
+- Homepage slideshow management
+- Upload slide images
+- Slide ordering and status
+- Call-to-action buttons
+- Slide content and links
+
+### Public Routes
+
+Content access for website visitors:
+
+#### Services
+
+- Browse all published services
+- View service details by slug
+- Featured services listing
+- Service categories
+- Service search and filtering
+
+#### Projects
+
+- Browse all published projects
+- View project details by slug
+- Featured projects showcase
+- Project categories
+- Project gallery and documents
+
+#### Staff
+
+- View all active staff members
+- Staff directory with departments
+- Individual staff profiles
+- Staff expertise and contact info
+
+#### Testimonials
+
+- Browse approved testimonials
+- Featured testimonials display
+- Client feedback showcase
+- Testimonial categories
+
+#### Landing Content
+
+- Homepage slides for carousel
+- Active slides with proper ordering
+- Slide content for frontend display
+
+#### Contact & Statistics
+
+- Contact form submission
+- Website statistics (anonymous)
+- Public inquiries handling
 
 ## Environment Variables
 
 ### Base Configuration
 
-- `baseUrl` - API base URL
-- `apiVersion` - API version
+- `baseURL`: API base URL
+- `expiresIn`: Token expiration time
 
-### Authentication
+### System Admin
 
-- `accessToken` - Current user access token
-- `refreshToken` - Current user refresh token
-- `adminAccessToken` - Admin access token
-- `adminRefreshToken` - Admin refresh token
+- `adminEmail`: System admin email
+- `adminPassword`: System admin password
+- `adminAccessToken`: JWT access token (auto-populated)
+- `adminRefreshToken`: JWT refresh token (auto-populated)
 
-### Test Data
+### Web Admin
 
-- `testEmail` - Test user email
-- `testPassword` - Test user password
-- `adminEmail` - Admin email
-- `adminPassword` - Admin password
-- `verificationCode` - Email verification code
-- `resetCode` - Password reset code
+- `webAdminEmail`: Web admin email
+- `webAdminPassword`: Web admin password
+- `webAdminAccessToken`: JWT access token (auto-populated)
+- `webAdminRefreshToken`: JWT refresh token (auto-populated)
 
-### User IDs
+### Regular User
 
-- `userId` - Current user ID
-- `adminUserId` - Admin user ID
-- `newAdminId` - Newly created admin ID
+- `userEmail`: Regular user email
+- `userPassword`: Regular user password
+- `userAccessToken`: JWT access token (auto-populated)
+- `userRefreshToken`: JWT refresh token (auto-populated)
+
+### Testing IDs (Auto-populated from responses)
+
+- `serviceId`: Service ID for testing
+- `serviceSlug`: Service slug for public testing
+- `projectId`: Project ID for testing
+- `projectSlug`: Project slug for public testing
+- `staffId`: Staff member ID for testing
+- `testimonialId`: Testimonial ID for testing
+- `slideId`: Landing slide ID for testing
 
 ## Testing Workflow
 
-### 1. User Registration Flow
+### 1. Setup Phase
 
-1. Run **Register User**
-2. Check email for verification code
-3. Update `verificationCode` variable
-4. Run **Verify Email**
-5. Access token will be automatically set
+1. Import collection and environment
+2. Update base URL and credentials
+3. Run authentication requests to get tokens
 
-### 2. User Login Flow
+### 2. Web Admin Testing
 
-1. Run **Login** request
-2. Tokens will be automatically set
-3. Use authenticated endpoints
+1. Login as web admin
+2. Test content creation (services, projects, staff, etc.)
+3. Upload images and files
+4. Manage content status and visibility
+5. Test approval workflows
 
-### 3. Admin Testing Flow
+### 3. Public Routes Testing
 
-1. Run **Admin Login**
-2. Admin tokens will be automatically set
-3. Test admin endpoints
+1. Test public content browsing
+2. Verify published content visibility
+3. Test search and filtering
+4. Submit contact forms
+5. Check public statistics
 
-### 4. Password Reset Flow
+### 4. System Admin Testing
 
-1. Run **Forgot Password**
-2. Check email for reset code
-3. Update `resetCode` variable
-4. Run **Reset Password**
+1. Login as system admin
+2. Review activity logs
+3. Manage user accounts
+4. Check system statistics
+
+## Important Notes
+
+- All requests include proper authentication headers
+- File uploads require multipart/form-data
+- Images are automatically resized and optimized
+- Slugs are auto-generated from titles
+- Content goes through approval workflows
+- Public routes only show approved/published content
+- Environment variables are automatically updated from responses
+- Use the pre-request scripts to ensure fresh tokens
 
 ## Rate Limiting
 
@@ -192,14 +262,6 @@ All endpoints return consistent success responses:
   "timestamp": "2024-01-01T00:00:00.000Z"
 }
 ```
-
-## Tips
-
-1. **Sequential Testing**: Use the **Run Collection** feature to test all endpoints sequentially
-2. **Environment Switching**: Easily switch between development and production environments
-3. **Token Refresh**: Use the refresh token endpoint when access tokens expire
-4. **Bulk Operations**: Test bulk operations with multiple user IDs
-5. **Export Testing**: Test CSV and JSON export formats
 
 ## Security Notes
 

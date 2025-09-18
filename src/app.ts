@@ -25,7 +25,9 @@ declare global {
 
 // Import routes
 import systemAdminRoutes from "./modules/admin/system-admin/routes/system-admin.routes";
+import webAdminRoutes from "./modules/admin/web-admin/routes/web-admin.routes";
 import authRoutes from "./modules/auth/routes/auth.routes";
+import publicRoutes from "./modules/public/routes/public.routes";
 
 class App {
   public app: Application;
@@ -153,10 +155,11 @@ class App {
     // API v1 routes
     this.app.use("/api/v1/auth", authRoutes);
     this.app.use("/api/v1/admin/system", systemAdminRoutes);
+    this.app.use("/api/v1/admin/web", webAdminRoutes);
+    this.app.use("/api/v1/public", publicRoutes);
 
-    // Future routes (Phase 3-6)
+    // Future routes (Phase 4-6)
     // this.app.use('/api/v1/admin/sales', salesAdminRoutes);
-    // this.app.use('/api/v1/admin/web', webAdminRoutes);
     // this.app.use('/api/v1/admin/helpdesk', helpdeskRoutes);
     // this.app.use('/api/v1/products', productRoutes);
     // this.app.use('/api/v1/orders', orderRoutes);

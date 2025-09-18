@@ -628,7 +628,15 @@
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/system/users/{{userId}}/role",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "system", "users", "{{userId}}", "role"]
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "system",
+                "users",
+                "{{userId}}",
+                "role"
+              ]
             }
           }
         },
@@ -764,6 +772,1173 @@
                   "value": "auth"
                 }
               ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Web Admin",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{webAdminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/web/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "web", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Services Management",
+          "item": [
+            {
+              "name": "Get All Services",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/services?page=1&limit=10&category=solar&status=active",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "services"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "solar"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Service by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/services/{{serviceId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "services",
+                    "{{serviceId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create Service",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.to.have.status(201)) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.service) {",
+                      "        pm.environment.set('serviceId', response.data.service._id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Solar Panel Installation\",\n  \"shortDescription\": \"Professional solar panel installation for residential and commercial properties\",\n  \"longDescription\": \"Our expert team provides comprehensive solar panel installation services...\",\n  \"category\": \"solar\",\n  \"features\": [\n    {\n      \"title\": \"Professional Installation\",\n      \"description\": \"Certified technicians ensure proper installation\",\n      \"icon\": \"installation-icon\"\n    }\n  ],\n  \"pricing\": {\n    \"type\": \"quote\",\n    \"description\": \"Custom pricing based on requirements\"\n  },\n  \"duration\": \"2-4 days\",\n  \"image\": \"https://example.com/solar-installation.jpg\",\n  \"status\": \"active\",\n  \"isFeatured\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/services",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "services"]
+                }
+              }
+            },
+            {
+              "name": "Update Service",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Solar Panel Installation\",\n  \"shortDescription\": \"Updated description\",\n  \"status\": \"active\",\n  \"isFeatured\": false\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/services/{{serviceId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "services",
+                    "{{serviceId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Delete Service",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/services/{{serviceId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "services",
+                    "{{serviceId}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Projects Management",
+          "item": [
+            {
+              "name": "Get All Projects",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/projects?page=1&limit=10&category=residential&status=completed",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "projects"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "residential"
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Project by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/projects/{{projectId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "projects",
+                    "{{projectId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create Project",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.to.have.status(201)) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.project) {",
+                      "        pm.environment.set('projectId', response.data.project._id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Residential Solar Installation - Lilongwe\",\n  \"client\": \"ABC Company\",\n  \"description\": \"Complete solar panel installation for residential property\",\n  \"category\": \"residential\",\n  \"status\": \"completed\",\n  \"startDate\": \"2024-01-15\",\n  \"endDate\": \"2024-01-20\",\n  \"location\": {\n    \"city\": \"Lilongwe\",\n    \"district\": \"Lilongwe\",\n    \"country\": \"Malawi\"\n  },\n  \"images\": {\n    \"featured\": \"https://example.com/project-featured.jpg\",\n    \"gallery\": [\"https://example.com/gallery1.jpg\"]\n  },\n  \"technicalSpecs\": [\n    {\n      \"label\": \"Capacity\",\n      \"value\": \"10\",\n      \"unit\": \"kW\"\n    }\n  ],\n  \"isFeatured\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/projects",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "projects"]
+                }
+              }
+            },
+            {
+              "name": "Update Project",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Project Title\",\n  \"status\": \"completed\",\n  \"isFeatured\": false\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/projects/{{projectId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "projects",
+                    "{{projectId}}"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Publish Project",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/projects/{{projectId}}/publish",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "projects",
+                    "{{projectId}}",
+                    "publish"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Delete Project",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/projects/{{projectId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "projects",
+                    "{{projectId}}"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Staff Management",
+          "item": [
+            {
+              "name": "Get All Staff",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/staff?page=1&limit=10&department=technical&status=active",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "staff"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "department",
+                      "value": "technical"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Staff by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/staff/{{staffId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "staff", "{{staffId}}"]
+                }
+              }
+            },
+            {
+              "name": "Create Staff",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.to.have.status(201)) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.staff) {",
+                      "        pm.environment.set('staffId', response.data.staff._id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"displayName\": \"John Doe\",\n  \"email\": \"john.doe@energysolutions.mw\",\n  \"phoneNumber\": \"+265999123456\",\n  \"position\": \"Senior Solar Technician\",\n  \"department\": \"technical\",\n  \"bio\": \"Experienced solar technician with 5+ years in renewable energy\",\n  \"joinedDate\": \"2024-01-01\",\n  \"qualifications\": [\n    {\n      \"degree\": \"Electrical Engineering\",\n      \"institution\": \"University of Malawi\",\n      \"year\": 2018\n    }\n  ],\n  \"certifications\": [\n    {\n      \"name\": \"Solar Installation Certification\",\n      \"issuer\": \"Renewable Energy Association\",\n      \"year\": 2020\n    }\n  ],\n  \"status\": \"active\",\n  \"isTeamLead\": true,\n  \"isFeatured\": true,\n  \"isPublished\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/staff",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "staff"]
+                }
+              }
+            },
+            {
+              "name": "Update Staff",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"position\": \"Lead Solar Technician\",\n  \"bio\": \"Updated bio with additional experience\",\n  \"isTeamLead\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/staff/{{staffId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "staff", "{{staffId}}"]
+                }
+              }
+            },
+            {
+              "name": "Delete Staff",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/staff/{{staffId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "staff", "{{staffId}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Testimonials Management",
+          "item": [
+            {
+              "name": "Get All Testimonials",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/testimonials?page=1&limit=10&status=pending",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "testimonials"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "pending"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create Testimonial",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.to.have.status(201)) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.testimonial) {",
+                      "        pm.environment.set('testimonialId', response.data.testimonial._id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"content\": \"Excellent service! The solar installation was completed professionally and on time.\",\n  \"rating\": 5,\n  \"author\": {\n    \"name\": \"Jane Smith\",\n    \"position\": \"Homeowner\",\n    \"company\": \"Private Residence\",\n    \"email\": \"jane.smith@example.com\"\n  },\n  \"type\": \"text\",\n  \"isFeatured\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/testimonials",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "testimonials"]
+                }
+              }
+            },
+            {
+              "name": "Approve Testimonial",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/testimonials/{{testimonialId}}/approve",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "testimonials",
+                    "{{testimonialId}}",
+                    "approve"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Reject Testimonial",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Content does not meet our guidelines\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/testimonials/{{testimonialId}}/reject",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "testimonials",
+                    "{{testimonialId}}",
+                    "reject"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Landing Slides Management",
+          "item": [
+            {
+              "name": "Get All Slides",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides?page=1&limit=10&status=active",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "slides"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Create Slide",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.to.have.status(201)) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.slide) {",
+                      "        pm.environment.set('slideId', response.data.slide._id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Welcome to Energy Solutions\",\n  \"type\": \"image\",\n  \"content\": {\n    \"heading\": \"Sustainable Energy for Everyone\",\n    \"subheading\": \"Professional solar solutions for your home and business\",\n    \"description\": \"Get started with clean, renewable energy today\",\n    \"buttons\": [\n      {\n        \"text\": \"Get Quote\",\n        \"link\": \"/contact\",\n        \"style\": \"primary\",\n        \"target\": \"_self\"\n      }\n    ]\n  },\n  \"media\": {\n    \"imageUrl\": \"https://example.com/hero-slide.jpg\",\n    \"alt\": \"Solar panels installation\"\n  },\n  \"status\": \"active\",\n  \"displayOrder\": 1,\n  \"deviceVisibility\": {\n    \"desktop\": true,\n    \"tablet\": true,\n    \"mobile\": true\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "slides"]
+                }
+              }
+            },
+            {
+              "name": "Update Slide",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated Slide Title\",\n  \"content\": {\n    \"heading\": \"Updated Heading\",\n    \"subheading\": \"Updated subheading\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides/{{slideId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "slides", "{{slideId}}"]
+                }
+              }
+            },
+            {
+              "name": "Reorder Slides",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"slides\": [\n    {\n      \"id\": \"{{slideId}}\",\n      \"order\": 1\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides/reorder",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "slides", "reorder"]
+                }
+              }
+            },
+            {
+              "name": "Activate Slide",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides/{{slideId}}/activate",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "slides",
+                    "{{slideId}}",
+                    "activate"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Deactivate Slide",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides/{{slideId}}/deactivate",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "admin",
+                    "web",
+                    "slides",
+                    "{{slideId}}",
+                    "deactivate"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Delete Slide",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides/{{slideId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "slides", "{{slideId}}"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Public Routes",
+      "item": [
+        {
+          "name": "Services",
+          "item": [
+            {
+              "name": "Get All Services",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/services?page=1&limit=10&category=solar&featured=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "services"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "solar"
+                    },
+                    {
+                      "key": "featured",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Featured Services",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/services/featured",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "services", "featured"]
+                }
+              }
+            },
+            {
+              "name": "Get Service by Slug",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/services/{{serviceSlug}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "services", "{{serviceSlug}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Projects",
+          "item": [
+            {
+              "name": "Get All Projects",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/projects?page=1&limit=10&category=residential&featured=true&status=completed",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "projects"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "category",
+                      "value": "residential"
+                    },
+                    {
+                      "key": "featured",
+                      "value": "true"
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Featured Projects",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/projects/featured",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "projects", "featured"]
+                }
+              }
+            },
+            {
+              "name": "Get Project by Slug",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/projects/{{projectSlug}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "projects", "{{projectSlug}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Staff",
+          "item": [
+            {
+              "name": "Get All Staff",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/staff?page=1&limit=12&department=technical&featured=true",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "staff"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "12"
+                    },
+                    {
+                      "key": "department",
+                      "value": "technical"
+                    },
+                    {
+                      "key": "featured",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Team Leads",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/staff/team-leads",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "staff", "team-leads"]
+                }
+              }
+            },
+            {
+              "name": "Get Staff by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/staff/{{staffId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "staff", "{{staffId}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Testimonials",
+          "item": [
+            {
+              "name": "Get All Testimonials",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/testimonials?page=1&limit=10&featured=true&rating=5",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "testimonials"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "featured",
+                      "value": "true"
+                    },
+                    {
+                      "key": "rating",
+                      "value": "5"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Featured Testimonials",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/testimonials/featured",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "testimonials", "featured"]
+                }
+              }
+            },
+            {
+              "name": "Submit Testimonial",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"content\": \"Excellent service! Very professional and completed on time.\",\n  \"rating\": 5,\n  \"author\": {\n    \"name\": \"John Customer\",\n    \"position\": \"Homeowner\",\n    \"company\": \"Private Residence\",\n    \"email\": \"john.customer@example.com\",\n    \"phone\": \"+265999123456\"\n  },\n  \"projectId\": \"{{projectId}}\",\n  \"serviceId\": \"{{serviceId}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/testimonials/submit",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "testimonials", "submit"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Landing Slides",
+          "item": [
+            {
+              "name": "Get Active Slides",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/slides?device=desktop",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "public", "slides"],
+                  "query": [
+                    {
+                      "key": "device",
+                      "value": "desktop"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Track Slide Click",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/public/slides/{{slideId}}/click",
+                  "host": ["{{baseUrl}}"],
+                  "path": [
+                    "api",
+                    "v1",
+                    "public",
+                    "slides",
+                    "{{slideId}}",
+                    "click"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "public", "statistics"]
+            }
+          }
+        },
+        {
+          "name": "Contact Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+265999123456\",\n  \"subject\": \"Solar Installation Inquiry\",\n  \"message\": \"I am interested in solar panel installation for my home. Please contact me with more information.\",\n  \"service\": \"solar\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/public/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "public", "contact"]
             }
           }
         }
