@@ -1,11 +1,120 @@
-import { Client, Storage, InputFile, ID } from "node-appwrite";
 import fs from "fs";
+import { Client, ID, InputFile, Storage } from "node-appwrite";
 import { v4 as uuidv4 } from "uuid";
 import { AppError } from "../errors/AppError";
 import { logger } from "../utils/logger.util";
 
 class AppwriteService {
-  private client: Client;
+  pr  /**
+   * Get image preview URL
+   * @param fileId - File ID
+   * @param width - Desired width
+   * @param height - Desired height
+   * @returns string - Preview URL
+   */
+  getImagePreview(fileId: string, width?: number, height?: number): string {
+    const preview = this.storage.getFilePreview(
+      this.bucketId,
+      fileId,
+      width,
+      height
+    );
+    return preview.toString();
+  }
+
+  /**
+   * Check if URL is an Appwrite URL
+   * @param url - URL to check
+   * @returns boolean
+   */
+  private isAppwriteUrl(url: string): boolean {
+    return url.includes('appwrite.io') || url.includes(this.client.config.endpoint);
+  }
+
+  /**
+   * Get file extension from content type
+   * @param contentType - MIME type
+   * @returns string - File extension
+   */
+  private getFileExtensionFromContentType(contentType: string): string {
+    const mimeMap: { [key: string]: string } = {
+      'image/jpeg': '.jpg',
+      'image/jpg': '.jpg',
+      'image/png': '.png',
+      'image/webp': '.webp',
+      'image/gif': '.gif'
+    };
+    return mimeMap[contentType] || '.jpg';
+  }
+
+  /**
+   * Upload image from external URL
+   * @param url - External image URL
+   * @param folder - Folder to store in
+   * @returns Promise<string> - Appwrite URL
+   */
+  async uploadFromUrl(url: string, folder: string = "images"): Promise<string> {
+    try {
+      // If it's already an Appwrite URL, return as is
+      if (this.isAppwriteUrl(url)) {
+        return url;
+      }
+
+      // Fetch the image
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+      }
+
+      const buffer = Buffer.from(await response.arrayBuffer());
+      const contentType = response.headers.get('content-type') || 'image/jpeg';
+      
+      // Validate content type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+      if (!allowedTypes.includes(contentType)) {
+        throw new Error(`Unsupported image type: ${contentType}`);
+      }
+
+      // Generate filename
+      const extension = this.getFileExtensionFromContentType(contentType);
+      const filename = `${Date.now()}_${Math.random().toString(36).substring(7)}${extension}`;
+
+      // Create file input
+      const file = InputFile.fromBuffer(buffer, filename);
+
+      // Upload to Appwrite
+      const uploadResult = await this.storage.createFile(
+        this.bucketId,
+        ID.unique(),
+        file
+      );
+
+      logger.info("Image uploaded from URL successfully", {
+        originalUrl: url,
+        fileId: uploadResult.$id,
+        filename,
+        size: buffer.length,
+        folder,
+      });
+
+      // Return the Appwrite URL
+      return this.getImageUrl(uploadResult.$id);
+    } catch (error) {
+      logger.error("Failed to upload image from URL", {
+        error: error instanceof Error ? error.message : "Unknown error",
+        url,
+        folder,
+      });
+
+      throw new AppError(
+        `Failed to upload image from URL: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+        500
+      );
+    }
+  }
+}ent;
   private storage: Storage;
   private bucketId: string;
   private endpoint: string;
@@ -70,15 +179,15 @@ class AppwriteService {
 
       // Upload file to Appwrite storage using InputFile for Node.js
       const inputFile = InputFile.fromBuffer(fileData, fileName);
-      
+
       const uploadedFile = await this.storage.createFile(
         this.bucketId,
         ID.unique(), // Use Appwrite's ID generator
         inputFile
       );
 
-      // Get the public URL for the uploaded file
-      const fileUrl = this.storage.getFileView(this.bucketId, uploadedFile.$id);
+      // Get the public URL for the uploaded file with proper query parameters
+      const fileUrl = `${this.endpoint}/storage/buckets/${this.bucketId}/files/${uploadedFile.$id}/view?project=${this.projectId}&mode=admin`;
 
       logger.info(`Image uploaded successfully: ${fileName}`, {
         fileId: uploadedFile.$id,
@@ -86,7 +195,7 @@ class AppwriteService {
         size: uploadedFile.sizeOriginal,
       });
 
-      return fileUrl.toString();
+      return fileUrl;
     } catch (error) {
       logger.error("Failed to upload image to Appwrite", {
         error: error instanceof Error ? error.message : "Unknown error",
