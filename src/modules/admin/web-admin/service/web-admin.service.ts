@@ -5,6 +5,7 @@ import {
   ActivityType,
 } from "@modules/admin/system-admin/models/activity-log.model";
 import { AppError } from "@shared/errors/AppError";
+import { AppwriteService } from "@shared/services/appwrite.service";
 import { logger } from "@shared/utils/logger.util";
 import mongoose from "mongoose";
 import { ILandingSlide, LandingSlide } from "../models/landing-slide.model";
@@ -40,6 +41,8 @@ export interface ProjectDto {
   endDate?: Date;
   location: any;
   images: any;
+  mainImageUrl?: string;
+  galleryImages?: string[];
   status?: string;
 }
 
@@ -51,6 +54,7 @@ export interface StaffDto {
   email: string;
   bio: string;
   profileImage: string;
+  imageUrl?: string;
 }
 
 export interface TestimonialDto {
@@ -65,11 +69,17 @@ export interface SlideDto {
   type: string;
   content: any;
   media: any;
+  imageUrl?: string;
   status?: string;
   displayOrder?: number;
 }
 
 export class WebAdminService {
+  private appwriteService: AppwriteService;
+
+  constructor() {
+    this.appwriteService = new AppwriteService();
+  }
   // Helper method to handle transactions in development vs production
   private async executeWithOptionalTransaction<T>(
     operation: (session?: mongoose.ClientSession) => Promise<T>
@@ -256,6 +266,82 @@ export class WebAdminService {
         throw AppError.notFound("Project not found");
       }
 
+      // Handle main image processing if provided
+      if (dto.mainImageUrl) {
+        try {
+          const processedImageUrl =
+            await this.appwriteService.uploadImageFromUrl(
+              dto.mainImageUrl,
+              "projects",
+              `project_main_${projectId}_${Date.now()}`
+            );
+          dto.mainImageUrl = processedImageUrl;
+
+          logger.info("Project main image processed and uploaded to Appwrite", {
+            projectId,
+            originalUrl: dto.mainImageUrl,
+            processedUrl: processedImageUrl,
+          });
+        } catch (imageError) {
+          logger.error("Failed to process project main image", {
+            projectId,
+            imageUrl: dto.mainImageUrl,
+            error:
+              imageError instanceof Error
+                ? imageError.message
+                : "Unknown error",
+          });
+          logger.warn(
+            "Continuing with original main image URL due to processing failure"
+          );
+        }
+      }
+
+      // Handle gallery images processing if provided
+      if (dto.galleryImages && Array.isArray(dto.galleryImages)) {
+        try {
+          const processedGalleryImages = await Promise.allSettled(
+            dto.galleryImages.map(async (imageUrl, index) => {
+              return await this.appwriteService.uploadImageFromUrl(
+                imageUrl,
+                "projects",
+                `project_gallery_${projectId}_${index}_${Date.now()}`
+              );
+            })
+          );
+
+          dto.galleryImages = processedGalleryImages.map((result, index) => {
+            if (result.status === "fulfilled") {
+              return result.value;
+            } else {
+              logger.error("Failed to process gallery image", {
+                projectId,
+                imageIndex: index,
+                originalUrl: dto.galleryImages![index],
+                error: result.reason,
+              });
+              return dto.galleryImages![index]; // Keep original URL if processing fails
+            }
+          });
+
+          logger.info("Project gallery images processed", {
+            projectId,
+            totalImages: dto.galleryImages.length,
+          });
+        } catch (galleryError) {
+          logger.error("Failed to process project gallery images", {
+            projectId,
+            error:
+              galleryError instanceof Error
+                ? galleryError.message
+                : "Unknown error",
+          });
+          logger.warn(
+            "Continuing with original gallery image URLs due to processing failure"
+          );
+        }
+      }
+
       Object.assign(project, dto);
       project.lastModifiedBy = adminId;
       await project.save();
@@ -378,6 +464,39 @@ export class WebAdminService {
       const staff = await Staff.findById(staffId);
       if (!staff) {
         throw AppError.notFound("Staff member not found");
+      }
+
+      // Handle image processing if image URL is provided
+      if (dto.imageUrl) {
+        try {
+          // If it's an external URL, upload it to Appwrite
+          const processedImageUrl =
+            await this.appwriteService.uploadImageFromUrl(
+              dto.imageUrl,
+              "staff",
+              `staff_${staffId}_${Date.now()}`
+            );
+          dto.imageUrl = processedImageUrl;
+
+          logger.info("Staff image processed and uploaded to Appwrite", {
+            staffId,
+            originalUrl: dto.imageUrl,
+            processedUrl: processedImageUrl,
+          });
+        } catch (imageError) {
+          logger.error("Failed to process staff image", {
+            staffId,
+            imageUrl: dto.imageUrl,
+            error:
+              imageError instanceof Error
+                ? imageError.message
+                : "Unknown error",
+          });
+          // Continue with the original URL if processing fails
+          logger.warn(
+            "Continuing with original image URL due to processing failure"
+          );
+        }
       }
 
       Object.assign(staff, dto);
@@ -619,6 +738,39 @@ export class WebAdminService {
       const slide = await LandingSlide.findById(slideId);
       if (!slide) {
         throw AppError.notFound("Slide not found");
+      }
+
+      // Handle image processing if image URL is provided
+      if (dto.imageUrl) {
+        try {
+          // If it's an external URL, upload it to Appwrite
+          const processedImageUrl =
+            await this.appwriteService.uploadImageFromUrl(
+              dto.imageUrl,
+              "landing-slides",
+              `slide_${slideId}_${Date.now()}`
+            );
+          dto.imageUrl = processedImageUrl;
+
+          logger.info("Slide image processed and uploaded to Appwrite", {
+            slideId,
+            originalUrl: dto.imageUrl,
+            processedUrl: processedImageUrl,
+          });
+        } catch (imageError) {
+          logger.error("Failed to process slide image", {
+            slideId,
+            imageUrl: dto.imageUrl,
+            error:
+              imageError instanceof Error
+                ? imageError.message
+                : "Unknown error",
+          });
+          // Continue with the original URL if processing fails
+          logger.warn(
+            "Continuing with original image URL due to processing failure"
+          );
+        }
       }
 
       Object.assign(slide, dto);

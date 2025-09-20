@@ -5,116 +5,7 @@ import { AppError } from "../errors/AppError";
 import { logger } from "../utils/logger.util";
 
 class AppwriteService {
-  pr  /**
-   * Get image preview URL
-   * @param fileId - File ID
-   * @param width - Desired width
-   * @param height - Desired height
-   * @returns string - Preview URL
-   */
-  getImagePreview(fileId: string, width?: number, height?: number): string {
-    const preview = this.storage.getFilePreview(
-      this.bucketId,
-      fileId,
-      width,
-      height
-    );
-    return preview.toString();
-  }
-
-  /**
-   * Check if URL is an Appwrite URL
-   * @param url - URL to check
-   * @returns boolean
-   */
-  private isAppwriteUrl(url: string): boolean {
-    return url.includes('appwrite.io') || url.includes(this.client.config.endpoint);
-  }
-
-  /**
-   * Get file extension from content type
-   * @param contentType - MIME type
-   * @returns string - File extension
-   */
-  private getFileExtensionFromContentType(contentType: string): string {
-    const mimeMap: { [key: string]: string } = {
-      'image/jpeg': '.jpg',
-      'image/jpg': '.jpg',
-      'image/png': '.png',
-      'image/webp': '.webp',
-      'image/gif': '.gif'
-    };
-    return mimeMap[contentType] || '.jpg';
-  }
-
-  /**
-   * Upload image from external URL
-   * @param url - External image URL
-   * @param folder - Folder to store in
-   * @returns Promise<string> - Appwrite URL
-   */
-  async uploadFromUrl(url: string, folder: string = "images"): Promise<string> {
-    try {
-      // If it's already an Appwrite URL, return as is
-      if (this.isAppwriteUrl(url)) {
-        return url;
-      }
-
-      // Fetch the image
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
-      }
-
-      const buffer = Buffer.from(await response.arrayBuffer());
-      const contentType = response.headers.get('content-type') || 'image/jpeg';
-      
-      // Validate content type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-      if (!allowedTypes.includes(contentType)) {
-        throw new Error(`Unsupported image type: ${contentType}`);
-      }
-
-      // Generate filename
-      const extension = this.getFileExtensionFromContentType(contentType);
-      const filename = `${Date.now()}_${Math.random().toString(36).substring(7)}${extension}`;
-
-      // Create file input
-      const file = InputFile.fromBuffer(buffer, filename);
-
-      // Upload to Appwrite
-      const uploadResult = await this.storage.createFile(
-        this.bucketId,
-        ID.unique(),
-        file
-      );
-
-      logger.info("Image uploaded from URL successfully", {
-        originalUrl: url,
-        fileId: uploadResult.$id,
-        filename,
-        size: buffer.length,
-        folder,
-      });
-
-      // Return the Appwrite URL
-      return this.getImageUrl(uploadResult.$id);
-    } catch (error) {
-      logger.error("Failed to upload image from URL", {
-        error: error instanceof Error ? error.message : "Unknown error",
-        url,
-        folder,
-      });
-
-      throw new AppError(
-        `Failed to upload image from URL: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-        500
-      );
-    }
-  }
-}ent;
+  private client: Client;
   private storage: Storage;
   private bucketId: string;
   private endpoint: string;
@@ -243,6 +134,92 @@ class AppwriteService {
         500
       );
     }
+  }
+
+  /**
+   * Upload an image from an external URL to Appwrite storage
+   * @param imageUrl - The external URL of the image
+   * @param folder - Optional folder structure
+   * @param customFileName - Optional custom filename
+   * @returns Promise<string> - The public URL of the uploaded image in Appwrite
+   */
+  async uploadImageFromUrl(
+    imageUrl: string,
+    folder?: string,
+    customFileName?: string
+  ): Promise<string> {
+    try {
+      // Check if it's already an Appwrite URL
+      if (this.isAppwriteUrl(imageUrl)) {
+        logger.info("Image is already stored in Appwrite", { imageUrl });
+        return imageUrl;
+      }
+
+      logger.info("Downloading image from external URL", { imageUrl });
+
+      // Fetch the image from the external URL
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+
+      // Get the image buffer
+      const imageBuffer = Buffer.from(await response.arrayBuffer());
+
+      // Determine file extension from URL or content type
+      let fileExtension = "jpg"; // default
+      const urlExtension = imageUrl.split(".").pop()?.split("?")[0];
+      if (
+        urlExtension &&
+        ["jpg", "jpeg", "png", "webp", "gif"].includes(
+          urlExtension.toLowerCase()
+        )
+      ) {
+        fileExtension = urlExtension.toLowerCase();
+      } else {
+        const contentType = response.headers.get("content-type");
+        if (contentType?.includes("png")) fileExtension = "png";
+        else if (contentType?.includes("webp")) fileExtension = "webp";
+        else if (contentType?.includes("gif")) fileExtension = "gif";
+      }
+
+      // Generate filename
+      const fileName =
+        customFileName || `external_image_${uuidv4()}.${fileExtension}`;
+
+      // Upload to Appwrite
+      const appwriteUrl = await this.uploadImage(imageBuffer, folder, fileName);
+
+      logger.info("External image uploaded to Appwrite successfully", {
+        originalUrl: imageUrl,
+        appwriteUrl,
+        fileName,
+      });
+
+      return appwriteUrl;
+    } catch (error) {
+      logger.error("Failed to upload image from URL to Appwrite", {
+        error: error instanceof Error ? error.message : "Unknown error",
+        imageUrl,
+        folder,
+      });
+
+      throw new AppError(
+        `Failed to upload image from URL: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+        500
+      );
+    }
+  }
+
+  /**
+   * Check if a URL is already an Appwrite URL
+   * @param url - The URL to check
+   * @returns boolean - True if it's an Appwrite URL
+   */
+  private isAppwriteUrl(url: string): boolean {
+    return url.includes("appwrite.io") || url.includes(this.endpoint);
   }
 
   /**
