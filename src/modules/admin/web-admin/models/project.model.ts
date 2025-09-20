@@ -17,12 +17,6 @@ export enum ProjectCategory {
   OTHER = "other",
 }
 
-export interface IProjectTechnicalSpec {
-  label: string;
-  value: string;
-  unit?: string;
-}
-
 export interface IProject extends Document {
   title: string;
   slug: string;
@@ -33,6 +27,7 @@ export interface IProject extends Document {
   status: ProjectStatus;
   startDate: Date;
   endDate?: Date;
+  duration?: string;
   location: {
     city: string;
     district?: string;
@@ -46,7 +41,6 @@ export interface IProject extends Document {
       after: string;
     }[];
   };
-  technicalSpecs?: IProjectTechnicalSpec[];
   technologies?: string[];
   teamSize?: number;
   projectValue?: {
@@ -62,7 +56,6 @@ export interface IProject extends Document {
     author: string;
     position: string;
   };
-  isFeatured: boolean;
   isPublished: boolean;
   displayOrder: number;
   tags?: string[];
@@ -90,7 +83,6 @@ export interface IProject extends Document {
 
 export interface IProjectModel extends mongoose.Model<IProject> {
   findPublished(): mongoose.Query<IProject[], IProject>;
-  findFeatured(): mongoose.Query<IProject[], IProject>;
 }
 
 const projectSchema = new Schema<IProject>(
@@ -103,7 +95,6 @@ const projectSchema = new Schema<IProject>(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
       trim: true,
@@ -139,6 +130,9 @@ const projectSchema = new Schema<IProject>(
       required: [true, "Project start date is required"],
     },
     endDate: Date,
+    duration: {
+      type: String,
+    },
     location: {
       city: {
         type: String,
@@ -163,19 +157,6 @@ const projectSchema = new Schema<IProject>(
         },
       ],
     },
-    technicalSpecs: [
-      {
-        label: {
-          type: String,
-          required: true,
-        },
-        value: {
-          type: String,
-          required: true,
-        },
-        unit: String,
-      },
-    ],
     technologies: [String],
     teamSize: Number,
     projectValue: {
@@ -202,11 +183,6 @@ const projectSchema = new Schema<IProject>(
       content: String,
       author: String,
       position: String,
-    },
-    isFeatured: {
-      type: Boolean,
-      default: false,
-      index: true,
     },
     isPublished: {
       type: Boolean,
@@ -262,14 +238,14 @@ const projectSchema = new Schema<IProject>(
 
 // Indexes
 projectSchema.index({ title: "text", description: "text", client: "text" });
-projectSchema.index({ isPublished: 1, isFeatured: 1, displayOrder: 1 });
+projectSchema.index({ isPublished: 1, displayOrder: 1 });
 projectSchema.index({ category: 1, status: 1 });
 projectSchema.index({ startDate: -1 });
 projectSchema.index({ "location.city": 1, "location.district": 1 });
 
 // Pre-save middleware
 projectSchema.pre("save", function (next) {
-  if (this.isModified("title") && !this.slug) {
+  if (this.isModified("title")) {
     this.slug = this.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
@@ -286,13 +262,6 @@ projectSchema.pre("save", function (next) {
 // Static methods
 projectSchema.statics.findPublished = function () {
   return this.find({ isPublished: true }).sort("-publishedAt");
-};
-
-projectSchema.statics.findFeatured = function () {
-  return this.find({
-    isPublished: true,
-    isFeatured: true,
-  }).sort("displayOrder");
 };
 
 // Instance methods

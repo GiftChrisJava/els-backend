@@ -1,9 +1,5 @@
 import Joi from "joi";
-import {
-  ButtonStyle,
-  SlideStatus,
-  SlideType,
-} from "../models/landing-slide.model";
+import { SlideStatus } from "../models/landing-slide.model";
 import { ProjectCategory, ProjectStatus } from "../models/project.model";
 import { ServiceCategory, ServiceStatus } from "../models/service.model";
 import { StaffDepartment, StaffStatus } from "../models/staff.model";
@@ -116,6 +112,10 @@ export const createProjectSchema = Joi.object({
     "date.greater": "End date must be after start date",
   }),
 
+  duration: Joi.string().required().messages({
+    "any.required": "Project duration is required",
+  }),
+
   location: Joi.object({
     city: Joi.string().required(),
     district: Joi.string().optional(),
@@ -136,16 +136,6 @@ export const createProjectSchema = Joi.object({
       )
       .optional(),
   }).required(),
-
-  technicalSpecs: Joi.array()
-    .items(
-      Joi.object({
-        label: Joi.string().required(),
-        value: Joi.string().required(),
-        unit: Joi.string().optional(),
-      })
-    )
-    .optional(),
 
   technologies: Joi.array().items(Joi.string()).optional(),
   teamSize: Joi.number().min(1).optional(),
@@ -242,29 +232,14 @@ export const createStaffSchema = Joi.object({
     )
     .optional(),
 
-  certifications: Joi.array()
-    .items(
-      Joi.object({
-        name: Joi.string().required(),
-        issuer: Joi.string().required(),
-        year: Joi.number().required(),
-        expiryYear: Joi.number().optional(),
-      })
-    )
-    .optional(),
-
   skills: Joi.array().items(Joi.string()).optional(),
   yearsOfExperience: Joi.number().min(0).optional(),
   joinedDate: Joi.date().optional(),
 
   socialLinks: Joi.object({
-    linkedin: Joi.string().uri().optional(),
-    twitter: Joi.string().uri().optional(),
-    facebook: Joi.string().uri().optional(),
-    instagram: Joi.string().uri().optional(),
-    email: Joi.string().email().optional(),
-    phone: Joi.string().optional(),
-    whatsapp: Joi.string().optional(),
+    linkedin: Joi.string().allow("").default("").optional(),
+    facebook: Joi.string().allow("").default("").optional(),
+    instagram: Joi.string().allow("").default("").optional(),
   }).optional(),
 
   achievements: Joi.array().items(Joi.string()).optional(),
@@ -359,94 +334,28 @@ export const rejectTestimonialSchema = Joi.object({
 // =============== LANDING SLIDE VALIDATORS ===============
 
 export const createSlideSchema = Joi.object({
-  title: Joi.string().required().trim().max(100).messages({
-    "any.required": "Slide title is required",
+  title: Joi.string().trim().max(100).optional().messages({
     "string.max": "Title cannot exceed 100 characters",
   }),
 
-  type: Joi.string()
-    .valid(...Object.values(SlideType))
-    .default(SlideType.IMAGE),
-
-  content: Joi.object({
-    heading: Joi.string().max(200).optional(),
-    subheading: Joi.string().max(150).optional(),
-    description: Joi.string().max(500).optional(),
-    highlightText: Joi.string().optional(),
-    buttons: Joi.array()
-      .items(
-        Joi.object({
-          text: Joi.string().required(),
-          link: Joi.string().required(),
-          style: Joi.string()
-            .valid(...Object.values(ButtonStyle))
-            .default(ButtonStyle.PRIMARY),
-          target: Joi.string().valid("_self", "_blank").default("_self"),
-          icon: Joi.string().optional(),
-        })
-      )
-      .optional(),
-    customHtml: Joi.string().optional(),
-  }),
-
   media: Joi.object({
-    desktop: Joi.string().required().messages({
-      "any.required": "Desktop image is required",
+    imageUrl: Joi.string().required().messages({
+      "any.required": "Image URL is required",
     }),
-    mobile: Joi.string().optional(),
-    tablet: Joi.string().optional(),
-    alt: Joi.string().optional(),
-    videoUrl: Joi.string().uri().optional(),
-    thumbnailUrl: Joi.string().optional(),
+    alt: Joi.string().max(200).optional().messages({
+      "string.max": "Alt text cannot exceed 200 characters",
+    }),
   }).required(),
-
-  animation: Joi.object({
-    entrance: Joi.string().optional(),
-    duration: Joi.number().optional(),
-    delay: Joi.number().optional(),
-    easing: Joi.string().optional(),
-  }).optional(),
-
-  overlay: Joi.object({
-    enabled: Joi.boolean().default(false),
-    color: Joi.string().optional(),
-    opacity: Joi.number().min(0).max(1).optional(),
-  }).optional(),
-
-  position: Joi.object({
-    horizontal: Joi.string().valid("left", "center", "right").default("center"),
-    vertical: Joi.string().valid("top", "center", "bottom").default("center"),
-  }).optional(),
 
   status: Joi.string()
     .valid(...Object.values(SlideStatus))
     .default(SlideStatus.INACTIVE),
 
   displayOrder: Joi.number().default(0),
-  validFrom: Joi.date().optional(),
-  validUntil: Joi.date().greater(Joi.ref("validFrom")).optional().messages({
-    "date.greater": "Valid until must be after valid from date",
-  }),
-
-  targetAudience: Joi.array().items(Joi.string()).optional(),
-
-  deviceVisibility: Joi.object({
-    desktop: Joi.boolean().default(true),
-    tablet: Joi.boolean().default(true),
-    mobile: Joi.boolean().default(true),
-  }).optional(),
-
-  seo: Joi.object({
-    altText: Joi.string().optional(),
-    ariaLabel: Joi.string().optional(),
-  }).optional(),
-
-  tags: Joi.array().items(Joi.string()).optional(),
 });
 
-export const updateSlideSchema = createSlideSchema.fork(
-  ["title", "media"],
-  (schema) => schema.optional()
+export const updateSlideSchema = createSlideSchema.fork(["media"], (schema) =>
+  schema.optional()
 );
 
 export const reorderSlidesSchema = Joi.object({

@@ -1044,15 +1044,84 @@
                   {
                     "key": "Authorization",
                     "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
                   }
                 ],
                 "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Residential Solar Installation - Lilongwe\",\n  \"client\": \"ABC Company\",\n  \"description\": \"Complete solar panel installation for residential property\",\n  \"category\": \"residential\",\n  \"status\": \"completed\",\n  \"startDate\": \"2024-01-15\",\n  \"endDate\": \"2024-01-20\",\n  \"location\": {\n    \"city\": \"Lilongwe\",\n    \"district\": \"Lilongwe\",\n    \"country\": \"Malawi\"\n  },\n  \"images\": {\n    \"featured\": \"https://example.com/project-featured.jpg\",\n    \"gallery\": [\"https://example.com/gallery1.jpg\"]\n  },\n  \"technicalSpecs\": [\n    {\n      \"label\": \"Capacity\",\n      \"value\": \"10\",\n      \"unit\": \"kW\"\n    }\n  ],\n  \"isFeatured\": true\n}"
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Residential Solar Installation - Lilongwe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "client",
+                      "value": "ABC Company",
+                      "type": "text"
+                    },
+                    {
+                      "key": "description",
+                      "value": "Complete solar panel installation for residential property with modern technology",
+                      "type": "text"
+                    },
+                    {
+                      "key": "category",
+                      "value": "residential",
+                      "type": "text"
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed",
+                      "type": "text"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2024-01-15",
+                      "type": "text"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2024-01-20",
+                      "type": "text"
+                    },
+                    {
+                      "key": "duration",
+                      "value": "5 days",
+                      "type": "text"
+                    },
+                    {
+                      "key": "location",
+                      "value": "{\"city\":\"Lilongwe\",\"district\":\"Lilongwe\",\"country\":\"Malawi\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "featuredImage",
+                      "type": "file",
+                      "src": [],
+                      "description": "Main project image (JPG, PNG, WEBP up to 10MB)"
+                    },
+                    {
+                      "key": "galleryImages",
+                      "type": "file",
+                      "src": [],
+                      "description": "Additional project images (up to 10 files)"
+                    },
+                    {
+                      "key": "technologies",
+                      "value": "[\"Solar Panels\", \"Inverters\", \"Battery Storage\"]",
+                      "type": "text"
+                    },
+                    {
+                      "key": "teamSize",
+                      "value": "4",
+                      "type": "text"
+                    },
+                    {
+                      "key": "projectValue",
+                      "value": "{\"amount\":50000,\"currency\":\"MWK\",\"displayPublicly\":false}",
+                      "type": "text"
+                    }
+                  ]
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/web/projects",
@@ -1223,15 +1292,93 @@
                   {
                     "key": "Authorization",
                     "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
                   }
                 ],
                 "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"displayName\": \"John Doe\",\n  \"email\": \"john.doe@energysolutions.mw\",\n  \"phoneNumber\": \"+265999123456\",\n  \"position\": \"Senior Solar Technician\",\n  \"department\": \"technical\",\n  \"bio\": \"Experienced solar technician with 5+ years in renewable energy\",\n  \"joinedDate\": \"2024-01-01\",\n  \"qualifications\": [\n    {\n      \"degree\": \"Electrical Engineering\",\n      \"institution\": \"University of Malawi\",\n      \"year\": 2018\n    }\n  ],\n  \"certifications\": [\n    {\n      \"name\": \"Solar Installation Certification\",\n      \"issuer\": \"Renewable Energy Association\",\n      \"year\": 2020\n    }\n  ],\n  \"status\": \"active\",\n  \"isTeamLead\": true,\n  \"isFeatured\": true,\n  \"isPublished\": true\n}"
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "firstName",
+                      "value": "John",
+                      "type": "text"
+                    },
+                    {
+                      "key": "lastName",
+                      "value": "Doe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "displayName",
+                      "value": "John Doe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "email",
+                      "value": "john.doe@energysolutions.mw",
+                      "type": "text"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "+265999123456",
+                      "type": "text"
+                    },
+                    {
+                      "key": "position",
+                      "value": "Senior Solar Technician",
+                      "type": "text"
+                    },
+                    {
+                      "key": "department",
+                      "value": "technical",
+                      "type": "text"
+                    },
+                    {
+                      "key": "bio",
+                      "value": "Experienced solar technician with 5+ years in renewable energy",
+                      "type": "text"
+                    },
+                    {
+                      "key": "profileImage",
+                      "type": "file",
+                      "src": [],
+                      "description": "Upload profile image file (JPG, PNG, WEBP up to 10MB)"
+                    },
+                    {
+                      "key": "joinedDate",
+                      "value": "2024-01-01",
+                      "type": "text"
+                    },
+                    {
+                      "key": "qualifications",
+                      "value": "[{\"degree\":\"Electrical Engineering\",\"institution\":\"University of Malawi\",\"year\":2018}]",
+                      "type": "text"
+                    },
+                    {
+                      "key": "socialLinks",
+                      "value": "{\"linkedin\":\"https://linkedin.com/in/johndoe\",\"facebook\":\"https://facebook.com/johndoe\",\"instagram\":\"https://instagram.com/johndoe\"}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isTeamLead",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isFeatured",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "isPublished",
+                      "value": "true",
+                      "type": "text"
+                    }
+                  ]
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/web/staff",
@@ -1257,6 +1404,31 @@
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"position\": \"Lead Solar Technician\",\n  \"bio\": \"Updated bio with additional experience\",\n  \"isTeamLead\": true\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/staff/{{staffId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "staff", "{{staffId}}"]
+                }
+              }
+            },
+            {
+              "name": "Update Staff Social Links",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"socialLinks\": {\n    \"linkedin\": \"https://linkedin.com/in/updated-profile\",\n    \"facebook\": \"\",\n    \"instagram\": \"https://instagram.com/updated-handle\"\n  }\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/web/staff/{{staffId}}",
@@ -1477,15 +1649,34 @@
                   {
                     "key": "Authorization",
                     "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
                   }
                 ],
                 "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Welcome to Energy Solutions\",\n  \"type\": \"image\",\n  \"content\": {\n    \"heading\": \"Sustainable Energy for Everyone\",\n    \"subheading\": \"Professional solar solutions for your home and business\",\n    \"description\": \"Get started with clean, renewable energy today\",\n    \"buttons\": [\n      {\n        \"text\": \"Get Quote\",\n        \"link\": \"/contact\",\n        \"style\": \"primary\",\n        \"target\": \"_self\"\n      }\n    ]\n  },\n  \"media\": {\n    \"imageUrl\": \"https://example.com/hero-slide.jpg\",\n    \"alt\": \"Solar panels installation\"\n  },\n  \"status\": \"active\",\n  \"displayOrder\": 1,\n  \"deviceVisibility\": {\n    \"desktop\": true,\n    \"tablet\": true,\n    \"mobile\": true\n  }\n}"
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "slideImage",
+                      "type": "file",
+                      "src": [],
+                      "description": "Landing slide image (JPG, PNG, WEBP up to 10MB)"
+                    },
+                    {
+                      "key": "media",
+                      "value": "{\"alt\":\"Solar panels installation\"}",
+                      "type": "text",
+                      "description": "Image alt text and other media properties"
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "type": "text"
+                    },
+                    {
+                      "key": "displayOrder",
+                      "value": "1",
+                      "type": "text"
+                    }
+                  ]
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/web/slides",
@@ -1510,7 +1701,57 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"title\": \"Updated Slide Title\",\n  \"content\": {\n    \"heading\": \"Updated Heading\",\n    \"subheading\": \"Updated subheading\"\n  }\n}"
+                  "raw": "{\n  \"media\": {\n    \"imageUrl\": \"https://images.pexels.com/photos/2850290/pexels-photo-2850290.jpeg\",\n    \"alt\": \"Updated solar installation image\"\n  },\n  \"status\": \"inactive\",\n  \"displayOrder\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides/{{slideId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "slides", "{{slideId}}"]
+                }
+              }
+            },
+            {
+              "name": "Update Slide Status Only",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"active\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/admin/web/slides/{{slideId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "admin", "web", "slides", "{{slideId}}"]
+                }
+              }
+            },
+            {
+              "name": "Update Display Order Only",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{webAdminAccessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"displayOrder\": 5\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/web/slides/{{slideId}}",
@@ -1535,7 +1776,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"slides\": [\n    {\n      \"id\": \"{{slideId}}\",\n      \"order\": 1\n    }\n  ]\n}"
+                  "raw": "{\n  \"slides\": [\n    {\n      \"id\": \"674c8d5e123abc456def7890\",\n      \"order\": 1\n    },\n    {\n      \"id\": \"674c8d5e123abc456def7891\",\n      \"order\": 2\n    },\n    {\n      \"id\": \"{{slideId}}\",\n      \"order\": 3\n    }\n  ]\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/v1/admin/web/slides/reorder",

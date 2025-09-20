@@ -1,5 +1,11 @@
 import { authenticate } from "@modules/auth/middlewares/auth.middleware";
 import { hasRole } from "@modules/auth/middlewares/role.middleware";
+import {
+  handleMulterError,
+  uploadLandingSlideImage,
+  uploadProjectImages,
+  uploadStaffProfileImage,
+} from "@shared/middlewares/upload.middleware";
 import { validateRequest } from "@shared/middlewares/validation.middleware";
 import { Router } from "express";
 import { UserRole } from "../../../../core/constants/role.constants";
@@ -70,6 +76,7 @@ router.get(
 router.post(
   "/projects",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadProjectImages,
   validateRequest(validators.createProjectSchema),
   webAdminController.createProject
 );
@@ -110,6 +117,7 @@ router.get(
 router.post(
   "/staff",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadStaffProfileImage,
   validateRequest(validators.createStaffSchema),
   webAdminController.createStaff
 );
@@ -166,6 +174,7 @@ router.get(
 router.post(
   "/slides",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadLandingSlideImage,
   validateRequest(validators.createSlideSchema),
   webAdminController.createSlide
 );
@@ -201,5 +210,8 @@ router.post(
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   webAdminController.deactivateSlide
 );
+
+// Error handling for multer file upload errors
+router.use(handleMulterError);
 
 export default router;

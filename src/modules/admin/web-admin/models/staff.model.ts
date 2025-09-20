@@ -21,25 +21,14 @@ export enum StaffStatus {
 
 export interface ISocialLinks {
   linkedin?: string;
-  twitter?: string;
   facebook?: string;
   instagram?: string;
-  email?: string;
-  phone?: string;
-  whatsapp?: string;
 }
 
 export interface IQualification {
   degree: string;
   institution: string;
   year: number;
-}
-
-export interface ICertification {
-  name: string;
-  issuer: string;
-  year: number;
-  expiryYear?: number;
 }
 
 export interface IStaff extends Document {
@@ -56,7 +45,6 @@ export interface IStaff extends Document {
   profileImage: string;
   coverImage?: string;
   qualifications?: IQualification[];
-  certifications?: ICertification[];
   skills?: string[];
   yearsOfExperience?: number;
   joinedDate?: Date;
@@ -165,23 +153,6 @@ const staffSchema = new Schema<IStaff>(
         },
       },
     ],
-    certifications: [
-      {
-        name: {
-          type: String,
-          required: true,
-        },
-        issuer: {
-          type: String,
-          required: true,
-        },
-        year: {
-          type: Number,
-          required: true,
-        },
-        expiryYear: Number,
-      },
-    ],
     skills: [String],
     yearsOfExperience: {
       type: Number,
@@ -189,13 +160,18 @@ const staffSchema = new Schema<IStaff>(
     },
     joinedDate: Date,
     socialLinks: {
-      linkedin: String,
-      twitter: String,
-      facebook: String,
-      instagram: String,
-      email: String,
-      phone: String,
-      whatsapp: String,
+      linkedin: {
+        type: String,
+        default: "",
+      },
+      facebook: {
+        type: String,
+        default: "",
+      },
+      instagram: {
+        type: String,
+        default: "",
+      },
     },
     achievements: [String],
     specializations: [String],

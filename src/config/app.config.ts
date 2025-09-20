@@ -39,7 +39,7 @@ export const appConfig = {
   },
 
   appwrite: {
-    endpoint: process.env.APPWRITE_ENDPOINT || "",
+    endpoint: process.env.APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1",
     projectId: process.env.APPWRITE_PROJECT_ID || "",
     apiKey: process.env.APPWRITE_API_KEY || "",
     bucketId: process.env.APPWRITE_BUCKET_ID || "",

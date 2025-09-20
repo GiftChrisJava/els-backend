@@ -141,9 +141,11 @@ router.get(
 router.get(
   "/projects/featured",
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const projects = await Project.findFeatured()
+    // Get recent projects since we removed the featured functionality
+    const projects = await Project.find({ status: "completed" })
       .select("-createdBy -lastModifiedBy -projectValue")
       .populate("relatedServices", "name slug")
+      .sort({ createdAt: -1 })
       .limit(6);
 
     ResponseUtil.success(
@@ -378,39 +380,15 @@ router.get(
     const { device = "desktop" } = req.query;
 
     const slides = await LandingSlide.findActive()
-      .select("-createdBy -lastModifiedBy -publishedBy -analytics")
+      .select("-createdBy")
       .sort("displayOrder");
 
-    // Filter by device visibility
-    const filteredSlides = slides.filter((slide) => {
-      const visibility = slide.deviceVisibility || {
-        desktop: true,
-        tablet: true,
-        mobile: true,
-      };
-      return visibility[device as keyof typeof visibility];
-    });
-
+    // Return all active slides (simplified model doesn't have device visibility)
     ResponseUtil.success(
       res,
-      { slides: filteredSlides },
+      { slides },
       "Landing slides retrieved successfully"
     );
-  })
-);
-
-// Track slide click
-router.post(
-  "/slides/:slideId/click",
-  asyncHandler(async (req: Request, res: Response): Promise<void> => {
-    const { slideId } = req.params;
-
-    const slide = await LandingSlide.findById(slideId);
-    if (slide) {
-      await slide.incrementClick();
-    }
-
-    ResponseUtil.success(res, null, "Click tracked");
   })
 );
 

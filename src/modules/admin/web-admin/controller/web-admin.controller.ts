@@ -1,4 +1,5 @@
 import { AppError } from "@shared/errors/AppError";
+import { appwriteService } from "@shared/services/appwrite.service";
 import { asyncHandler } from "@shared/utils/async-handler.util";
 import { ResponseUtil } from "@shared/utils/response.util";
 import { Request, Response } from "express";
@@ -135,9 +136,75 @@ export class WebAdminController {
         throw AppError.unauthorized("User not authenticated");
       }
 
+      // Handle image uploads if files are provided
+      let projectData = { ...req.body };
+
+      // Type assertion for multer files
+      const files = req.files as
+        | { [fieldname: string]: Express.Multer.File[] }
+        | undefined;
+
+      if (files) {
+        try {
+          // Upload featured image
+          if (files.featuredImage && files.featuredImage[0]) {
+            const featuredImageUrl = await appwriteService.uploadImage(
+              files.featuredImage[0],
+              "projects"
+            );
+            projectData.images = {
+              ...projectData.images,
+              featured: featuredImageUrl,
+            };
+          }
+
+          // Upload gallery images
+          if (files.galleryImages && files.galleryImages.length > 0) {
+            const galleryUrls = await appwriteService.uploadMultipleImages(
+              files.galleryImages,
+              "projects/gallery"
+            );
+            projectData.images = {
+              ...projectData.images,
+              gallery: galleryUrls,
+            };
+          }
+
+          // Upload before/after images
+          if (files.beforeImages && files.afterImages) {
+            const beforeUrls = await appwriteService.uploadMultipleImages(
+              files.beforeImages,
+              "projects/before"
+            );
+            const afterUrls = await appwriteService.uploadMultipleImages(
+              files.afterImages,
+              "projects/after"
+            );
+
+            // Pair before and after images
+            const beforeAfter = beforeUrls.map((before, index) => ({
+              before,
+              after: afterUrls[index] || "",
+            }));
+
+            projectData.images = {
+              ...projectData.images,
+              beforeAfter,
+            };
+          }
+        } catch (error) {
+          throw new AppError(
+            `Failed to upload project images: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+            500
+          );
+        }
+      }
+
       const project = await this.webAdminService.createProject(
         adminId as mongoose.Types.ObjectId,
-        req.body
+        projectData
       );
 
       ResponseUtil.created(res, { project }, "Project created successfully");
@@ -280,9 +347,29 @@ export class WebAdminController {
         throw AppError.unauthorized("User not authenticated");
       }
 
+      // Handle profile image upload if file is provided
+      let staffData = { ...req.body };
+
+      if (req.file) {
+        try {
+          const profileImageUrl = await appwriteService.uploadImage(
+            req.file,
+            "staff"
+          );
+          staffData.profileImage = profileImageUrl;
+        } catch (error) {
+          throw new AppError(
+            `Failed to upload staff profile image: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+            500
+          );
+        }
+      }
+
       const staff = await this.webAdminService.createStaff(
         adminId as mongoose.Types.ObjectId,
-        req.body
+        staffData
       );
 
       ResponseUtil.created(res, { staff }, "Staff member created successfully");
@@ -525,9 +612,32 @@ export class WebAdminController {
         throw AppError.unauthorized("User not authenticated");
       }
 
+      // Handle slide image upload if file is provided
+      let slideData = { ...req.body };
+
+      if (req.file) {
+        try {
+          const imageUrl = await appwriteService.uploadImage(
+            req.file,
+            "landing-slides"
+          );
+          slideData.media = {
+            ...slideData.media,
+            imageUrl,
+          };
+        } catch (error) {
+          throw new AppError(
+            `Failed to upload slide image: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+            500
+          );
+        }
+      }
+
       const slide = await this.webAdminService.createSlide(
         adminId as mongoose.Types.ObjectId,
-        req.body
+        slideData
       );
 
       ResponseUtil.created(

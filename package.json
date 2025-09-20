@@ -24,6 +24,7 @@
   "author": "Energy Solutions",
   "license": "ISC",
   "dependencies": {
+    "appwrite": "^11.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^2.2.0",
     "bull": "^4.11.5",

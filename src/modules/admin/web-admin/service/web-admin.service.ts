@@ -593,10 +593,10 @@ export class WebAdminService {
         type: ActivityType.CONTENT_CREATED,
         severity: ActivitySeverity.INFO,
         userId: adminId,
-        description: `Landing slide created: ${slide.title}`,
+        description: `Landing slide created: ${slide.title || "Untitled"}`,
         module: "web-admin",
         action: "create-slide",
-        metadata: { slideId: slide._id, slideTitle: slide.title },
+        metadata: { slideId: slide._id, slideTitle: slide.title || "Untitled" },
       };
 
       if (session) {
@@ -605,7 +605,7 @@ export class WebAdminService {
         await ActivityLog.create(activityData);
       }
 
-      logger.info(`Landing slide created: ${slide.title}`);
+      logger.info(`Landing slide created: ${slide.title || "Untitled"}`);
       return slide;
     });
   }
@@ -622,10 +622,9 @@ export class WebAdminService {
       }
 
       Object.assign(slide, dto);
-      slide.lastModifiedBy = adminId;
       await slide.save();
 
-      logger.info(`Landing slide updated: ${slide.title}`);
+      logger.info(`Landing slide updated: ${slide.title || "Untitled"}`);
       return slide;
     } catch (error) {
       throw error;
@@ -644,7 +643,7 @@ export class WebAdminService {
 
       await slide.deleteOne();
 
-      logger.info(`Landing slide deleted: ${slide.title}`);
+      logger.info(`Landing slide deleted: ${slide.title || "Untitled"}`);
     } catch (error) {
       throw error;
     }
@@ -694,7 +693,6 @@ export class WebAdminService {
           item.id,
           {
             displayOrder: item.order,
-            lastModifiedBy: adminId,
           },
           session ? { session } : {}
         );
