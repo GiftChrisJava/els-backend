@@ -88,6 +88,19 @@ export const uploadServiceIcon = multer({
   },
 }).single("icon");
 
+// Multer configuration for service images (main image + gallery)
+export const uploadServiceImages = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_FILE_SIZE,
+    files: MAX_FILES + 1, // +1 for main image
+  },
+}).fields([
+  { name: "image", maxCount: 1 },
+  { name: "galleryImages", maxCount: MAX_FILES },
+]);
+
 // Multer configuration for landing slide image
 export const uploadLandingSlideImage = multer({
   storage,

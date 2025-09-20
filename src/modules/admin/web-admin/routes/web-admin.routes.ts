@@ -4,6 +4,7 @@ import {
   handleMulterError,
   uploadLandingSlideImage,
   uploadProjectImages,
+  uploadServiceImages,
   uploadStaffProfileImage,
 } from "@shared/middlewares/upload.middleware";
 import {
@@ -49,11 +50,33 @@ router.post(
   webAdminController.createService
 );
 
+// Service creation with file upload
+router.post(
+  "/services/upload",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadServiceImages,
+  handleMulterError,
+  parseFormDataJSON,
+  validateRequest(validators.createServiceSchema),
+  webAdminController.createServiceWithFileUpload
+);
+
 router.patch(
   "/services/:serviceId",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   validateRequest(validators.updateServiceSchema),
   webAdminController.updateService
+);
+
+// Service update with file upload
+router.patch(
+  "/services/:serviceId/upload",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadServiceImages,
+  handleMulterError,
+  parseFormDataJSON,
+  validateRequest(validators.updateServiceSchema),
+  webAdminController.updateServiceWithFileUpload
 );
 
 router.delete(

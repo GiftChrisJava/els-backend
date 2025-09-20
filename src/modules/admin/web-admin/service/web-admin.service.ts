@@ -28,8 +28,12 @@ export interface ServiceDto {
   category: string;
   features?: any[];
   pricing?: any;
+  duration?: string;
   image?: string;
+  gallery?: string[];
+  icon?: string;
   status?: string;
+  isFeatured?: boolean;
 }
 
 export interface ProjectDto {
@@ -112,6 +116,82 @@ export class WebAdminService {
     dto: ServiceDto
   ): Promise<IService> {
     return await this.executeWithOptionalTransaction(async (session) => {
+      // Process main image if provided
+      if (dto.image) {
+        try {
+          const processedImageUrl =
+            await this.appwriteService.uploadImageFromUrl(
+              dto.image,
+              "services",
+              `service_main_${Date.now()}`
+            );
+          dto.image = processedImageUrl;
+
+          logger.info("Service main image processed and uploaded to Appwrite", {
+            originalUrl: dto.image,
+            processedUrl: processedImageUrl,
+          });
+        } catch (imageError) {
+          logger.error("Failed to process service main image", {
+            imageUrl: dto.image,
+            error:
+              imageError instanceof Error
+                ? imageError.message
+                : "Unknown error",
+          });
+          // Continue with original URL if processing fails
+        }
+      }
+
+      // Process gallery images if provided
+      if (dto.gallery && dto.gallery.length > 0) {
+        try {
+          const processedGalleryUrls: string[] = [];
+
+          for (let i = 0; i < dto.gallery.length; i++) {
+            const galleryImageUrl = dto.gallery[i];
+            try {
+              const processedUrl =
+                await this.appwriteService.uploadImageFromUrl(
+                  galleryImageUrl,
+                  "services",
+                  `service_gallery_${Date.now()}_${i}`
+                );
+              processedGalleryUrls.push(processedUrl);
+            } catch (galleryImageError) {
+              logger.error("Failed to process gallery image", {
+                imageUrl: galleryImageUrl,
+                index: i,
+                error:
+                  galleryImageError instanceof Error
+                    ? galleryImageError.message
+                    : "Unknown error",
+              });
+              // Use original URL if processing fails
+              processedGalleryUrls.push(galleryImageUrl);
+            }
+          }
+
+          dto.gallery = processedGalleryUrls;
+
+          logger.info(
+            "Service gallery images processed and uploaded to Appwrite",
+            {
+              originalCount: dto.gallery.length,
+              processedCount: processedGalleryUrls.length,
+            }
+          );
+        } catch (galleryError) {
+          logger.error("Failed to process service gallery images", {
+            error:
+              galleryError instanceof Error
+                ? galleryError.message
+                : "Unknown error",
+          });
+          // Continue with original URLs if processing fails
+        }
+      }
+
       const service = new Service({
         ...dto,
         createdBy: adminId,
@@ -150,6 +230,87 @@ export class WebAdminService {
       const service = await Service.findById(serviceId);
       if (!service) {
         throw AppError.notFound("Service not found");
+      }
+
+      // Process main image if provided
+      if (dto.image) {
+        try {
+          const processedImageUrl =
+            await this.appwriteService.uploadImageFromUrl(
+              dto.image,
+              "services",
+              `service_main_${serviceId}_${Date.now()}`
+            );
+          dto.image = processedImageUrl;
+
+          logger.info("Service main image processed and uploaded to Appwrite", {
+            serviceId,
+            originalUrl: dto.image,
+            processedUrl: processedImageUrl,
+          });
+        } catch (imageError) {
+          logger.error("Failed to process service main image", {
+            serviceId,
+            imageUrl: dto.image,
+            error:
+              imageError instanceof Error
+                ? imageError.message
+                : "Unknown error",
+          });
+          // Continue with original URL if processing fails
+        }
+      }
+
+      // Process gallery images if provided
+      if (dto.gallery && dto.gallery.length > 0) {
+        try {
+          const processedGalleryUrls: string[] = [];
+
+          for (let i = 0; i < dto.gallery.length; i++) {
+            const galleryImageUrl = dto.gallery[i];
+            try {
+              const processedUrl =
+                await this.appwriteService.uploadImageFromUrl(
+                  galleryImageUrl,
+                  "services",
+                  `service_gallery_${serviceId}_${Date.now()}_${i}`
+                );
+              processedGalleryUrls.push(processedUrl);
+            } catch (galleryImageError) {
+              logger.error("Failed to process gallery image", {
+                serviceId,
+                imageUrl: galleryImageUrl,
+                index: i,
+                error:
+                  galleryImageError instanceof Error
+                    ? galleryImageError.message
+                    : "Unknown error",
+              });
+              // Use original URL if processing fails
+              processedGalleryUrls.push(galleryImageUrl);
+            }
+          }
+
+          dto.gallery = processedGalleryUrls;
+
+          logger.info(
+            "Service gallery images processed and uploaded to Appwrite",
+            {
+              serviceId,
+              originalCount: dto.gallery.length,
+              processedCount: processedGalleryUrls.length,
+            }
+          );
+        } catch (galleryError) {
+          logger.error("Failed to process service gallery images", {
+            serviceId,
+            error:
+              galleryError instanceof Error
+                ? galleryError.message
+                : "Unknown error",
+          });
+          // Continue with original URLs if processing fails
+        }
       }
 
       Object.assign(service, dto);

@@ -51,6 +51,116 @@ export class WebAdminController {
     }
   );
 
+  createServiceWithFileUpload = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      // Handle image uploads if files are provided
+      let serviceData = { ...req.body };
+
+      // Type assertion for multer files
+      const files = req.files as
+        | { [fieldname: string]: Express.Multer.File[] }
+        | undefined;
+
+      if (files) {
+        try {
+          // Upload main image
+          if (files.image && files.image[0]) {
+            const imageUrl = await appwriteService.uploadImage(
+              files.image[0],
+              "services"
+            );
+            serviceData.image = imageUrl;
+          }
+
+          // Upload gallery images
+          if (files.galleryImages && files.galleryImages.length > 0) {
+            const galleryUrls = await appwriteService.uploadMultipleImages(
+              files.galleryImages,
+              "services"
+            );
+            serviceData.gallery = galleryUrls;
+          }
+        } catch (error) {
+          throw new AppError(
+            `Failed to upload service images: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+            500
+          );
+        }
+      }
+
+      const service = await this.webAdminService.createService(
+        adminId as mongoose.Types.ObjectId,
+        serviceData
+      );
+
+      ResponseUtil.created(res, { service }, "Service created successfully");
+    }
+  );
+
+  updateServiceWithFileUpload = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+      const { serviceId } = req.params;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      // Handle image uploads if files are provided
+      let serviceData = { ...req.body };
+
+      // Type assertion for multer files
+      const files = req.files as
+        | { [fieldname: string]: Express.Multer.File[] }
+        | undefined;
+
+      if (files) {
+        try {
+          // Upload main image
+          if (files.image && files.image[0]) {
+            const imageUrl = await appwriteService.uploadImage(
+              files.image[0],
+              "services"
+            );
+            serviceData.image = imageUrl;
+          }
+
+          // Upload gallery images
+          if (files.galleryImages && files.galleryImages.length > 0) {
+            const galleryUrls = await appwriteService.uploadMultipleImages(
+              files.galleryImages,
+              "services"
+            );
+            serviceData.gallery = galleryUrls;
+          }
+        } catch (error) {
+          throw new AppError(
+            `Failed to upload service images: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+            500
+          );
+        }
+      }
+
+      const service = await this.webAdminService.updateService(
+        adminId as mongoose.Types.ObjectId,
+        serviceId,
+        serviceData
+      );
+
+      ResponseUtil.success(res, { service }, "Service updated successfully");
+    }
+  );
+
   deleteService = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const adminId = req.user?._id;
