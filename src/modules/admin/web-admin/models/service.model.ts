@@ -31,7 +31,6 @@ export interface IServicePricing {
 
 export interface IService extends Document {
   name: string;
-  slug: string;
   shortDescription: string;
   longDescription?: string;
   category: ServiceCategory;
@@ -74,14 +73,6 @@ const serviceSchema = new Schema<IService>(
       required: [true, "Service name is required"],
       trim: true,
       maxlength: [100, "Service name cannot exceed 100 characters"],
-    },
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-      index: true,
     },
     shortDescription: {
       type: String,
@@ -195,15 +186,8 @@ serviceSchema.index({ status: 1, displayOrder: 1 });
 serviceSchema.index({ category: 1, status: 1 });
 serviceSchema.index({ isFeatured: 1, status: 1 });
 
-// Pre-save middleware to generate slug
+// Pre-save middleware to update metadata
 serviceSchema.pre("save", function (next) {
-  if (this.isModified("name") && !this.slug) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  }
-
   if (this.isModified()) {
     this.metadata = this.metadata || {};
     this.metadata.lastUpdated = new Date();

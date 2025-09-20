@@ -56,8 +56,6 @@ router.post(
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadServiceImages,
   handleMulterError,
-  parseFormDataJSON,
-  validateRequest(validators.createServiceSchema),
   webAdminController.createServiceWithFileUpload
 );
 
@@ -74,8 +72,6 @@ router.patch(
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadServiceImages,
   handleMulterError,
-  parseFormDataJSON,
-  validateRequest(validators.updateServiceSchema),
   webAdminController.updateServiceWithFileUpload
 );
 

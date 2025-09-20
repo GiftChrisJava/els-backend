@@ -62,6 +62,25 @@ export class WebAdminController {
       // Handle image uploads if files are provided
       let serviceData = { ...req.body };
 
+      // Parse JSON fields from form data
+      try {
+        if (serviceData.features && typeof serviceData.features === "string") {
+          serviceData.features = JSON.parse(serviceData.features);
+        }
+        if (serviceData.pricing && typeof serviceData.pricing === "string") {
+          serviceData.pricing = JSON.parse(serviceData.pricing);
+        }
+        if (
+          serviceData.isFeatured &&
+          typeof serviceData.isFeatured === "string"
+        ) {
+          serviceData.isFeatured =
+            serviceData.isFeatured.toLowerCase() === "true";
+        }
+      } catch (parseError) {
+        throw new AppError("Invalid JSON in form data fields", 400);
+      }
+
       // Type assertion for multer files
       const files = req.files as
         | { [fieldname: string]: Express.Multer.File[] }
@@ -116,6 +135,25 @@ export class WebAdminController {
 
       // Handle image uploads if files are provided
       let serviceData = { ...req.body };
+
+      // Parse JSON fields from form data
+      try {
+        if (serviceData.features && typeof serviceData.features === "string") {
+          serviceData.features = JSON.parse(serviceData.features);
+        }
+        if (serviceData.pricing && typeof serviceData.pricing === "string") {
+          serviceData.pricing = JSON.parse(serviceData.pricing);
+        }
+        if (
+          serviceData.isFeatured &&
+          typeof serviceData.isFeatured === "string"
+        ) {
+          serviceData.isFeatured =
+            serviceData.isFeatured.toLowerCase() === "true";
+        }
+      } catch (parseError) {
+        throw new AppError("Invalid JSON in form data fields", 400);
+      }
 
       // Type assertion for multer files
       const files = req.files as
