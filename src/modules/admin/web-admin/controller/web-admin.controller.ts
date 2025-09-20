@@ -621,8 +621,9 @@ export class WebAdminController {
             req.file,
             "landing-slides"
           );
+          // Ensure media object exists and add the imageUrl
           slideData.media = {
-            ...slideData.media,
+            alt: slideData.media?.alt || "Landing slide image",
             imageUrl,
           };
         } catch (error) {
@@ -631,6 +632,14 @@ export class WebAdminController {
               error instanceof Error ? error.message : "Unknown error"
             }`,
             500
+          );
+        }
+      } else {
+        // If no file uploaded but media object exists, ensure it has required fields
+        if (!slideData.media?.imageUrl) {
+          throw new AppError(
+            "Either upload an image file or provide an image URL in the media object",
+            400
           );
         }
       }

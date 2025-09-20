@@ -6,7 +6,10 @@ import {
   uploadProjectImages,
   uploadStaffProfileImage,
 } from "@shared/middlewares/upload.middleware";
-import { validateRequest } from "@shared/middlewares/validation.middleware";
+import {
+  parseFormDataJSON,
+  validateRequest,
+} from "@shared/middlewares/validation.middleware";
 import { Router } from "express";
 import { UserRole } from "../../../../core/constants/role.constants";
 import { WebAdminController } from "../controller/web-admin.controller";
@@ -77,6 +80,7 @@ router.post(
   "/projects",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadProjectImages,
+  parseFormDataJSON(["location", "technologies", "projectValue"]),
   validateRequest(validators.createProjectSchema),
   webAdminController.createProject
 );
@@ -118,6 +122,7 @@ router.post(
   "/staff",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadStaffProfileImage,
+  parseFormDataJSON(["qualifications", "socialLinks"]),
   validateRequest(validators.createStaffSchema),
   webAdminController.createStaff
 );
@@ -175,6 +180,7 @@ router.post(
   "/slides",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadLandingSlideImage,
+  parseFormDataJSON(["media"]),
   validateRequest(validators.createSlideSchema),
   webAdminController.createSlide
 );

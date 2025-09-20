@@ -339,13 +339,13 @@ export const createSlideSchema = Joi.object({
   }),
 
   media: Joi.object({
-    imageUrl: Joi.string().required().messages({
-      "any.required": "Image URL is required",
+    imageUrl: Joi.string().optional().messages({
+      "string.uri": "Image URL must be a valid URL",
     }),
     alt: Joi.string().max(200).optional().messages({
       "string.max": "Alt text cannot exceed 200 characters",
     }),
-  }).required(),
+  }).optional(),
 
   status: Joi.string()
     .valid(...Object.values(SlideStatus))

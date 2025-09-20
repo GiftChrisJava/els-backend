@@ -1,4 +1,4 @@
-import { Client, Storage } from "appwrite";
+import { Client, Storage, InputFile, ID } from "node-appwrite";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import { AppError } from "../errors/AppError";
@@ -29,8 +29,11 @@ class AppwriteService {
       .setEndpoint(this.endpoint)
       .setProject(this.projectId);
 
-    // For server-side operations, we'll use session-based authentication
-    // API key authentication is handled differently in v11+
+    // Set API key for server-side authentication
+    if (process.env.APPWRITE_API_KEY) {
+      this.client.setKey(process.env.APPWRITE_API_KEY);
+    }
+
     this.storage = new Storage(this.client);
   }
 
@@ -65,14 +68,13 @@ class AppwriteService {
         fileName = `${folder}/${fileName}`;
       }
 
-      // Generate unique file ID
-      const fileId = `${Date.now()}_${uuidv4()}`;
-
-      // Upload file to Appwrite storage
+      // Upload file to Appwrite storage using InputFile for Node.js
+      const inputFile = InputFile.fromBuffer(fileData, fileName);
+      
       const uploadedFile = await this.storage.createFile(
         this.bucketId,
-        fileId,
-        new File([fileData], fileName, { type: mimeType })
+        ID.unique(), // Use Appwrite's ID generator
+        inputFile
       );
 
       // Get the public URL for the uploaded file

@@ -29,6 +29,30 @@ export const validateRequest = (schema: Joi.ObjectSchema) => {
   };
 };
 
+// Middleware to parse JSON strings in form-data before validation
+export const parseFormDataJSON = (fields: string[]) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    try {
+      for (const field of fields) {
+        if (req.body[field] && typeof req.body[field] === "string") {
+          try {
+            req.body[field] = JSON.parse(req.body[field]);
+          } catch (parseError) {
+            // If parsing fails, leave the field as is and let validation handle it
+            console.warn(
+              `Failed to parse JSON for field ${field}:`,
+              parseError
+            );
+          }
+        }
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+};
+
 export const validateQuery = (schema: Joi.ObjectSchema) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     const { error, value } = schema.validate(req.query, {
