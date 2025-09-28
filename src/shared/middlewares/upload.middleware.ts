@@ -119,6 +119,18 @@ export const uploadTestimonialAvatar = multer({
   },
 }).single("avatar");
 
+// Multer configuration for testimonial files (author image + media)
+export const uploadTestimonialFiles = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_FILE_SIZE,
+  },
+}).fields([
+  { name: "authorImage", maxCount: 1 },
+  { name: "mediaUrl", maxCount: 1 },
+]);
+
 // Multer configuration for client logo
 export const uploadClientLogo = multer({
   storage,

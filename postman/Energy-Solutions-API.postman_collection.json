@@ -1013,53 +1013,6 @@
                   {
                     "key": "Authorization",
                     "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Solar Panel Installation\",\n  \"shortDescription\": \"Professional solar panel installation for residential and commercial properties\",\n  \"longDescription\": \"Our expert team provides comprehensive solar panel installation services with 10+ years of experience. We handle everything from site assessment to final inspection.\",\n  \"category\": \"solar\",\n  \"features\": [\n    {\n      \"title\": \"Professional Installation\",\n      \"description\": \"Certified technicians ensure proper installation\",\n      \"icon\": \"installation-icon\"\n    },\n    {\n      \"title\": \"Quality Assurance\",\n      \"description\": \"Rigorous testing and quality checks\",\n      \"icon\": \"quality-icon\"\n    }\n  ],\n  \"pricing\": {\n    \"type\": \"quote\",\n    \"description\": \"Custom pricing based on requirements\"\n  },\n  \"duration\": \"2-4 days\",\n  \"image\": \"https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80\",\n  \"gallery\": [\n    \"https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80\",\n    \"https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80\"\n  ],\n  \"status\": \"active\",\n  \"isFeatured\": true\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/services",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "admin", "web", "services"]
-                },
-                "description": "Creates a new service with images that will be automatically uploaded to Appwrite storage. External URLs will be downloaded and stored in Appwrite, while file uploads can be handled using form-data (see 'Create Service with File Upload' request)."
-              }
-            },
-            {
-              "name": "Create Service with File Upload",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "if (pm.response.to.have.status(201)) {",
-                      "    const response = pm.response.json();",
-                      "    if (response.data && response.data.service) {",
-                      "        pm.environment.set('serviceId', response.data.service._id);",
-                      "    }",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{webAdminAccessToken}}"
                   }
                 ],
                 "body": {
@@ -1125,53 +1078,15 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/services/upload",
+                  "raw": "{{baseUrl}}/api/v1/admin/web/services",
                   "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "admin", "web", "services", "upload"]
+                  "path": ["api", "v1", "admin", "web", "services"]
                 },
-                "description": "Creates a new service with file uploads. Images will be automatically uploaded to Appwrite storage and URLs will be generated. Use this for direct file uploads instead of external URLs."
+                "description": "Creates a new service with file uploads. Images will be automatically uploaded to Appwrite storage and URLs will be generated."
               }
             },
             {
               "name": "Update Service",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Updated Solar Panel Installation\",\n  \"shortDescription\": \"Updated professional solar installation service\",\n  \"image\": \"https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80\",\n  \"gallery\": [\n    \"https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80\"\n  ],\n  \"status\": \"active\",\n  \"isFeatured\": false\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/services/{{serviceId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": [
-                    "api",
-                    "v1",
-                    "admin",
-                    "web",
-                    "services",
-                    "{{serviceId}}"
-                  ]
-                },
-                "description": "Updates an existing service. External image URLs will be downloaded and stored in Appwrite storage automatically. Use 'Update Service with File Upload' for direct file uploads."
-              }
-            },
-            {
-              "name": "Update Service with File Upload",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -1218,7 +1133,7 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/services/{{serviceId}}/upload",
+                  "raw": "{{baseUrl}}/api/v1/admin/web/services/{{serviceId}}",
                   "host": ["{{baseUrl}}"],
                   "path": [
                     "api",
@@ -1226,8 +1141,7 @@
                     "admin",
                     "web",
                     "services",
-                    "{{serviceId}}",
-                    "upload"
+                    "{{serviceId}}"
                   ]
                 },
                 "description": "Updates an existing service with file uploads. New images will be uploaded to Appwrite storage and old images may be replaced."
@@ -1321,6 +1235,7 @@
                 }
               }
             },
+
             {
               "name": "Create Project",
               "event": [
@@ -1352,22 +1267,22 @@
                   "formdata": [
                     {
                       "key": "title",
-                      "value": "Residential Solar Installation - Lilongwe",
+                      "value": "Commercial Solar Installation - Blantyre",
                       "type": "text"
                     },
                     {
                       "key": "client",
-                      "value": "ABC Company",
+                      "value": "XYZ Corporation",
                       "type": "text"
                     },
                     {
                       "key": "description",
-                      "value": "Complete solar panel installation for residential property with modern technology and battery backup system",
+                      "value": "Large-scale commercial solar installation with advanced monitoring system and battery backup for office complex",
                       "type": "text"
                     },
                     {
                       "key": "category",
-                      "value": "residential",
+                      "value": "commercial",
                       "type": "text"
                     },
                     {
@@ -1377,55 +1292,70 @@
                     },
                     {
                       "key": "startDate",
-                      "value": "2024-01-15",
+                      "value": "2024-02-01",
                       "type": "text"
                     },
                     {
                       "key": "endDate",
-                      "value": "2024-01-20",
+                      "value": "2024-02-15",
                       "type": "text"
                     },
                     {
                       "key": "duration",
-                      "value": "5 days",
+                      "value": "2 weeks",
                       "type": "text"
                     },
                     {
                       "key": "location",
-                      "value": "{\"city\":\"Lilongwe\",\"district\":\"Lilongwe\",\"country\":\"Malawi\"}",
+                      "value": "{\"city\":\"Blantyre\",\"district\":\"Blantyre\",\"country\":\"Malawi\"}",
                       "type": "text"
                     },
                     {
-                      "key": "featuredImage",
-                      "type": "file",
-                      "src": [],
-                      "description": "Main project image (JPG, PNG, WEBP up to 10MB) - will be uploaded to Appwrite storage"
-                    },
-                    {
-                      "key": "galleryImages",
-                      "type": "file",
-                      "src": [],
-                      "description": "Additional project images (up to 10 files) - all will be uploaded to Appwrite storage"
-                    },
-                    {
                       "key": "technologies",
-                      "value": "[\"Solar Panels\", \"Inverters\", \"Battery Storage\"]",
+                      "value": "[\"High-Efficiency Solar Panels\", \"String Inverters\", \"Monitoring System\", \"Battery Storage\"]",
                       "type": "text"
                     },
                     {
                       "key": "teamSize",
-                      "value": "4",
+                      "value": "8",
                       "type": "text"
                     },
                     {
                       "key": "projectValue",
-                      "value": "{\"amount\":50000,\"currency\":\"MWK\",\"displayPublicly\":false}",
+                      "value": "{\"amount\":150000,\"currency\":\"MWK\",\"displayPublicly\":true}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "challenges",
+                      "value": "Complex roof structure required custom mounting solutions",
+                      "type": "text"
+                    },
+                    {
+                      "key": "solutions",
+                      "value": "Designed and fabricated custom mounting brackets for optimal panel placement",
+                      "type": "text"
+                    },
+                    {
+                      "key": "outcomes",
+                      "value": "[\"40% reduction in electricity costs\", \"15kW system capacity\", \"10-year warranty coverage\"]",
                       "type": "text"
                     },
                     {
                       "key": "isPublished",
                       "value": "true",
                       "type": "text"
+                    },
+                    {
+                      "key": "featuredImage",
+                      "type": "file",
+                      "src": [],
+                      "description": "Main project image"
+                    },
+                    {
+                      "key": "galleryImages",
+                      "type": "file",
+                      "src": [],
+                      "description": "Additional gallery images - multiple files can be selected"
                     }
                   ]
                 },
@@ -1434,96 +1364,11 @@
                   "host": ["{{baseUrl}}"],
                   "path": ["api", "v1", "admin", "web", "projects"]
                 },
-                "description": "Creates a new project with file uploads. All images will be automatically uploaded to Appwrite storage and URLs will be generated."
-              }
-            },
-            {
-              "name": "Create Project with URLs",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "if (pm.response.to.have.status(201)) {",
-                      "    const response = pm.response.json();",
-                      "    if (response.data && response.data.project) {",
-                      "        pm.environment.set('projectId', response.data.project._id);",
-                      "    }",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Commercial Solar Installation - Blantyre\",\n  \"client\": \"XYZ Corporation\",\n  \"description\": \"Large-scale commercial solar installation with advanced monitoring system and battery backup for office complex\",\n  \"category\": \"commercial\",\n  \"status\": \"completed\",\n  \"startDate\": \"2024-02-01\",\n  \"endDate\": \"2024-02-15\",\n  \"duration\": \"2 weeks\",\n  \"location\": {\n    \"city\": \"Blantyre\",\n    \"district\": \"Blantyre\",\n    \"country\": \"Malawi\"\n  },\n  \"images\": {\n    \"featured\": \"https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80\",\n    \"gallery\": [\n      \"https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80\",\n      \"https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80\",\n      \"https://images.unsplash.com/photo-1497440001374-f26997328c1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80\"\n    ]\n  },\n  \"technologies\": [\"High-Efficiency Solar Panels\", \"String Inverters\", \"Monitoring System\", \"Battery Storage\"],\n  \"teamSize\": 8,\n  \"projectValue\": {\n    \"amount\": 150000,\n    \"currency\": \"MWK\",\n    \"displayPublicly\": true\n  },\n  \"challenges\": \"Complex roof structure required custom mounting solutions\",\n  \"solutions\": \"Designed and fabricated custom mounting brackets for optimal panel placement\",\n  \"outcomes\": [\"40% reduction in electricity costs\", \"15kW system capacity\", \"10-year warranty coverage\"],\n  \"isPublished\": true\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/projects",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "admin", "web", "projects"]
-                },
-                "description": "Creates a new project using external image URLs. All external URLs will be automatically downloaded and stored in Appwrite storage for consistency and reliability."
+                "description": "Creates a new project with file uploads. Images will be automatically uploaded to Appwrite storage and URLs will be generated."
               }
             },
             {
               "name": "Update Project",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Updated Commercial Solar Installation - Blantyre\",\n  \"status\": \"completed\",\n  \"images\": {\n    \"featured\": \"https://images.unsplash.com/photo-1497440001374-f26997328c1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80\",\n    \"gallery\": [\n      \"https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80\"\n    ]\n  },\n  \"isFeatured\": true,\n  \"outcomes\": [\"45% reduction in electricity costs\", \"15kW system capacity\", \"10-year warranty coverage\", \"Remote monitoring enabled\"]\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/projects/{{projectId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": [
-                    "api",
-                    "v1",
-                    "admin",
-                    "web",
-                    "projects",
-                    "{{projectId}}"
-                  ]
-                },
-                "description": "Updates an existing project. External image URLs will be downloaded and stored in Appwrite storage automatically. Use 'Update Project with File Upload' for direct file uploads."
-              }
-            },
-            {
-              "name": "Update Project with File Upload",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -1827,85 +1672,7 @@
               }
             },
             {
-              "name": "Create Staff with URL",
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "if (pm.response.to.have.status(201)) {",
-                      "    const response = pm.response.json();",
-                      "    if (response.data && response.data.staff) {",
-                      "        pm.environment.set('staffId', response.data.staff._id);",
-                      "    }",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ],
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"displayName\": \"Jane Smith\",\n  \"email\": \"jane.smith@energysolutions.mw\",\n  \"phone\": \"+265999654321\",\n  \"position\": \"Project Manager\",\n  \"department\": \"management\",\n  \"bio\": \"Experienced project manager with expertise in renewable energy projects. Leads cross-functional teams to deliver solar installations on time and within budget.\",\n  \"profileImage\": \"https://images.unsplash.com/photo-1494790108755-2616b612b5bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80\",\n  \"coverImage\": \"https://images.unsplash.com/photo-1497440001374-f26997328c1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80\",\n  \"joinedDate\": \"2023-06-15\",\n  \"qualifications\": [\n    {\n      \"degree\": \"Project Management\",\n      \"institution\": \"University of Malawi\",\n      \"year\": 2019\n    },\n    {\n      \"degree\": \"PMP Certification\",\n      \"institution\": \"PMI\",\n      \"year\": 2021\n    }\n  ],\n  \"skills\": [\"Project Management\", \"Team Leadership\", \"Budget Management\", \"Risk Assessment\", \"Client Relations\"],\n  \"yearsOfExperience\": 6,\n  \"socialLinks\": {\n    \"linkedin\": \"https://linkedin.com/in/janesmith\",\n    \"facebook\": \"https://facebook.com/janesmith\"\n  },\n  \"achievements\": [\"Led 50+ successful solar installations\", \"Reduced project timelines by 20%\", \"Client satisfaction rate of 98%\"],\n  \"specializations\": [\"Commercial Solar Projects\", \"Team Management\", \"Client Relations\"],\n  \"languages\": [\"English\", \"Chichewa\"],\n  \"status\": \"active\",\n  \"isTeamLead\": true,\n  \"isFeatured\": true,\n  \"isPublished\": true\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/staff",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "admin", "web", "staff"]
-                },
-                "description": "Creates a new staff member using external image URLs. All external URLs will be automatically downloaded and stored in Appwrite storage for consistency and reliability."
-              }
-            },
-            {
               "name": "Update Staff",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{webAdminAccessToken}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"position\": \"Lead Solar Technician\",\n  \"bio\": \"Senior solar technician with 6+ years in renewable energy systems. Recently promoted to team lead with expertise in training junior staff and managing complex installations.\",\n  \"profileImage\": \"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80\",\n  \"yearsOfExperience\": 6,\n  \"achievements\": [\"Completed 100+ installations\", \"Zero safety incidents\", \"Mentored 10+ junior technicians\"],\n  \"isTeamLead\": true,\n  \"isFeatured\": true\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/v1/admin/web/staff/{{staffId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "v1", "admin", "web", "staff", "{{staffId}}"]
-                },
-                "description": "Updates an existing staff member. External image URLs will be downloaded and stored in Appwrite storage automatically. Use 'Update Staff with File Upload' for direct file uploads."
-              }
-            },
-            {
-              "name": "Update Staff with File Upload",
               "request": {
                 "method": "PATCH",
                 "header": [

@@ -6,6 +6,7 @@ import {
   uploadProjectImages,
   uploadServiceImages,
   uploadStaffProfileImage,
+  uploadTestimonialFiles,
 } from "@shared/middlewares/upload.middleware";
 import {
   parseFormDataJSON,
@@ -43,32 +44,18 @@ router.get(
   webAdminController.getServiceById
 );
 
-router.post(
-  "/services",
-  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
-  validateRequest(validators.createServiceSchema),
-  webAdminController.createService
-);
-
 // Service creation with file upload
 router.post(
-  "/services/upload",
+  "/services",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadServiceImages,
   handleMulterError,
   webAdminController.createServiceWithFileUpload
 );
 
-router.patch(
-  "/services/:serviceId",
-  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
-  validateRequest(validators.updateServiceSchema),
-  webAdminController.updateService
-);
-
 // Service update with file upload
 router.patch(
-  "/services/:serviceId/upload",
+  "/services/:serviceId",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadServiceImages,
   handleMulterError,
@@ -99,16 +86,14 @@ router.post(
   "/projects",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadProjectImages,
-  parseFormDataJSON(["location", "technologies", "projectValue"]),
-  validateRequest(validators.createProjectSchema),
-  webAdminController.createProject
+  webAdminController.createProjectWithFileUpload
 );
 
 router.patch(
   "/projects/:projectId",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
-  validateRequest(validators.updateProjectSchema),
-  webAdminController.updateProject
+  uploadProjectImages,
+  webAdminController.updateProjectWithFileUpload
 );
 
 router.delete(
@@ -141,16 +126,14 @@ router.post(
   "/staff",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadStaffProfileImage,
-  parseFormDataJSON(["qualifications", "socialLinks"]),
-  validateRequest(validators.createStaffSchema),
-  webAdminController.createStaff
+  webAdminController.createStaffWithFileUpload
 );
 
 router.patch(
   "/staff/:staffId",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
-  validateRequest(validators.updateStaffSchema),
-  webAdminController.updateStaff
+  uploadStaffProfileImage,
+  webAdminController.updateStaffWithFileUpload
 );
 
 router.delete(
@@ -172,6 +155,13 @@ router.post(
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   validateRequest(validators.createTestimonialSchema),
   webAdminController.createTestimonial
+);
+
+router.post(
+  "/testimonials/upload",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadTestimonialFiles,
+  webAdminController.createTestimonialWithFileUpload
 );
 
 router.post(

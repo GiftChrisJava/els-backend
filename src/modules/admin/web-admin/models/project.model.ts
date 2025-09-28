@@ -95,7 +95,6 @@ const projectSchema = new Schema<IProject>(
     },
     slug: {
       type: String,
-      unique: true,
       lowercase: true,
       trim: true,
       index: true,

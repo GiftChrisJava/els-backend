@@ -85,7 +85,7 @@ export const createProjectSchema = Joi.object({
     "any.required": "Client name is required",
   }),
 
-  clientLogo: Joi.string().optional(),
+  clientLogo: Joi.string().allow("").optional(),
 
   description: Joi.string().required().max(5000).messages({
     "any.required": "Project description is required",
@@ -146,8 +146,8 @@ export const createProjectSchema = Joi.object({
     displayPublicly: Joi.boolean().default(false),
   }).optional(),
 
-  challenges: Joi.string().max(2000).optional(),
-  solutions: Joi.string().max(2000).optional(),
+  challenges: Joi.string().allow("").max(2000).optional(),
+  solutions: Joi.string().allow("").max(2000).optional(),
   outcomes: Joi.array().items(Joi.string()).optional(),
 
   testimonial: Joi.object({
@@ -170,6 +170,7 @@ export const updateProjectSchema = createProjectSchema.fork(
     "description",
     "category",
     "startDate",
+    "duration",
     "location",
     "images",
   ],
@@ -216,11 +217,11 @@ export const createStaffSchema = Joi.object({
     "string.max": "Bio cannot exceed 1000 characters",
   }),
 
-  profileImage: Joi.string().required().messages({
-    "any.required": "Profile image is required",
+  profileImage: Joi.string().allow("").optional().messages({
+    "string.base": "Profile image must be a string",
   }),
 
-  coverImage: Joi.string().optional(),
+  coverImage: Joi.string().allow("").optional(),
 
   qualifications: Joi.array()
     .items(
@@ -300,8 +301,8 @@ export const createTestimonialSchema = Joi.object({
   service: Joi.string().hex().length(24).optional(),
   product: Joi.string().hex().length(24).optional(),
 
-  mediaUrl: Joi.string().uri().optional(),
-  thumbnailUrl: Joi.string().uri().optional(),
+  mediaUrl: Joi.string().uri().allow("").optional(),
+  thumbnailUrl: Joi.string().uri().allow("").optional(),
 
   status: Joi.string()
     .valid(...Object.values(TestimonialStatus))
@@ -312,15 +313,15 @@ export const createTestimonialSchema = Joi.object({
   displayOrder: Joi.number().default(0),
 
   tags: Joi.array().items(Joi.string()).optional(),
-  source: Joi.string().optional(),
+  source: Joi.string().allow("").optional(),
 
   socialProof: Joi.object({
-    platform: Joi.string().optional(),
-    profileUrl: Joi.string().uri().optional(),
-    postUrl: Joi.string().uri().optional(),
+    platform: Joi.string().allow("").optional(),
+    profileUrl: Joi.string().uri().allow("").optional(),
+    postUrl: Joi.string().uri().allow("").optional(),
   }).optional(),
 
-  adminNotes: Joi.string().optional(),
+  adminNotes: Joi.string().allow("").optional(),
 });
 
 export const rejectTestimonialSchema = Joi.object({

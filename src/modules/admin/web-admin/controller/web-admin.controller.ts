@@ -359,6 +359,154 @@ export class WebAdminController {
     }
   );
 
+  createProjectWithFileUpload = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      // Handle image uploads if files are provided
+      let projectData = { ...req.body };
+
+      // Parse JSON fields from form data
+      try {
+        if (req.body.location && typeof req.body.location === "string") {
+          projectData.location = JSON.parse(req.body.location);
+        }
+        if (
+          req.body.technologies &&
+          typeof req.body.technologies === "string"
+        ) {
+          projectData.technologies = JSON.parse(req.body.technologies);
+        }
+        if (
+          req.body.projectValue &&
+          typeof req.body.projectValue === "string"
+        ) {
+          projectData.projectValue = JSON.parse(req.body.projectValue);
+        }
+        if (req.body.outcomes && typeof req.body.outcomes === "string") {
+          projectData.outcomes = JSON.parse(req.body.outcomes);
+        }
+        if (req.body.tags && typeof req.body.tags === "string") {
+          projectData.tags = JSON.parse(req.body.tags);
+        }
+        if (req.body.testimonial && typeof req.body.testimonial === "string") {
+          projectData.testimonial = JSON.parse(req.body.testimonial);
+        }
+        if (
+          req.body.relatedServices &&
+          typeof req.body.relatedServices === "string"
+        ) {
+          projectData.relatedServices = JSON.parse(req.body.relatedServices);
+        }
+      } catch (parseError) {
+        throw AppError.badRequest("Invalid JSON in form data fields");
+      }
+
+      // Parse boolean and number fields
+      if (typeof req.body.isFeatured === "string") {
+        projectData.isFeatured = req.body.isFeatured === "true";
+      }
+      if (typeof req.body.isPublished === "string") {
+        projectData.isPublished = req.body.isPublished === "true";
+      }
+      if (typeof req.body.displayOrder === "string") {
+        projectData.displayOrder = parseInt(req.body.displayOrder);
+      }
+      if (typeof req.body.teamSize === "string") {
+        projectData.teamSize = parseInt(req.body.teamSize);
+      }
+
+      // Parse date fields
+      if (req.body.startDate && typeof req.body.startDate === "string") {
+        projectData.startDate = new Date(req.body.startDate);
+      }
+      if (req.body.endDate && typeof req.body.endDate === "string") {
+        projectData.endDate = new Date(req.body.endDate);
+      }
+
+      // Type assertion for multer files
+      const files = req.files as
+        | { [fieldname: string]: Express.Multer.File[] }
+        | undefined;
+
+      if (files) {
+        // Handle featured image
+        if (files.featuredImage && files.featuredImage[0]) {
+          try {
+            const featuredImageUrl = await appwriteService.uploadImage(
+              files.featuredImage[0],
+              "projects"
+            );
+            projectData.images = projectData.images || {};
+            projectData.images.featured = featuredImageUrl;
+          } catch (error) {
+            throw new AppError(
+              `Failed to upload featured image: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+              500
+            );
+          }
+        }
+
+        // Handle gallery images
+        if (files.galleryImages && files.galleryImages.length > 0) {
+          try {
+            const galleryUrls = await Promise.all(
+              files.galleryImages.map((file) =>
+                appwriteService.uploadImage(file, "projects")
+              )
+            );
+            projectData.images = projectData.images || {};
+            projectData.images.gallery = galleryUrls;
+          } catch (error) {
+            throw new AppError(
+              `Failed to upload gallery images: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+              500
+            );
+          }
+        }
+      }
+
+      // Manual validation after parsing JSON fields
+      const { createProjectSchema } = await import(
+        "../validator/web-admin.validator"
+      );
+      const { error, value } = createProjectSchema.validate(projectData, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+
+      if (error) {
+        const errors = error.details.map((detail) => ({
+          field: detail.path.join("."),
+          message: detail.message,
+        }));
+
+        console.log("Project validation errors:", errors);
+        console.log(
+          "Project data being validated:",
+          JSON.stringify(projectData, null, 2)
+        );
+
+        throw AppError.validationError("Validation failed", errors);
+      }
+
+      const project = await this.webAdminService.createProject(
+        adminId as mongoose.Types.ObjectId,
+        value
+      );
+
+      ResponseUtil.created(res, { project }, "Project created successfully");
+    }
+  );
+
   updateProject = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const adminId = req.user?._id;
@@ -372,6 +520,167 @@ export class WebAdminController {
         adminId as mongoose.Types.ObjectId,
         projectId,
         req.body
+      );
+
+      ResponseUtil.success(res, { project }, "Project updated successfully");
+    }
+  );
+
+  updateProjectWithFileUpload = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+      const { projectId } = req.params;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      // Parse form data fields manually
+      let projectData = { ...req.body };
+
+      // Parse JSON fields from form data
+      try {
+        if (req.body.location && typeof req.body.location === "string") {
+          projectData.location = JSON.parse(req.body.location);
+        }
+        if (
+          req.body.technologies &&
+          typeof req.body.technologies === "string"
+        ) {
+          projectData.technologies = JSON.parse(req.body.technologies);
+        }
+        if (
+          req.body.projectValue &&
+          typeof req.body.projectValue === "string"
+        ) {
+          projectData.projectValue = JSON.parse(req.body.projectValue);
+        }
+        if (req.body.outcomes && typeof req.body.outcomes === "string") {
+          projectData.outcomes = JSON.parse(req.body.outcomes);
+        }
+        if (req.body.testimonial && typeof req.body.testimonial === "string") {
+          projectData.testimonial = JSON.parse(req.body.testimonial);
+        }
+        if (req.body.tags && typeof req.body.tags === "string") {
+          projectData.tags = JSON.parse(req.body.tags);
+        }
+        if (
+          req.body.relatedServices &&
+          typeof req.body.relatedServices === "string"
+        ) {
+          projectData.relatedServices = JSON.parse(req.body.relatedServices);
+        }
+      } catch (parseError) {
+        throw AppError.badRequest("Invalid JSON in form data fields");
+      }
+
+      // Parse boolean and number fields
+      if (typeof req.body.isFeatured === "string") {
+        projectData.isFeatured = req.body.isFeatured === "true";
+      }
+      if (typeof req.body.isPublished === "string") {
+        projectData.isPublished = req.body.isPublished === "true";
+      }
+      if (typeof req.body.displayOrder === "string") {
+        projectData.displayOrder = parseInt(req.body.displayOrder);
+      }
+      if (typeof req.body.teamSize === "string") {
+        projectData.teamSize = parseInt(req.body.teamSize);
+      }
+
+      // Parse date fields
+      if (req.body.startDate && typeof req.body.startDate === "string") {
+        projectData.startDate = new Date(req.body.startDate);
+      }
+      if (req.body.endDate && typeof req.body.endDate === "string") {
+        projectData.endDate = new Date(req.body.endDate);
+      }
+
+      // Type assertion for multer files
+      const files = req.files as
+        | { [fieldname: string]: Express.Multer.File[] }
+        | undefined;
+
+      if (files) {
+        // Handle featured image upload
+        if (files.featuredImage && files.featuredImage[0]) {
+          try {
+            const featuredImageUrl = await appwriteService.uploadImage(
+              files.featuredImage[0],
+              "projects"
+            );
+            projectData.images = projectData.images || {};
+            projectData.images.featured = featuredImageUrl;
+          } catch (error) {
+            throw new AppError(
+              `Failed to upload featured image: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+              500
+            );
+          }
+        }
+
+        // Handle gallery images upload
+        if (files.galleryImages) {
+          try {
+            const galleryUrls = await Promise.all(
+              files.galleryImages.map((file) =>
+                appwriteService.uploadImage(file, "projects")
+              )
+            );
+            projectData.images = projectData.images || {};
+            projectData.images.gallery = galleryUrls;
+          } catch (error) {
+            throw new AppError(
+              `Failed to upload gallery images: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+              500
+            );
+          }
+        }
+      }
+
+      // Clean up empty strings for optional fields
+      if (projectData.clientLogo === "") {
+        delete projectData.clientLogo;
+      }
+      if (projectData.challenges === "") {
+        delete projectData.challenges;
+      }
+      if (projectData.solutions === "") {
+        delete projectData.solutions;
+      }
+
+      // Manual validation after parsing JSON fields
+      const { updateProjectSchema } = await import(
+        "../validator/web-admin.validator"
+      );
+      const { error, value } = updateProjectSchema.validate(projectData, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+
+      if (error) {
+        const errors = error.details.map((detail) => ({
+          field: detail.path.join("."),
+          message: detail.message,
+        }));
+
+        console.log("Project update validation errors:", errors);
+        console.log(
+          "Project data being validated:",
+          JSON.stringify(projectData, null, 2)
+        );
+
+        throw AppError.validationError("Validation failed", errors);
+      }
+
+      const project = await this.webAdminService.updateProject(
+        adminId as mongoose.Types.ObjectId,
+        projectId,
+        value
       );
 
       ResponseUtil.success(res, { project }, "Project updated successfully");
@@ -524,6 +833,159 @@ export class WebAdminController {
     }
   );
 
+  createStaffWithFileUpload = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      // Parse form data fields manually to avoid parseFormDataJSON middleware issues
+      let staffData = { ...req.body };
+
+      // Parse JSON fields if they exist
+      if (
+        req.body.qualifications &&
+        typeof req.body.qualifications === "string"
+      ) {
+        try {
+          staffData.qualifications = JSON.parse(req.body.qualifications);
+        } catch (error) {
+          throw AppError.badRequest("Invalid qualifications format");
+        }
+      }
+
+      if (req.body.socialLinks && typeof req.body.socialLinks === "string") {
+        try {
+          staffData.socialLinks = JSON.parse(req.body.socialLinks);
+        } catch (error) {
+          throw AppError.badRequest("Invalid socialLinks format");
+        }
+      }
+
+      if (req.body.skills && typeof req.body.skills === "string") {
+        try {
+          staffData.skills = JSON.parse(req.body.skills);
+        } catch (error) {
+          throw AppError.badRequest("Invalid skills format");
+        }
+      }
+
+      if (req.body.achievements && typeof req.body.achievements === "string") {
+        try {
+          staffData.achievements = JSON.parse(req.body.achievements);
+        } catch (error) {
+          throw AppError.badRequest("Invalid achievements format");
+        }
+      }
+
+      if (
+        req.body.specializations &&
+        typeof req.body.specializations === "string"
+      ) {
+        try {
+          staffData.specializations = JSON.parse(req.body.specializations);
+        } catch (error) {
+          throw AppError.badRequest("Invalid specializations format");
+        }
+      }
+
+      if (req.body.languages && typeof req.body.languages === "string") {
+        try {
+          staffData.languages = JSON.parse(req.body.languages);
+        } catch (error) {
+          throw AppError.badRequest("Invalid languages format");
+        }
+      }
+
+      // Parse boolean fields from form data strings
+      if (typeof req.body.isTeamLead === "string") {
+        staffData.isTeamLead = req.body.isTeamLead === "true";
+      }
+
+      if (typeof req.body.isFeatured === "string") {
+        staffData.isFeatured = req.body.isFeatured === "true";
+      }
+
+      if (typeof req.body.isPublished === "string") {
+        staffData.isPublished = req.body.isPublished === "true";
+      }
+
+      // Parse number fields from form data strings
+      if (typeof req.body.yearsOfExperience === "string") {
+        staffData.yearsOfExperience = parseInt(req.body.yearsOfExperience);
+      }
+
+      if (typeof req.body.displayOrder === "string") {
+        staffData.displayOrder = parseInt(req.body.displayOrder);
+      }
+
+      // Parse date fields
+      if (req.body.joinedDate && typeof req.body.joinedDate === "string") {
+        staffData.joinedDate = new Date(req.body.joinedDate);
+      }
+
+      // Clean up empty strings to undefined for optional fields
+      if (staffData.coverImage === "") {
+        delete staffData.coverImage;
+      }
+      if (staffData.phone === "") {
+        delete staffData.phone;
+      }
+
+      // Handle profile image upload
+      if (req.file) {
+        try {
+          const profileImageUrl = await appwriteService.uploadImage(
+            req.file,
+            "staff"
+          );
+          staffData.profileImage = profileImageUrl;
+        } catch (error) {
+          throw new AppError(
+            `Failed to upload staff profile image: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+            500
+          );
+        }
+      }
+
+      // Manual validation after parsing JSON fields
+      const { createStaffSchema } = await import(
+        "../validator/web-admin.validator"
+      );
+      const { error, value } = createStaffSchema.validate(staffData, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+
+      if (error) {
+        const errors = error.details.map((detail) => ({
+          field: detail.path.join("."),
+          message: detail.message,
+        }));
+
+        // Log the validation errors for debugging
+        console.log("Staff validation errors:", errors);
+        console.log(
+          "Staff data being validated:",
+          JSON.stringify(staffData, null, 2)
+        );
+
+        throw AppError.validationError("Validation failed", errors);
+      }
+
+      const staff = await this.webAdminService.createStaff(
+        adminId as mongoose.Types.ObjectId,
+        value
+      );
+
+      ResponseUtil.created(res, { staff }, "Staff member created successfully");
+    }
+  );
+
   updateStaff = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const adminId = req.user?._id;
@@ -537,6 +999,161 @@ export class WebAdminController {
         adminId as mongoose.Types.ObjectId,
         staffId,
         req.body
+      );
+
+      ResponseUtil.success(res, { staff }, "Staff member updated successfully");
+    }
+  );
+
+  updateStaffWithFileUpload = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+      const { staffId } = req.params;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      // Parse form data fields manually to avoid parseFormDataJSON middleware issues
+      let staffData = { ...req.body };
+
+      // Parse JSON fields if they exist
+      if (
+        req.body.qualifications &&
+        typeof req.body.qualifications === "string"
+      ) {
+        try {
+          staffData.qualifications = JSON.parse(req.body.qualifications);
+        } catch (error) {
+          throw AppError.badRequest("Invalid qualifications format");
+        }
+      }
+
+      if (req.body.socialLinks && typeof req.body.socialLinks === "string") {
+        try {
+          staffData.socialLinks = JSON.parse(req.body.socialLinks);
+        } catch (error) {
+          throw AppError.badRequest("Invalid socialLinks format");
+        }
+      }
+
+      if (req.body.skills && typeof req.body.skills === "string") {
+        try {
+          staffData.skills = JSON.parse(req.body.skills);
+        } catch (error) {
+          throw AppError.badRequest("Invalid skills format");
+        }
+      }
+
+      if (req.body.achievements && typeof req.body.achievements === "string") {
+        try {
+          staffData.achievements = JSON.parse(req.body.achievements);
+        } catch (error) {
+          throw AppError.badRequest("Invalid achievements format");
+        }
+      }
+
+      if (
+        req.body.specializations &&
+        typeof req.body.specializations === "string"
+      ) {
+        try {
+          staffData.specializations = JSON.parse(req.body.specializations);
+        } catch (error) {
+          throw AppError.badRequest("Invalid specializations format");
+        }
+      }
+
+      if (req.body.languages && typeof req.body.languages === "string") {
+        try {
+          staffData.languages = JSON.parse(req.body.languages);
+        } catch (error) {
+          throw AppError.badRequest("Invalid languages format");
+        }
+      }
+
+      // Parse boolean fields from form data strings
+      if (typeof req.body.isTeamLead === "string") {
+        staffData.isTeamLead = req.body.isTeamLead === "true";
+      }
+
+      if (typeof req.body.isFeatured === "string") {
+        staffData.isFeatured = req.body.isFeatured === "true";
+      }
+
+      if (typeof req.body.isPublished === "string") {
+        staffData.isPublished = req.body.isPublished === "true";
+      }
+
+      // Parse number fields from form data strings
+      if (typeof req.body.yearsOfExperience === "string") {
+        staffData.yearsOfExperience = parseInt(req.body.yearsOfExperience);
+      }
+
+      if (typeof req.body.displayOrder === "string") {
+        staffData.displayOrder = parseInt(req.body.displayOrder);
+      }
+
+      // Parse date fields
+      if (req.body.joinedDate && typeof req.body.joinedDate === "string") {
+        staffData.joinedDate = new Date(req.body.joinedDate);
+      }
+
+      // Clean up empty strings to undefined for optional fields
+      if (staffData.coverImage === "") {
+        delete staffData.coverImage;
+      }
+      if (staffData.phone === "") {
+        delete staffData.phone;
+      }
+
+      // Handle profile image upload if new file is provided
+      if (req.file) {
+        try {
+          const profileImageUrl = await appwriteService.uploadImage(
+            req.file,
+            "staff"
+          );
+          staffData.profileImage = profileImageUrl;
+        } catch (error) {
+          throw new AppError(
+            `Failed to upload staff profile image: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`,
+            500
+          );
+        }
+      }
+
+      // Manual validation after parsing JSON fields
+      const { updateStaffSchema } = await import(
+        "../validator/web-admin.validator"
+      );
+      const { error, value } = updateStaffSchema.validate(staffData, {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+
+      if (error) {
+        const errors = error.details.map((detail) => ({
+          field: detail.path.join("."),
+          message: detail.message,
+        }));
+
+        // Log the validation errors for debugging
+        console.log("Staff update validation errors:", errors);
+        console.log(
+          "Staff update data being validated:",
+          JSON.stringify(staffData, null, 2)
+        );
+
+        throw AppError.validationError("Validation failed", errors);
+      }
+
+      const staff = await this.webAdminService.updateStaff(
+        adminId as mongoose.Types.ObjectId,
+        staffId,
+        value
       );
 
       ResponseUtil.success(res, { staff }, "Staff member updated successfully");
@@ -645,6 +1262,144 @@ export class WebAdminController {
       const testimonial = await this.webAdminService.createTestimonial(
         adminId as mongoose.Types.ObjectId,
         req.body
+      );
+
+      ResponseUtil.created(
+        res,
+        { testimonial },
+        "Testimonial created successfully"
+      );
+    }
+  );
+
+  createTestimonialWithFileUpload = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      // Parse form data fields manually
+      let testimonialData = { ...req.body };
+
+      // Parse JSON fields from form data
+      try {
+        if (req.body.author && typeof req.body.author === "string") {
+          testimonialData.author = JSON.parse(req.body.author);
+        }
+        if (req.body.tags && typeof req.body.tags === "string") {
+          testimonialData.tags = JSON.parse(req.body.tags);
+        }
+        if (req.body.socialProof && typeof req.body.socialProof === "string") {
+          testimonialData.socialProof = JSON.parse(req.body.socialProof);
+        }
+      } catch (parseError) {
+        throw AppError.badRequest("Invalid JSON in form data fields");
+      }
+
+      // Parse boolean and number fields
+      if (typeof req.body.isFeatured === "string") {
+        testimonialData.isFeatured = req.body.isFeatured === "true";
+      }
+      if (typeof req.body.isPublished === "string") {
+        testimonialData.isPublished = req.body.isPublished === "true";
+      }
+      if (typeof req.body.rating === "string") {
+        testimonialData.rating = parseInt(req.body.rating);
+      }
+      if (typeof req.body.displayOrder === "string") {
+        testimonialData.displayOrder = parseInt(req.body.displayOrder);
+      }
+
+      // Type assertion for multer files
+      const files = req.files as
+        | { [fieldname: string]: Express.Multer.File[] }
+        | undefined;
+
+      if (files) {
+        // Handle author image upload
+        if (files.authorImage && files.authorImage[0]) {
+          try {
+            const authorImageUrl = await appwriteService.uploadImage(
+              files.authorImage[0],
+              "testimonials"
+            );
+            testimonialData.author = testimonialData.author || {};
+            testimonialData.author.image = authorImageUrl;
+          } catch (error) {
+            throw new AppError(
+              `Failed to upload author image: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+              500
+            );
+          }
+        }
+
+        // Handle media file upload
+        if (files.mediaUrl && files.mediaUrl[0]) {
+          try {
+            const mediaUrl = await appwriteService.uploadImage(
+              files.mediaUrl[0],
+              "testimonials"
+            );
+            testimonialData.mediaUrl = mediaUrl;
+          } catch (error) {
+            throw new AppError(
+              `Failed to upload media file: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`,
+              500
+            );
+          }
+        }
+      }
+
+      // Clean up empty strings to undefined for optional fields
+      if (testimonialData.mediaUrl === "") {
+        delete testimonialData.mediaUrl;
+      }
+      if (testimonialData.thumbnailUrl === "") {
+        delete testimonialData.thumbnailUrl;
+      }
+      if (testimonialData.source === "") {
+        delete testimonialData.source;
+      }
+      if (testimonialData.adminNotes === "") {
+        delete testimonialData.adminNotes;
+      }
+
+      // Manual validation after parsing JSON fields
+      const { createTestimonialSchema } = await import(
+        "../validator/web-admin.validator"
+      );
+      const { error, value } = createTestimonialSchema.validate(
+        testimonialData,
+        {
+          abortEarly: false,
+          stripUnknown: true,
+        }
+      );
+
+      if (error) {
+        const errors = error.details.map((detail) => ({
+          field: detail.path.join("."),
+          message: detail.message,
+        }));
+
+        console.log("Testimonial validation errors:", errors);
+        console.log(
+          "Testimonial data being validated:",
+          JSON.stringify(testimonialData, null, 2)
+        );
+
+        throw AppError.validationError("Validation failed", errors);
+      }
+
+      const testimonial = await this.webAdminService.createTestimonial(
+        adminId as mongoose.Types.ObjectId,
+        value
       );
 
       ResponseUtil.created(

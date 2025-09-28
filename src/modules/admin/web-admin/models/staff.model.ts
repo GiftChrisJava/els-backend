@@ -101,7 +101,6 @@ const staffSchema = new Schema<IStaff>(
     },
     displayName: {
       type: String,
-      required: [true, "Display name is required"],
       trim: true,
     },
     position: {
@@ -134,7 +133,6 @@ const staffSchema = new Schema<IStaff>(
     },
     profileImage: {
       type: String,
-      required: [true, "Profile image is required"],
     },
     coverImage: String,
     qualifications: [

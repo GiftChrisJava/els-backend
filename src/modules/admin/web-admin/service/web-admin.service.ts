@@ -51,13 +51,49 @@ export interface ProjectDto {
 }
 
 export interface StaffDto {
+  employeeId?: string;
+  userId?: string;
   firstName: string;
   lastName: string;
+  displayName?: string;
   position: string;
   department: string;
   email: string;
+  phone?: string;
   bio: string;
   profileImage: string;
+  coverImage?: string;
+  qualifications?: Array<{
+    degree: string;
+    institution: string;
+    year: number;
+  }>;
+  skills?: string[];
+  yearsOfExperience?: number;
+  joinedDate?: Date;
+  socialLinks?: {
+    linkedin?: string;
+    facebook?: string;
+    instagram?: string;
+  };
+  achievements?: string[];
+  specializations?: string[];
+  languages?: string[];
+  isTeamLead?: boolean;
+  isFeatured?: boolean;
+  isPublished?: boolean;
+  displayOrder?: number;
+  status?: string;
+  availability?: {
+    isAvailable?: boolean;
+    message?: string;
+  };
+  statistics?: {
+    projectsCompleted?: number;
+    clientsServed?: number;
+    rating?: number;
+    totalReviews?: number;
+  };
   imageUrl?: string;
 }
 
