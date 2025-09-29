@@ -4,7 +4,7 @@
   "description": "Energy Solutions Backend API with Node.js, MongoDB, TypeScript",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "ts-node -r tsconfig-paths/register src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "seed": "ts-node src/database/seeds/admin.seed.ts",

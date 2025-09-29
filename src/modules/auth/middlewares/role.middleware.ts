@@ -1,11 +1,11 @@
+import { NextFunction, Request, Response } from "express";
+import { AppError } from "../../.../../../shared/errors/AppError";
 import {
   ROLE_HIERARCHY,
   ROLE_PERMISSIONS,
   UserRole,
-} from "@core/constants/role.constants";
-import { AppError } from "@shared/errors/AppError";
-import { logger } from "@shared/utils/logger.util";
-import { NextFunction, Request, Response } from "express";
+} from "../../../core/constants/role.constants";
+import { logger } from "../../../shared/utils/logger.util";
 
 /**
  * Check if user has one of the specified roles

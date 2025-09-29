@@ -1,11 +1,11 @@
-import { UserRole } from "@core/constants/role.constants";
-import { authenticate } from "@modules/auth/middlewares/auth.middleware";
+import { Router } from "express";
+import { UserRole } from "../../../../core/constants/role.constants";
+import { authenticate } from "../../../../modules/auth/middlewares/auth.middleware";
 import {
   hasMinimumRole,
   isSystemAdmin,
-} from "@modules/auth/middlewares/role.middleware";
-import { validateRequest } from "@shared/middlewares/validation.middleware";
-import { Router } from "express";
+} from "../../../../modules/auth/middlewares/role.middleware";
+import { validateRequest } from "../../../../shared/middlewares/validation.middleware";
 import { SystemAdminController } from "../controllers/system-admin.controller";
 import * as validators from "../validators/system-admin.validator";
 

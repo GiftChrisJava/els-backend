@@ -50,7 +50,7 @@ async function startServer(): Promise<void> {
     startCleanupJobs();
 
     // Start the server
-    const PORT = appConfig.port;
+    const PORT = process.env.PORT || 5000;
     const server = app.listen(PORT, () => {
       logger.info(`
         ################################################
