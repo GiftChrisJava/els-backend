@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import "module-alias/register";
+// import "module-alias/register";
 import path from "path";
 
 // Load environment variables
@@ -50,7 +50,7 @@ async function startServer(): Promise<void> {
     startCleanupJobs();
 
     // Start the server
-    const PORT = process.env.PORT || 5000;
+    const PORT = appConfig.port;
     const server = app.listen(PORT, () => {
       logger.info(`
         ################################################
