@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: energy-solutions-api
+    env: node
+    buildCommand: ./build.sh
+    startCommand: npm run render-start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    autoDeploy: true
