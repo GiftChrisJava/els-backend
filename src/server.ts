@@ -50,11 +50,10 @@ async function startServer(): Promise<void> {
     startCleanupJobs();
 
     // Start the server
-    const PORT = parseInt(process.env.PORT || String(appConfig.port), 10);
-    const HOST = "0.0.0.0"; // Always bind to 0.0.0.0 for cloud deployments
+    const PORT = process.env.PORT;
 
-    logger.info(`Starting server on ${HOST}:${PORT}`);
-    const server = app.listen(PORT, HOST, () => {
+    logger.info(`Starting server on port ${PORT}`);
+    const server = app.listen(PORT, () => {
       logger.info(`
         ################################################
         🚀 Server is running!
