@@ -4,10 +4,10 @@
   "description": "Energy Solutions Backend API with Node.js, MongoDB, TypeScript",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon",
-    "dev:simple": "node --max-old-space-size=1024 -r ts-node/register -r tsconfig-paths/register ./src/server.ts",
+    "dev": "node --max-old-space-size=1024 -r ts-node/register -r tsconfig-paths/register ./src/server.ts",
     "dev:build": "npm run build && node --max-old-space-size=1024 dist/server.js",
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "start": "node dist/server.js",
     "render-start": "node --max-old-space-size=512 dist/server.js",
     "seed": "ts-node src/database/seeds/admin.seed.ts",
@@ -65,7 +65,6 @@
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.56.0",
-    "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
