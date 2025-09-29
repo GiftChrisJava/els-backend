@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-// import "module-alias/register";
+import "module-alias/register";
 import path from "path";
 
 // Load environment variables
