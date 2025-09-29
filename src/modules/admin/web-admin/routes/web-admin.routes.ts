@@ -1,5 +1,7 @@
 import { authenticate } from "@modules/auth/middlewares/auth.middleware";
 import { hasRole } from "@modules/auth/middlewares/role.middleware";
+import { Router } from "express";
+import { UserRole } from "../../../../core/constants/role.constants";
 import {
   handleMulterError,
   uploadLandingSlideImage,
@@ -7,13 +9,11 @@ import {
   uploadServiceImages,
   uploadStaffProfileImage,
   uploadTestimonialFiles,
-} from "@shared/middlewares/upload.middleware";
+} from "../../../../shared/middlewares/upload.middleware";
 import {
   parseFormDataJSON,
   validateRequest,
-} from "@shared/middlewares/validation.middleware";
-import { Router } from "express";
-import { UserRole } from "../../../../core/constants/role.constants";
+} from "../../../../shared/middlewares/validation.middleware";
 import { WebAdminController } from "../controller/web-admin.controller";
 import * as validators from "../validator/web-admin.validator";
 

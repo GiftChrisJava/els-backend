@@ -1,9 +1,9 @@
-import { AppError } from "@shared/errors/AppError";
-import { appwriteService } from "@shared/services/appwrite.service";
-import { asyncHandler } from "@shared/utils/async-handler.util";
-import { ResponseUtil } from "@shared/utils/response.util";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
+import { AppError } from "../../../../shared/errors/AppError";
+import { appwriteService } from "../../../../shared/services/appwrite.service";
+import { asyncHandler } from "../../../../shared/utils/async-handler.util";
+import { ResponseUtil } from "../../../../shared/utils/response.util";
 import { WebAdminService } from "../service/web-admin.service";
 
 export class WebAdminController {

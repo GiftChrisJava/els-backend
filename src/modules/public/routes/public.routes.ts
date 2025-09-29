@@ -1,25 +1,25 @@
-import { LandingSlide } from "@modules/admin/web-admin/models/landing-slide.model";
+import { Request, Response, Router } from "express";
+import { LandingSlide } from "../../../modules/admin/web-admin/models/landing-slide.model";
 import {
   Project,
   ProjectStatus,
-} from "@modules/admin/web-admin/models/project.model";
+} from "../../../modules/admin/web-admin/models/project.model";
 import {
   Service,
   ServiceStatus,
-} from "@modules/admin/web-admin/models/service.model";
+} from "../../../modules/admin/web-admin/models/service.model";
 import {
   Staff,
   StaffStatus,
-} from "@modules/admin/web-admin/models/staff.model";
+} from "../../../modules/admin/web-admin/models/staff.model";
 import {
   Testimonial,
   TestimonialStatus,
-} from "@modules/admin/web-admin/models/testimonial.model";
-import { optionalAuth } from "@modules/auth/middlewares/auth.middleware";
-import { AppError } from "@shared/errors/AppError";
-import { asyncHandler } from "@shared/utils/async-handler.util";
-import { ResponseUtil } from "@shared/utils/response.util";
-import { Request, Response, Router } from "express";
+} from "../../../modules/admin/web-admin/models/testimonial.model";
+import { optionalAuth } from "../../../modules/auth/middlewares/auth.middleware";
+import { AppError } from "../../../shared/errors/AppError";
+import { asyncHandler } from "../../../shared/utils/async-handler.util";
+import { ResponseUtil } from "../../../shared/utils/response.util";
 
 const router = Router();
 

@@ -1,7 +1,7 @@
-import { AppError } from "@shared/errors/AppError";
-import { asyncHandler } from "@shared/utils/async-handler.util";
-import { ResponseUtil } from "@shared/utils/response.util";
 import { Request, Response } from "express";
+import { AppError } from "../../../shared/errors/AppError";
+import { asyncHandler } from "../../../shared/utils/async-handler.util";
+import { ResponseUtil } from "../../../shared/utils/response.util";
 import { AuthService } from "../services/auth.service";
 
 export class AuthController {

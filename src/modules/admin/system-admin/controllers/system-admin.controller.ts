@@ -1,8 +1,8 @@
-import { AppError } from "@shared/errors/AppError";
-import { asyncHandler } from "@shared/utils/async-handler.util";
-import { ResponseUtil } from "@shared/utils/response.util";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
+import { AppError } from "../../../../shared/errors/AppError";
+import { asyncHandler } from "../../../../shared/utils/async-handler.util";
+import { ResponseUtil } from "../../../../shared/utils/response.util";
 import { SystemAdminService } from "../services/system-admin.service";
 
 export class SystemAdminController {
