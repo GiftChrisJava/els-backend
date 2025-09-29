@@ -18,7 +18,7 @@ process.on("uncaughtException", (error: Error) => {
   process.exit(1);
 });
 
-// Handle unhandled promise rejections
+// Handle unhandled promise rejectionsser
 process.on("unhandledRejection", (reason: any, promise: Promise<any>) => {
   logger.error("UNHANDLED REJECTION! 💥 Shutting down...", {
     reason,
@@ -50,8 +50,10 @@ async function startServer(): Promise<void> {
     startCleanupJobs();
 
     // Start the server
-    const PORT = appConfig.port;
-    const server = app.listen(PORT, () => {
+    const PORT = parseInt(process.env.PORT || String(appConfig.port), 10);
+    const HOST =
+      process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
+    const server = app.listen(PORT, HOST, () => {
       logger.info(`
         ################################################
         🚀 Server is running!
