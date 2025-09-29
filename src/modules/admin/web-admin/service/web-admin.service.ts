@@ -1,13 +1,13 @@
-import { appConfig } from "@config/app.config";
+import mongoose from "mongoose";
+import { appConfig } from "../../../../config/app.config";
 import {
   ActivityLog,
   ActivitySeverity,
   ActivityType,
-} from "@modules/admin/system-admin/models/activity-log.model";
-import { AppError } from "@shared/errors/AppError";
-import { AppwriteService } from "@shared/services/appwrite.service";
-import { logger } from "@shared/utils/logger.util";
-import mongoose from "mongoose";
+} from "../../../../modules/admin/system-admin/models/activity-log.model";
+import { AppError } from "../../../../shared/errors/AppError";
+import { AppwriteService } from "../../../../shared/services/appwrite.service";
+import { logger } from "../../../../shared/utils/logger.util";
 import { ILandingSlide, LandingSlide } from "../models/landing-slide.model";
 import { IProject, Project } from "../models/project.model";
 import { IService, Service } from "../models/service.model";

@@ -1,11 +1,14 @@
-import { appConfig } from "@config/app.config";
-import { ROLE_HIERARCHY, UserRole } from "@core/constants/role.constants";
-import { UserStatus } from "@core/constants/status.constants";
-import { IUser, User } from "@modules/auth/models/user.model";
-import { AppError } from "@shared/errors/AppError";
-import { EmailUtil } from "@shared/utils/email.util";
-import { logger } from "@shared/utils/logger.util";
 import mongoose from "mongoose";
+import { appConfig } from "../../../../config/app.config";
+import {
+  ROLE_HIERARCHY,
+  UserRole,
+} from "../../../../core/constants/role.constants";
+import { UserStatus } from "../../../../core/constants/status.constants";
+import { IUser, User } from "../../../../modules/auth/models/user.model";
+import { AppError } from "../../../../shared/errors/AppError";
+import { EmailUtil } from "../../../../shared/utils/email.util";
+import { logger } from "../../../../shared/utils/logger.util";
 import {
   ActivityLog,
   ActivitySeverity,

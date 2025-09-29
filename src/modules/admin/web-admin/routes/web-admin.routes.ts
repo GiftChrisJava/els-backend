@@ -1,7 +1,7 @@
-import { authenticate } from "@modules/auth/middlewares/auth.middleware";
-import { hasRole } from "@modules/auth/middlewares/role.middleware";
 import { Router } from "express";
 import { UserRole } from "../../../../core/constants/role.constants";
+import { authenticate } from "../../../../modules/auth/middlewares/auth.middleware";
+import { hasRole } from "../../../../modules/auth/middlewares/role.middleware";
 import {
   handleMulterError,
   uploadLandingSlideImage,
