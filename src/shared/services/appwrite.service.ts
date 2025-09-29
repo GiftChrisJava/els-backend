@@ -1,8 +1,13 @@
+import crypto from "crypto";
 import fs from "fs";
 import { Client, ID, InputFile, Storage } from "node-appwrite";
-import { v4 as uuidv4 } from "uuid";
 import { AppError } from "../errors/AppError";
 import { logger } from "../utils/logger.util";
+
+// Helper function to generate UUID v4
+function generateUUID(): string {
+  return crypto.randomUUID();
+}
 
 class AppwriteService {
   private client: Client;
@@ -55,11 +60,11 @@ class AppwriteService {
 
       if (Buffer.isBuffer(file)) {
         fileData = file;
-        fileName = customFileName || `image_${uuidv4()}.jpg`;
+        fileName = customFileName || `image_${generateUUID()}.jpg`;
         mimeType = "image/jpeg"; // Default for buffer uploads
       } else {
         fileData = file.buffer || fs.readFileSync(file.path);
-        fileName = file.originalname || `image_${uuidv4()}.jpg`;
+        fileName = file.originalname || `image_${generateUUID()}.jpg`;
         mimeType = file.mimetype || "image/jpeg";
       }
 
@@ -115,7 +120,7 @@ class AppwriteService {
   ): Promise<string[]> {
     try {
       const uploadPromises = files.map((file, index) =>
-        this.uploadImage(file, folder, `image_${index + 1}_${uuidv4()}`)
+        this.uploadImage(file, folder, `image_${index + 1}_${generateUUID()}`)
       );
 
       const urls = await Promise.all(uploadPromises);
@@ -185,7 +190,7 @@ class AppwriteService {
 
       // Generate filename
       const fileName =
-        customFileName || `external_image_${uuidv4()}.${fileExtension}`;
+        customFileName || `external_image_${generateUUID()}.${fileExtension}`;
 
       // Upload to Appwrite
       const appwriteUrl = await this.uploadImage(imageBuffer, folder, fileName);

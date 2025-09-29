@@ -1,11 +1,11 @@
-import { appConfig } from "@config/app.config";
-import { DatabaseConnection } from "@config/database.config";
-import { UserRole } from "@core/constants/role.constants";
-import { UserStatus } from "@core/constants/status.constants";
-import { User } from "@modules/auth/models/user.model";
-import { logger } from "@shared/utils/logger.util";
 import dotenv from "dotenv";
 import path from "path";
+import { appConfig } from "../../config/app.config";
+import { DatabaseConnection } from "../../config/database.config";
+import { UserRole } from "../../core/constants/role.constants";
+import { UserStatus } from "../../core/constants/status.constants";
+import { User } from "../../modules/auth/models/user.model";
+import { logger } from "../../shared/utils/logger.util";
 
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, "../../../.env") });
