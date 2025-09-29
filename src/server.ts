@@ -51,8 +51,9 @@ async function startServer(): Promise<void> {
 
     // Start the server
     const PORT = parseInt(process.env.PORT || String(appConfig.port), 10);
-    const HOST =
-      process.env.NODE_ENV === "production" ? "0.0.0.0" : "localhost";
+    const HOST = "0.0.0.0"; // Always bind to 0.0.0.0 for cloud deployments
+
+    logger.info(`Starting server on ${HOST}:${PORT}`);
     const server = app.listen(PORT, HOST, () => {
       logger.info(`
         ################################################

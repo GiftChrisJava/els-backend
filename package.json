@@ -5,6 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",
+    "dev:simple": "node --max-old-space-size=1024 -r ts-node/register -r tsconfig-paths/register ./src/server.ts",
+    "dev:build": "npm run build && node --max-old-space-size=1024 dist/server.js",
     "build": "tsc",
     "start": "node dist/server.js",
     "render-start": "node --max-old-space-size=512 dist/server.js",
