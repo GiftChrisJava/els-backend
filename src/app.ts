@@ -124,7 +124,7 @@ class App {
 
   private initializeRoutes(): void {
     // Health check endpoint
-    this.app.get("/health", (res: Response) => {
+    this.app.get("/health", (req: Request, res: Response) => {
       res.status(200).json({
         status: "healthy",
         timestamp: new Date().toISOString(),
@@ -135,7 +135,7 @@ class App {
     });
 
     // API version endpoint
-    this.app.get("/api", (res: Response) => {
+    this.app.get("/api", (req: Request, res: Response) => {
       res.json({
         name: appConfig.appName,
         version: "1.0.0",
