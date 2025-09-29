@@ -29,7 +29,14 @@
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
-    "types": ["node"]
+    "typeRoots": ["./node_modules/@types", "./src/core/types"],
+    "paths": {
+      "@config/*": ["config/*"],
+      "@core/*": ["core/*"],
+      "@modules/*": ["modules/*"],
+      "@shared/*": ["shared/*"],
+      "@database/*": ["database/*"]
+    }
   },
   "include": ["src/**/*", "src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist", "tests", "**/*.test.ts", "**/*.spec.ts"]
