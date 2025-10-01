@@ -119,6 +119,30 @@ export const uploadTestimonialAvatar = multer({
   },
 }).single("avatar");
 
+// Multer configuration for product images
+export const uploadProductImages = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_FILE_SIZE,
+  },
+}).fields([
+  { name: "featuredImage", maxCount: 1 },
+  { name: "images", maxCount: MAX_FILES },
+]);
+
+// Multer configuration for category image
+export const uploadCategoryImage = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_FILE_SIZE,
+  },
+}).fields([
+  { name: "image", maxCount: 1 },
+  { name: "icon", maxCount: 1 },
+]);
+
 // Multer configuration for testimonial files (author image + media)
 export const uploadTestimonialFiles = multer({
   storage,

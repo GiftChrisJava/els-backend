@@ -1,0 +1,897 @@
+{
+  "info": {
+    "name": "Sales Admin API",
+    "description": "Sales Admin module for managing products, categories, orders, customers, and analytics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{salesAdminToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "salesAdminEmail",
+      "value": "sales@energysolutions.com",
+      "type": "string"
+    },
+    {
+      "key": "salesAdminPassword",
+      "value": "Sales@Admin123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Sales Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('salesAdminToken', response.data.accessToken);",
+                  "    pm.collectionVariables.set('salesAdminRefreshToken', response.data.refreshToken);",
+                  "    pm.collectionVariables.set('salesAdminId', response.data.user._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{salesAdminEmail}}\",\n  \"password\": \"{{salesAdminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Sales Admin Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('salesAdminToken', response.data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{salesAdminRefreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('productId', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Solar Panel 300W",
+                  "type": "text"
+                },
+                {
+                  "key": "sku",
+                  "value": "SP-300W-001",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "High-efficiency 300W solar panel with 25-year warranty",
+                  "type": "text"
+                },
+                {
+                  "key": "shortDescription",
+                  "value": "300W monocrystalline solar panel",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[cost]",
+                  "value": "150",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[price]",
+                  "value": "250",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[compareAtPrice]",
+                  "value": "300",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[currency]",
+                  "value": "USD",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[quantity]",
+                  "value": "100",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[lowStockThreshold]",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[trackInventory]",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "featuredImage",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "products"]
+            }
+          }
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products?page=1&limit=20&sort=-createdAt",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "-createdAt"
+                },
+                {
+                  "key": "search",
+                  "value": "solar",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "{{categoryId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "featured",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "inStock",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": "100",
+                  "disabled": true
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "500",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Solar Panel 300W - Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[price]",
+                  "value": "280",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[quantity]",
+                  "value": "150",
+                  "type": "text"
+                },
+                {
+                  "key": "featuredImage",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product Inventory",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 50,\n  \"operation\": \"add\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products/{{productId}}/inventory",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "products",
+                "{{productId}}",
+                "inventory"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Quick Inventory Update (Manual Sales)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 5,\n  \"operation\": \"subtract\",\n  \"reason\": \"Manual sale - customer walked in\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products/{{productId}}/inventory/quick",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "products",
+                "{{productId}}",
+                "inventory",
+                "quick"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Bulk Update Inventory",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"updates\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 20,\n      \"operation\": \"add\"\n    },\n    {\n      \"productId\": \"{{productId2}}\",\n      \"quantity\": 10,\n      \"operation\": \"subtract\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products/inventory/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "products",
+                "inventory",
+                "bulk"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('categoryId', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Solar Panels",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "High-quality solar panels for residential and commercial use",
+                  "type": "text"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "displayOrder",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "icon",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category Tree",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/categories/tree",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "categories", "tree"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('orderId', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"online\",\n  \"customer\": \"{{customerId}}\",\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 2,\n      \"price\": 250,\n      \"discount\": 0,\n      \"tax\": 25\n    }\n  ],\n  \"subtotal\": 500,\n  \"taxAmount\": 50,\n  \"shippingCost\": 20,\n  \"discount\": 0,\n  \"totalAmount\": 570,\n  \"paymentMethod\": \"credit_card\",\n  \"shippingAddress\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+265999123456\",\n    \"addressLine1\": \"123 Main Street\",\n    \"city\": \"Lilongwe\",\n    \"country\": \"Malawi\"\n  },\n  \"shippingMethod\": \"standard\",\n  \"customerNotes\": \"Please deliver before 5 PM\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders"]
+            }
+          }
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders?page=1&limit=20&sort=-createdAt",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "-createdAt"
+                },
+                {
+                  "key": "search",
+                  "value": "ORD",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "disabled": true
+                },
+                {
+                  "key": "paymentStatus",
+                  "value": "paid",
+                  "disabled": true
+                },
+                {
+                  "key": "customer",
+                  "value": "{{customerId}}",
+                  "disabled": true
+                },
+                {
+                  "key": "minAmount",
+                  "value": "100",
+                  "disabled": true
+                },
+                {
+                  "key": "maxAmount",
+                  "value": "1000",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders", "{{orderId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"processing\",\n  \"notes\": \"Order is being processed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders/{{orderId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "orders",
+                "{{orderId}}",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Record Offline Sale (Existing Customer)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"{{customerId}}\",\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 1,\n      \"price\": 250,\n      \"discount\": 0,\n      \"tax\": 25\n    }\n  ],\n  \"subtotal\": 250,\n  \"taxAmount\": 25,\n  \"discount\": 0,\n  \"totalAmount\": 275,\n  \"paymentMethod\": \"cash\",\n  \"shippingAddress\": {\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"email\": \"jane.smith@example.com\",\n    \"phone\": \"+265999654321\",\n    \"addressLine1\": \"456 Market Street\",\n    \"city\": \"Blantyre\",\n    \"country\": \"Malawi\"\n  },\n  \"internalNotes\": \"In-store purchase\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders/offline",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders", "offline"]
+            }
+          }
+        },
+        {
+          "name": "Record Offline Sale (Walk-in Customer)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerInfo\": {\n    \"name\": \"John Walk-in\",\n    \"phone\": \"+265999777888\",\n    \"email\": \"john.walkin@example.com\"\n  },\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 2,\n      \"price\": 250,\n      \"discount\": 10,\n      \"tax\": 24\n    }\n  ],\n  \"subtotal\": 500,\n  \"taxAmount\": 48,\n  \"discount\": 20,\n  \"totalAmount\": 528,\n  \"paymentMethod\": \"cash\",\n  \"shippingAddress\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Walk-in\",\n    \"email\": \"john.walkin@example.com\",\n    \"phone\": \"+265999777888\",\n    \"addressLine1\": \"Shop Counter\",\n    \"city\": \"Lilongwe\",\n    \"country\": \"Malawi\"\n  },\n  \"internalNotes\": \"Walk-in customer - paid cash\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders/offline",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders", "offline"]
+            }
+          }
+        },
+        {
+          "name": "Export Orders (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders/export?status=delivered&dateFrom=2025-01-01&dateTo=2025-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders", "export"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "delivered"
+                },
+                {
+                  "key": "dateFrom",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "dateTo",
+                  "value": "2025-12-31"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/customers?page=1&limit=20&sort=-createdAt",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "customers"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "-createdAt"
+                },
+                {
+                  "key": "search",
+                  "value": "john",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "individual",
+                  "disabled": true
+                },
+                {
+                  "key": "segment",
+                  "value": "vip",
+                  "disabled": true
+                },
+                {
+                  "key": "loyaltyTier",
+                  "value": "gold",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "customers",
+                "{{customerId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Sales Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/analytics?period=monthly&startDate=2025-01-01&endDate=2025-01-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "analytics"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "monthly",
+                  "description": "hourly, daily, weekly, monthly, quarterly, yearly"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-01-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/analytics/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "analytics", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Get Best Selling Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/analytics/best-sellers?limit=10&from=2025-01-01&to=2025-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "analytics",
+                "best-sellers"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "from",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2025-12-31"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
