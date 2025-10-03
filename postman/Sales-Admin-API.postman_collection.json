@@ -901,7 +901,63 @@
       "name": "Analytics",
       "item": [
         {
-          "name": "Get Sales Analytics",
+          "name": "Get Sales Analytics (Current Month)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/analytics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "analytics"],
+              "query": []
+            }
+          }
+        },
+        {
+          "name": "Get Sales Analytics (By Month & Year)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/analytics?month=10&year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "analytics"],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "10",
+                  "description": "Month number (1-12)"
+                },
+                {
+                  "key": "year",
+                  "value": "2025",
+                  "description": "Year (e.g., 2025)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Sales Analytics (By Year)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/analytics?year=2025",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "analytics"],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2025",
+                  "description": "Year (e.g., 2025)"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Sales Analytics (Custom Date Range)",
           "request": {
             "method": "GET",
             "header": [],

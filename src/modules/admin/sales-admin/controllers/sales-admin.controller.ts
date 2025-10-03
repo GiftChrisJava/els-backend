@@ -496,25 +496,76 @@ export class SalesAdminController {
 
   /**
    * Get sales analytics
+   * Supports multiple query formats:
+   * 1. period, startDate, endDate - Flexible date range
+   * 2. month, year - Specific month (e.g., month=10, year=2025)
+   * 3. year - Entire year (e.g., year=2025)
+   * 4. No params - Current month
    */
   async getSalesAnalytics(req: Request, res: Response, next: NextFunction) {
     try {
-      const { period, startDate, endDate } = req.query;
+      const { period, startDate, endDate, month, year } = req.query;
 
-      if (!period || !startDate || !endDate) {
-        throw new AppError("Period, start date and end date are required", 400);
+      let start: Date;
+      let end: Date;
+      let analyticsPeriod: AnalyticsPeriod =
+        (period as AnalyticsPeriod) || AnalyticsPeriod.MONTHLY;
+
+      // Case 1: Query by month and year (e.g., month=10, year=2025)
+      if (month && year) {
+        const monthNum = parseInt(month as string);
+        const yearNum = parseInt(year as string);
+
+        if (monthNum < 1 || monthNum > 12) {
+          throw new AppError("Month must be between 1 and 12", 400);
+        }
+
+        start = new Date(yearNum, monthNum - 1, 1); // First day of month
+        end = new Date(yearNum, monthNum, 0, 23, 59, 59); // Last day of month
+        analyticsPeriod = AnalyticsPeriod.MONTHLY;
+      }
+      // Case 2: Query by year only (e.g., year=2025)
+      else if (year && !month) {
+        const yearNum = parseInt(year as string);
+        start = new Date(yearNum, 0, 1); // January 1st
+        end = new Date(yearNum, 11, 31, 23, 59, 59); // December 31st
+        analyticsPeriod = AnalyticsPeriod.YEARLY;
+      }
+      // Case 3: Query by startDate and endDate
+      else if (startDate && endDate) {
+        start = new Date(startDate as string);
+        end = new Date(endDate as string);
+      }
+      // Case 4: No params - use current month
+      else {
+        const today = new Date();
+        start = new Date(today.getFullYear(), today.getMonth(), 1);
+        end = new Date(
+          today.getFullYear(),
+          today.getMonth() + 1,
+          0,
+          23,
+          59,
+          59
+        );
+        analyticsPeriod = AnalyticsPeriod.MONTHLY;
       }
 
       const analytics = await salesAdminService.getSalesAnalytics(
-        period as AnalyticsPeriod,
-        new Date(startDate as string),
-        new Date(endDate as string),
+        analyticsPeriod,
+        start,
+        end,
         req.user?.id
       );
 
       res.status(200).json({
         success: true,
         data: analytics,
+        meta: {
+          period: analyticsPeriod,
+          startDate: start,
+          endDate: end,
+        },
       });
     } catch (error) {
       next(error);

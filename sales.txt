@@ -1,0 +1,1832 @@
+1. Getting dashoard stats
+GET : {{baseUrl}}/api/v1/admin/sales/analytics/dashboard
+
+server response :
+{
+    "success": true,
+    "data": {
+        "today": {
+            "orders": 3,
+            "revenue": 1068
+        },
+        "month": {
+            "orders": 3,
+            "revenue": 1068
+        },
+        "inventory": {
+            "lowStockAlerts": 0
+        },
+        "orders": {
+            "pending": 1
+        },
+        "totals": {
+            "customers": 1,
+            "products": 1
+        }
+    }
+}
+
+
+
+2. Customers
+GET : {{baseUrl}}/api/v1/admin/sales/customers?page=1&limit=20&sort=-createdAt
+
+server response :
+{
+    "success": true,
+    "data": {
+        "customers": [
+            {
+                "_id": "68dfb38500f10920e1bb1fe4",
+                "firstName": "John",
+                "lastName": "Walk-in",
+                "email": "john.walkin@example.com",
+                "phone": "+265999777888",
+                "type": "individual",
+                "status": "active",
+                "isGuest": false,
+                "preferences": {
+                    "newsletter": false,
+                    "smsNotifications": false,
+                    "emailNotifications": true,
+                    "marketingEmails": false,
+                    "language": "en",
+                    "currency": "USD"
+                },
+                "loyaltyProgram": {
+                    "points": 0,
+                    "tier": "bronze",
+                    "joinedAt": "2025-10-03T11:29:09.380Z"
+                },
+                "metrics": {
+                    "totalOrders": 3,
+                    "totalSpent": 1068,
+                    "averageOrderValue": 356,
+                    "lastOrderDate": "2025-10-03T11:41:14.608Z",
+                    "firstOrderDate": "2025-10-03T11:31:30.553Z",
+                    "cancelledOrders": 0,
+                    "returnedOrders": 0,
+                    "reviewsCount": 0,
+                    "referralCount": 0
+                },
+                "tags": [],
+                "source": "offline_sale",
+                "acceptedTerms": false,
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "addresses": [],
+                "createdAt": "2025-10-03T11:29:09.383Z",
+                "updatedAt": "2025-10-03T11:41:14.629Z",
+                "lastActivityAt": "2025-10-03T11:41:14.629Z",
+                "__v": 0,
+                "segment": "standard"
+            }
+        ],
+        "pagination": {
+            "total": 1,
+            "page": 1,
+            "pages": 1,
+            "limit": 20
+        }
+    }
+}
+
+
+
+Get Customer Details :{{baseUrl}}/api/v1/admin/sales/customers/{{customerId}}
+
+server response:
+{
+    "success": true,
+    "data": {
+        "customer": {
+            "preferences": {
+                "newsletter": false,
+                "smsNotifications": false,
+                "emailNotifications": true,
+                "marketingEmails": false,
+                "language": "en",
+                "currency": "USD"
+            },
+            "loyaltyProgram": {
+                "points": 0,
+                "tier": "bronze",
+                "joinedAt": "2025-10-03T11:29:09.380Z"
+            },
+            "metrics": {
+                "totalOrders": 3,
+                "totalSpent": 1068,
+                "averageOrderValue": 356,
+                "lastOrderDate": "2025-10-03T11:41:14.608Z",
+                "firstOrderDate": "2025-10-03T11:31:30.553Z",
+                "cancelledOrders": 0,
+                "returnedOrders": 0,
+                "reviewsCount": 0,
+                "referralCount": 0
+            },
+            "_id": "68dfb38500f10920e1bb1fe4",
+            "firstName": "John",
+            "lastName": "Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888",
+            "type": "individual",
+            "status": "active",
+            "isGuest": false,
+            "tags": [],
+            "source": "offline_sale",
+            "acceptedTerms": false,
+            "createdBy": "68c85b8b98104e62d0d25bff",
+            "addresses": [],
+            "createdAt": "2025-10-03T11:29:09.383Z",
+            "updatedAt": "2025-10-03T11:41:14.629Z",
+            "lastActivityAt": "2025-10-03T11:41:14.629Z",
+            "__v": 0,
+            "segment": "standard",
+            "fullName": "John Walk-in",
+            "id": "68dfb38500f10920e1bb1fe4"
+        },
+        "orderHistory": [
+            {
+                "_id": "68dfb65a1ce2bec657ee6cb9",
+                "orderNumber": "ORD-1759491674600-PC8BE",
+                "type": "offline",
+                "status": "processing",
+                "priority": "normal",
+                "customer": "68dfb38500f10920e1bb1fe4",
+                "customerInfo": {
+                    "name": "John Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888"
+                },
+                "items": [
+                    {
+                        "product": {
+                            "_id": "68df9b012ad280c734dc97ff",
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9afe39d9f5a49286/view?project=68c8105a000d3f6e677f&mode=admin"
+                        },
+                        "productSnapshot": {
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "price": 250
+                        },
+                        "quantity": 1,
+                        "price": 250,
+                        "discount": 0,
+                        "tax": 25,
+                        "total": 275
+                    }
+                ],
+                "subtotal": 250,
+                "taxAmount": 25,
+                "shippingCost": 0,
+                "discount": 0,
+                "totalAmount": 275,
+                "currency": "USD",
+                "paymentStatus": "paid",
+                "paymentMethod": "cash",
+                "paymentDetails": {
+                    "paidAt": "2025-10-03T11:41:14.581Z",
+                    "paidAmount": 275,
+                    "refundedAmount": 0
+                },
+                "shippingAddress": {
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888",
+                    "addressLine1": "Walk-in Purchase",
+                    "city": "N/A",
+                    "country": "N/A"
+                },
+                "actualDelivery": "2025-10-03T11:41:14.581Z",
+                "timeline": [
+                    {
+                        "status": "delivered",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:41:14.600Z"
+                    },
+                    {
+                        "status": "pending",
+                        "description": "Order created",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:41:14.608Z"
+                    },
+                    {
+                        "status": "processing",
+                        "description": "Order is being processed",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:55:39.897Z"
+                    }
+                ],
+                "internalNotes": "Returning customer identified by phone - existing customer will be found automatically",
+                "tags": [],
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "deliveredAt": "2025-10-03T11:41:14.581Z",
+                "createdAt": "2025-10-03T11:41:14.608Z",
+                "updatedAt": "2025-10-03T11:55:39.908Z",
+                "__v": 1
+            },
+            {
+                "_id": "68dfb60f1ce2bec657ee6ca5",
+                "orderNumber": "ORD-1759491599550-JXXBE",
+                "type": "offline",
+                "status": "delivered",
+                "priority": "normal",
+                "customer": "68dfb38500f10920e1bb1fe4",
+                "customerInfo": {
+                    "name": "John Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888"
+                },
+                "items": [
+                    {
+                        "product": {
+                            "_id": "68df9b012ad280c734dc97ff",
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9afe39d9f5a49286/view?project=68c8105a000d3f6e677f&mode=admin"
+                        },
+                        "productSnapshot": {
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "price": 250
+                        },
+                        "quantity": 1,
+                        "price": 250,
+                        "discount": 0,
+                        "tax": 25,
+                        "total": 275
+                    }
+                ],
+                "subtotal": 250,
+                "taxAmount": 25,
+                "shippingCost": 0,
+                "discount": 0,
+                "totalAmount": 275,
+                "currency": "USD",
+                "paymentStatus": "paid",
+                "paymentMethod": "cash",
+                "paymentDetails": {
+                    "paidAt": "2025-10-03T11:39:59.405Z",
+                    "paidAmount": 275,
+                    "refundedAmount": 0
+                },
+                "shippingAddress": {
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888",
+                    "addressLine1": "Walk-in Purchase",
+                    "city": "N/A",
+                    "country": "N/A"
+                },
+                "actualDelivery": "2025-10-03T11:39:59.406Z",
+                "timeline": [
+                    {
+                        "status": "delivered",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:39:59.550Z"
+                    },
+                    {
+                        "status": "pending",
+                        "description": "Order created",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:39:59.564Z"
+                    }
+                ],
+                "internalNotes": "In-store purchase - customer ID provided",
+                "tags": [],
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "deliveredAt": "2025-10-03T11:39:59.406Z",
+                "createdAt": "2025-10-03T11:39:59.564Z",
+                "updatedAt": "2025-10-03T11:39:59.564Z",
+                "__v": 0
+            },
+            {
+                "_id": "68dfb4121ce2bec657ee6c97",
+                "orderNumber": "ORD-1759491090527-2Y6ZN",
+                "type": "offline",
+                "status": "delivered",
+                "priority": "normal",
+                "customer": "68dfb38500f10920e1bb1fe4",
+                "customerInfo": {
+                    "name": "John Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888"
+                },
+                "items": [
+                    {
+                        "product": {
+                            "_id": "68df9b012ad280c734dc97ff",
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9afe39d9f5a49286/view?project=68c8105a000d3f6e677f&mode=admin"
+                        },
+                        "productSnapshot": {
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "price": 250
+                        },
+                        "quantity": 2,
+                        "price": 250,
+                        "discount": 10,
+                        "tax": 24,
+                        "total": 514
+                    }
+                ],
+                "subtotal": 490,
+                "taxAmount": 48,
+                "shippingCost": 0,
+                "discount": 20,
+                "totalAmount": 518,
+                "currency": "USD",
+                "paymentStatus": "paid",
+                "paymentMethod": "cash",
+                "paymentDetails": {
+                    "paidAt": "2025-10-03T11:31:30.492Z",
+                    "paidAmount": 528,
+                    "refundedAmount": 0
+                },
+                "shippingAddress": {
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888",
+                    "addressLine1": "Walk-in Purchase",
+                    "city": "N/A",
+                    "country": "N/A"
+                },
+                "actualDelivery": "2025-10-03T11:31:30.492Z",
+                "timeline": [
+                    {
+                        "status": "delivered",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:31:30.527Z"
+                    },
+                    {
+                        "status": "pending",
+                        "description": "Order created",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:31:30.554Z"
+                    }
+                ],
+                "internalNotes": "Walk-in customer - paid cash. Customer will be auto-created if not exists.",
+                "tags": [],
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "deliveredAt": "2025-10-03T11:31:30.492Z",
+                "createdAt": "2025-10-03T11:31:30.553Z",
+                "updatedAt": "2025-10-03T11:31:30.553Z",
+                "__v": 0
+            }
+        ]
+    }
+}
+
+
+
+
+3. products
+
+get products : {{baseUrl}}/api/v1/admin/sales/products?page=1&limit=20&sort=-createdAt
+
+server response:
+{
+    "success": true,
+    "data": {
+        "products": [
+            {
+                "_id": "68df9b012ad280c734dc97ff",
+                "name": "Solar Panel 300W - Updated",
+                "slug": "solar-panel-300w-updated",
+                "sku": "SP-300W-001",
+                "description": "High-efficiency 300W solar panel with 25-year warranty",
+                "shortDescription": "300W monocrystalline solar panel",
+                "category": {
+                    "_id": "68df953286039935221d7129",
+                    "name": "Solar Panels",
+                    "slug": "solar-panels"
+                },
+                "tags": [],
+                "type": "physical",
+                "status": "active",
+                "pricing": {
+                    "price": 290,
+                    "currency": "USD",
+                    "taxRate": 0
+                },
+                "inventory": {
+                    "quantity": 189,
+                    "allowBackorder": false,
+                    "availableQuantity": 189,
+                    "lastRestocked": "2025-10-03T09:54:39.030Z",
+                    "lowStockThreshold": 10,
+                    "reservedQuantity": 0,
+                    "stockStatus": "in-stock",
+                    "trackInventory": true
+                },
+                "hasVariants": false,
+                "images": [
+                    "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9b0226070e799dab/view?project=68c8105a000d3f6e677f&mode=admin"
+                ],
+                "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9afe39d9f5a49286/view?project=68c8105a000d3f6e677f&mode=admin",
+                "videos": [],
+                "documents": [],
+                "dimensions": {
+                    "unit": "cm"
+                },
+                "weight": {
+                    "unit": "kg"
+                },
+                "seo": {
+                    "keywords": []
+                },
+                "ratings": {
+                    "average": 0,
+                    "count": 0
+                },
+                "isFeatured": true,
+                "isNewArrival": false,
+                "displayOrder": 0,
+                "salesCount": 6,
+                "viewCount": 0,
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "variants": [],
+                "specifications": [],
+                "createdAt": "2025-10-03T09:44:33.412Z",
+                "updatedAt": "2025-10-03T11:41:14.592Z",
+                "__v": 0,
+                "lastModifiedBy": "68c85b8b98104e62d0d25bff"
+            }
+        ],
+        "pagination": {
+            "total": 1,
+            "page": 1,
+            "pages": 1,
+            "limit": 20
+        }
+    }
+}
+
+
+Post a product :
+ {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Solar Panel 300W",
+                  "type": "text"
+                },
+                {
+                  "key": "sku",
+                  "value": "SP-300W-001",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "High-efficiency 300W solar panel with 25-year warranty",
+                  "type": "text"
+                },
+                {
+                  "key": "shortDescription",
+                  "value": "300W monocrystalline solar panel",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[cost]",
+                  "value": "150",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[price]",
+                  "value": "250",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[compareAtPrice]",
+                  "value": "300",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[currency]",
+                  "value": "USD",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[quantity]",
+                  "value": "100",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[lowStockThreshold]",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[trackInventory]",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "featuredImage",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "products"]
+            }
+          }
+        }
+
+server response :
+{
+    "success": true,
+    "message": "Product created successfully",
+    "data": {
+        "name": "Solar Panel 500W",
+        "slug": "solar-panel-500w",
+        "sku": "SP-300W-0H1",
+        "description": "High-efficiency 300W solar panel with 25-year warranty",
+        "shortDescription": "300W monocrystalline solar panel",
+        "category": "68df953286039935221d7129",
+        "tags": [],
+        "type": "physical",
+        "status": "active",
+        "pricing": {
+            "cost": 150,
+            "price": 250,
+            "compareAtPrice": 300,
+            "currency": "USD",
+            "taxRate": 0
+        },
+        "inventory": {
+            "quantity": 100,
+            "lowStockThreshold": 10,
+            "trackInventory": true,
+            "reservedQuantity": 0,
+            "availableQuantity": 100,
+            "allowBackorder": false,
+            "stockStatus": "in-stock"
+        },
+        "hasVariants": false,
+        "images": [
+            "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68dfca5aa0b188d1db6c/view?project=68c8105a000d3f6e677f&mode=admin"
+        ],
+        "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68dfca54d87cb049e17c/view?project=68c8105a000d3f6e677f&mode=admin",
+        "videos": [],
+        "documents": [],
+        "dimensions": {
+            "unit": "cm"
+        },
+        "weight": {
+            "unit": "kg"
+        },
+        "seo": {
+            "keywords": []
+        },
+        "ratings": {
+            "average": 0,
+            "count": 0
+        },
+        "isFeatured": true,
+        "isNewArrival": false,
+        "displayOrder": 0,
+        "salesCount": 0,
+        "viewCount": 0,
+        "createdBy": "68c85b8b98104e62d0d25bff",
+        "_id": "68dfca595a41cf6ad3d98cdf",
+        "variants": [],
+        "specifications": [],
+        "createdAt": "2025-10-03T13:06:33.831Z",
+        "updatedAt": "2025-10-03T13:06:33.831Z",
+        "__v": 0,
+        "effectivePrice": null,
+        "id": "68dfca595a41cf6ad3d98cdf"
+    }
+}
+
+
+
+
+Patch : Quick inventory update :
+{{baseUrl}}/api/v1/admin/sales/products/{{productId}}/inventory/quick
+
+req body :
+{
+  "quantity": 5,
+  "operation": "subtract",
+  "reason": "Manual sale - customer walked in"
+}
+
+server response :
+{
+    "success": true,
+    "message": "Inventory decreased successfully",
+    "data": {
+        "product": {
+            "_id": "68df9b012ad280c734dc97ff",
+            "name": "Solar Panel 300W - Updated",
+            "sku": "SP-300W-001",
+            "previousQuantity": 189,
+            "newQuantity": 184,
+            "changeAmount": -5
+        },
+        "changeLog": {
+            "productId": "68df9b012ad280c734dc97ff",
+            "productName": "Solar Panel 300W - Updated",
+            "sku": "SP-300W-001",
+            "previousQuantity": 189,
+            "newQuantity": 184,
+            "changeAmount": -5,
+            "operation": "subtract",
+            "reason": "Manual sale - customer walked in",
+            "updatedBy": "68c85b8b98104e62d0d25bff",
+            "timestamp": "2025-10-03T12:49:05.800Z"
+        }
+    }
+}
+
+
+patch : update product inventory
+{{baseUrl}}/api/v1/admin/sales/products/{{productId}}/inventory
+
+req body :
+{
+  "quantity": 50,
+  "operation": "add"
+}
+
+server resonse:
+{
+    "success": true,
+    "message": "Inventory updated successfully",
+    "data": {
+        "pricing": {
+            "price": 290,
+            "currency": "USD",
+            "taxRate": 0
+        },
+        "inventory": {
+            "quantity": 234,
+            "allowBackorder": false,
+            "availableQuantity": 234,
+            "lastRestocked": "2025-10-03T12:51:46.023Z",
+            "lowStockThreshold": 10,
+            "reservedQuantity": 0,
+            "stockStatus": "in-stock",
+            "trackInventory": true
+        },
+        "dimensions": {
+            "unit": "cm"
+        },
+        "weight": {
+            "unit": "kg"
+        },
+        "seo": {
+            "keywords": []
+        },
+        "ratings": {
+            "average": 0,
+            "count": 0
+        },
+        "_id": "68df9b012ad280c734dc97ff",
+        "name": "Solar Panel 300W - Updated",
+        "slug": "solar-panel-300w-updated",
+        "sku": "SP-300W-001",
+        "description": "High-efficiency 300W solar panel with 25-year warranty",
+        "shortDescription": "300W monocrystalline solar panel",
+        "category": "68df953286039935221d7129",
+        "tags": [],
+        "type": "physical",
+        "status": "active",
+        "hasVariants": false,
+        "images": [
+            "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9b0226070e799dab/view?project=68c8105a000d3f6e677f&mode=admin"
+        ],
+        "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9afe39d9f5a49286/view?project=68c8105a000d3f6e677f&mode=admin",
+        "videos": [],
+        "documents": [],
+        "isFeatured": true,
+        "isNewArrival": false,
+        "displayOrder": 0,
+        "salesCount": 6,
+        "viewCount": 0,
+        "createdBy": "68c85b8b98104e62d0d25bff",
+        "variants": [],
+        "specifications": [],
+        "createdAt": "2025-10-03T09:44:33.412Z",
+        "updatedAt": "2025-10-03T12:51:46.026Z",
+        "__v": 0,
+        "lastModifiedBy": "68c85b8b98104e62d0d25bff",
+        "effectivePrice": null,
+        "id": "68df9b012ad280c734dc97ff"
+    }
+}
+
+
+update product : PUT: {{baseUrl}}/api/v1/admin/sales/products/{{productId}}
+
+{
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Solar Panel 300W - Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "pricing[price]",
+                  "value": "280",
+                  "type": "text"
+                },
+                {
+                  "key": "inventory[quantity]",
+                  "value": "150",
+                  "type": "text"
+                },
+                {
+                  "key": "featuredImage",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "sales",
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        }
+
+server response:
+{
+    "success": true,
+    "message": "Product updated successfully",
+    "data": {
+        "pricing": {
+            "currency": "USD",
+            "taxRate": 0,
+            "price": 280
+        },
+        "inventory": {
+            "reservedQuantity": 0,
+            "availableQuantity": 0,
+            "lowStockThreshold": 10,
+            "trackInventory": true,
+            "allowBackorder": false,
+            "stockStatus": "in-stock",
+            "quantity": 150
+        },
+        "dimensions": {
+            "unit": "cm"
+        },
+        "weight": {
+            "unit": "kg"
+        },
+        "seo": {
+            "keywords": []
+        },
+        "ratings": {
+            "average": 0,
+            "count": 0
+        },
+        "_id": "68df9b012ad280c734dc97ff",
+        "name": "Solar Panel 300W - Updated",
+        "slug": "solar-panel-300w-updated",
+        "sku": "SP-300W-001",
+        "description": "High-efficiency 300W solar panel with 25-year warranty",
+        "shortDescription": "300W monocrystalline solar panel",
+        "category": "68df953286039935221d7129",
+        "tags": [],
+        "type": "physical",
+        "status": "active",
+        "hasVariants": false,
+        "images": [
+            "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9b0226070e799dab/view?project=68c8105a000d3f6e677f&mode=admin"
+        ],
+        "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9afe39d9f5a49286/view?project=68c8105a000d3f6e677f&mode=admin",
+        "videos": [],
+        "documents": [],
+        "isFeatured": true,
+        "isNewArrival": false,
+        "displayOrder": 0,
+        "salesCount": 6,
+        "viewCount": 0,
+        "createdBy": "68c85b8b98104e62d0d25bff",
+        "variants": [],
+        "specifications": [],
+        "createdAt": "2025-10-03T09:44:33.412Z",
+        "updatedAt": "2025-10-03T12:53:51.664Z",
+        "__v": 0,
+        "lastModifiedBy": "68c85b8b98104e62d0d25bff",
+        "effectivePrice": null,
+        "id": "68df9b012ad280c734dc97ff"
+    }
+}
+
+
+4. Categories
+
+Post : {{baseUrl}}/api/v1/admin/sales/categories
+ "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Solar Panels",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "High-quality solar panels for residential and commercial use",
+                  "type": "text"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "isFeatured",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "displayOrder",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Optional category banner image"
+                },
+                {
+                  "key": "icon",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Optional category icon"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "categories"]
+            }
+          }
+        }
+
+server response :
+ {
+    "success": true,
+    "message": "Category created successfully",
+    "data": {
+        "name": "Solar",
+        "slug": "solar",
+        "description": "High-quality solar panels for residential and commercial use",
+        "parentCategory": null,
+        "displayOrder": 1,
+        "isActive": true,
+        "isFeatured": true,
+        "metadata": {
+            "productCount": 0,
+            "lastUpdated": "2025-10-03T13:11:16.146Z"
+        },
+        "seo": {
+            "keywords": []
+        },
+        "createdBy": "68c85b8b98104e62d0d25bff",
+        "_id": "68dfcb745a41cf6ad3d98ce7",
+        "createdAt": "2025-10-03T13:11:16.146Z",
+        "updatedAt": "2025-10-03T13:11:16.146Z",
+        "__v": 0,
+        "path": {},
+        "id": "68dfcb745a41cf6ad3d98ce7"
+    }
+}
+
+
+Get Category Tree : {{baseUrl}}/api/v1/admin/sales/categories/tree
+
+server response :
+{
+    "success": true,
+    "data": [
+        {
+            "_id": "68df953286039935221d7129",
+            "name": "Solar Panels",
+            "slug": "solar-panels",
+            "description": "High-quality solar panels for residential and commercial use",
+            "parentCategory": null,
+            "image": "",
+            "icon": "",
+            "displayOrder": 1,
+            "isActive": true,
+            "isFeatured": true,
+            "metadata": {
+                "productCount": 2,
+                "lastUpdated": "2025-10-03T13:06:33.899Z"
+            },
+            "seo": {
+                "keywords": []
+            },
+            "createdBy": "68c85b8b98104e62d0d25bff",
+            "createdAt": "2025-10-03T09:19:46.843Z",
+            "updatedAt": "2025-10-03T13:06:33.899Z",
+            "__v": 0,
+            "subcategories": []
+        },
+        {
+            "_id": "68dfcb745a41cf6ad3d98ce7",
+            "name": "Solar",
+            "slug": "solar",
+            "description": "High-quality solar panels for residential and commercial use",
+            "parentCategory": null,
+            "displayOrder": 1,
+            "isActive": true,
+            "isFeatured": true,
+            "metadata": {
+                "productCount": 0,
+                "lastUpdated": "2025-10-03T13:11:16.146Z"
+            },
+            "seo": {
+                "keywords": []
+            },
+            "createdBy": "68c85b8b98104e62d0d25bff",
+            "createdAt": "2025-10-03T13:11:16.146Z",
+            "updatedAt": "2025-10-03T13:11:16.146Z",
+            "__v": 0,
+            "subcategories": []
+        }
+    ]
+}
+
+
+5. Analytics
+Get analytics, best seller : {{baseUrl}}/api/v1/admin/sales/analytics/best-sellers?limit=10&from=2025-01-01&to=2025-12-31
+
+server response :
+{
+    "success": true,
+    "data": [
+        {
+            "_id": "68df9b012ad280c734dc97ff",
+            "productName": "Solar Panel 300W - Updated",
+            "totalQuantity": 4,
+            "totalRevenue": 1064,
+            "orderCount": 3,
+            "productId": "68df9b012ad280c734dc97ff",
+            "product": {
+                "_id": "68df9b012ad280c734dc97ff",
+                "name": "Solar Panel 300W - Updated",
+                "slug": "solar-panel-300w-updated",
+                "sku": "SP-300W-001",
+                "description": "High-efficiency 300W solar panel with 25-year warranty",
+                "shortDescription": "300W monocrystalline solar panel",
+                "category": "68df953286039935221d7129",
+                "tags": [],
+                "type": "physical",
+                "status": "active",
+                "pricing": {
+                    "price": 280
+                },
+                "inventory": {
+                    "quantity": 150
+                },
+                "hasVariants": false,
+                "images": [
+                    "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9b0226070e799dab/view?project=68c8105a000d3f6e677f&mode=admin"
+                ],
+                "featuredImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68df9afe39d9f5a49286/view?project=68c8105a000d3f6e677f&mode=admin",
+                "videos": [],
+                "documents": [],
+                "dimensions": {
+                    "unit": "cm"
+                },
+                "weight": {
+                    "unit": "kg"
+                },
+                "seo": {
+                    "keywords": []
+                },
+                "ratings": {
+                    "average": 0,
+                    "count": 0
+                },
+                "isFeatured": true,
+                "isNewArrival": false,
+                "displayOrder": 0,
+                "salesCount": 6,
+                "viewCount": 0,
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "variants": [],
+                "specifications": [],
+                "createdAt": "2025-10-03T09:44:33.412Z",
+                "updatedAt": "2025-10-03T12:53:51.664Z",
+                "__v": 0,
+                "lastModifiedBy": "68c85b8b98104e62d0d25bff"
+            }
+        }
+    ]
+}
+
+
+
+
+
+
+
+Get all analytics : {{baseUrl}}/api/v1/admin/sales/analytics
+
+server response :
+{
+    "success": true,
+    "data": {
+        "period": {
+            "type": "monthly",
+            "startDate": "2025-09-30T22:00:00.000Z",
+            "endDate": "2025-10-31T21:59:59.000Z"
+        },
+        "summary": {
+            "totalRevenue": 1068,
+            "totalOrders": 3,
+            "averageOrderValue": 356,
+            "newCustomers": 1,
+            "topSellingProduct": {
+                "productId": "68df9b012ad280c734dc97ff",
+                "productName": "Solar Panel 300W - Updated",
+                "quantity": 4,
+                "revenue": 1064,
+                "_id": "68dfcc6e5a41cf6ad3d98cfa",
+                "id": "68dfcc6e5a41cf6ad3d98cfa"
+            },
+            "topCustomer": {
+                "customerId": "68dfb38500f10920e1bb1fe4",
+                "customerName": "John Walk-in",
+                "totalSpent": 1068,
+                "orderCount": 3,
+                "_id": "68dfcc6e5a41cf6ad3d98cfb",
+                "id": "68dfcc6e5a41cf6ad3d98cfb"
+            }
+        },
+        "sales": {
+            "totalSales": 1068,
+            "totalOrders": 3,
+            "averageOrderValue": 356,
+            "returnRate": 0,
+            "refundAmount": 0,
+            "conversionRate": 0,
+            "cartAbandonmentRate": 0
+        },
+        "products": {
+            "topSelling": [
+                {
+                    "productId": "68df9b012ad280c734dc97ff",
+                    "productName": "Solar Panel 300W - Updated",
+                    "quantity": 4,
+                    "revenue": 1064,
+                    "_id": "68dfcc6e5a41cf6ad3d98cfa",
+                    "id": "68dfcc6e5a41cf6ad3d98cfa"
+                }
+            ],
+            "lowStock": [],
+            "categoryPerformance": []
+        },
+        "customers": {
+            "metrics": {
+                "new": 1,
+                "returning": 1,
+                "retentionRate": 50
+            },
+            "topCustomers": [
+                {
+                    "customerId": "68dfb38500f10920e1bb1fe4",
+                    "customerName": "John Walk-in",
+                    "totalSpent": 1068,
+                    "orderCount": 3,
+                    "_id": "68dfcc6e5a41cf6ad3d98cfb",
+                    "id": "68dfcc6e5a41cf6ad3d98cfb"
+                }
+            ],
+            "segmentation": []
+        },
+        "channels": {
+            "online": 0,
+            "offline": 1068,
+            "phone": 0,
+            "inStore": 0
+        },
+        "paymentMethods": [
+            {
+                "method": "cash",
+                "amount": 1068
+            }
+        ],
+        "growth": {
+            "previousPeriod": {},
+            "growthRate": {}
+        }
+    },
+    "meta": {
+        "period": "monthly",
+        "startDate": "2025-09-30T22:00:00.000Z",
+        "endDate": "2025-10-31T21:59:59.000Z"
+    }
+}
+
+get analytics:
+{{baseUrl}}/api/v1/admin/sales/analytics?period=monthly&startDate=2025-01-01&endDate=2025-01-31
+
+server response :
+{
+    "success": true,
+    "data": {
+        "period": {
+            "type": "monthly",
+            "startDate": "2025-01-01T00:00:00.000Z",
+            "endDate": "2025-01-31T00:00:00.000Z"
+        },
+        "summary": {
+            "totalRevenue": 0,
+            "totalOrders": 0,
+            "averageOrderValue": 0,
+            "newCustomers": 0
+        },
+        "sales": {
+            "totalSales": 0,
+            "totalOrders": 0,
+            "averageOrderValue": 0,
+            "returnRate": 0,
+            "refundAmount": 0,
+            "conversionRate": 0,
+            "cartAbandonmentRate": 0
+        },
+        "products": {
+            "topSelling": [],
+            "lowStock": [],
+            "categoryPerformance": []
+        },
+        "customers": {
+            "metrics": {
+                "new": 0,
+                "returning": 0,
+                "retentionRate": 0
+            },
+            "topCustomers": [],
+            "segmentation": []
+        },
+        "channels": {
+            "online": 0,
+            "offline": 0,
+            "phone": 0,
+            "inStore": 0
+        },
+        "paymentMethods": [],
+        "growth": {
+            "previousPeriod": {},
+            "growthRate": {}
+        }
+    },
+    "meta": {
+        "period": "monthly",
+        "startDate": "2025-01-01T00:00:00.000Z",
+        "endDate": "2025-01-31T00:00:00.000Z"
+    }
+}
+
+
+6. Orders 
+
+Post Order : (New customer bought offline ) 
+{{baseUrl}}/api/v1/admin/sales/orders/offline
+
+
+req body:
+{
+  "customerInfo": {
+    "firstName": "John",
+    "lastName": "Walk-in",
+    "phone": "+265999777888",
+    "email": "john.walkin@example.com"
+  },
+  "items": [
+    {
+      "product": "{{productId}}",
+      "quantity": 2,
+      "price": 250,
+      "discount": 10,
+      "tax": 24
+    }
+  ],
+  "subtotal": 500,
+  "taxAmount": 48,
+  "discount": 20,
+  "totalAmount": 528,
+  "paymentMethod": "cash",
+  "internalNotes": "Walk-in customer - paid cash. Customer will be auto-created if not exists."
+}
+
+
+
+server response:
+{
+    "success": true,
+    "message": "Offline sale recorded successfully",
+    "data": {
+        "orderNumber": "ORD-1759491090527-2Y6ZN",
+        "type": "offline",
+        "status": "delivered",
+        "priority": "normal",
+        "customer": {
+            "_id": "68dfb38500f10920e1bb1fe4",
+            "firstName": "John",
+            "lastName": "Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888",
+            "fullName": "John Walk-in",
+            "id": "68dfb38500f10920e1bb1fe4"
+        },
+        "customerInfo": {
+            "name": "John Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888"
+        },
+        "items": [
+            {
+                "product": "68df9b012ad280c734dc97ff",
+                "productSnapshot": {
+                    "name": "Solar Panel 300W - Updated",
+                    "sku": "SP-300W-001",
+                    "price": 250
+                },
+                "quantity": 2,
+                "price": 250,
+                "discount": 10,
+                "tax": 24,
+                "total": 514
+            }
+        ],
+        "subtotal": 490,
+        "taxAmount": 48,
+        "shippingCost": 0,
+        "discount": 20,
+        "totalAmount": 518,
+        "currency": "USD",
+        "paymentStatus": "paid",
+        "paymentMethod": "cash",
+        "paymentDetails": {
+            "paidAt": "2025-10-03T11:31:30.492Z",
+            "paidAmount": 528,
+            "refundedAmount": 0
+        },
+        "shippingAddress": {
+            "firstName": "John",
+            "lastName": "Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888",
+            "addressLine1": "Walk-in Purchase",
+            "city": "N/A",
+            "country": "N/A"
+        },
+        "actualDelivery": "2025-10-03T11:31:30.492Z",
+        "timeline": [
+            {
+                "status": "delivered",
+                "updatedBy": "68c85b8b98104e62d0d25bff",
+                "timestamp": "2025-10-03T11:31:30.527Z"
+            },
+            {
+                "status": "pending",
+                "description": "Order created",
+                "updatedBy": "68c85b8b98104e62d0d25bff",
+                "timestamp": "2025-10-03T11:31:30.554Z"
+            }
+        ],
+        "internalNotes": "Walk-in customer - paid cash. Customer will be auto-created if not exists.",
+        "tags": [],
+        "createdBy": "68c85b8b98104e62d0d25bff",
+        "deliveredAt": "2025-10-03T11:31:30.492Z",
+        "_id": "68dfb4121ce2bec657ee6c97",
+        "createdAt": "2025-10-03T11:31:30.553Z",
+        "updatedAt": "2025-10-03T11:31:30.553Z",
+        "__v": 0,
+        "id": "68dfb4121ce2bec657ee6c97"
+    }
+}
+
+
+
+
+Post : Record sale for an existing customer in the DB  : {{baseUrl}}/api/v1/admin/sales/orders/offline
+
+req body:
+{
+    "customer": "{{customerId}}",
+    "items": [
+        {
+            "product": "{{productId}}",
+            "quantity": 1,
+            "price": 250,
+            "discount": 0,
+            "tax": 25
+        }
+    ],
+    "subtotal": 250,
+    "taxAmount": 25,
+    "discount": 0,
+    "totalAmount": 275,
+    "paymentMethod": "cash",
+    "internalNotes": "In-store purchase - customer ID provided"
+}
+
+
+server response:
+{
+    "success": true,
+    "message": "Offline sale recorded successfully",
+    "data": {
+        "orderNumber": "ORD-1759491599550-JXXBE",
+        "type": "offline",
+        "status": "delivered",
+        "priority": "normal",
+        "customer": {
+            "_id": "68dfb38500f10920e1bb1fe4",
+            "firstName": "John",
+            "lastName": "Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888",
+            "fullName": "John Walk-in",
+            "id": "68dfb38500f10920e1bb1fe4"
+        },
+        "customerInfo": {
+            "name": "John Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888"
+        },
+        "items": [
+            {
+                "product": "68df9b012ad280c734dc97ff",
+                "productSnapshot": {
+                    "name": "Solar Panel 300W - Updated",
+                    "sku": "SP-300W-001",
+                    "price": 250
+                },
+                "quantity": 1,
+                "price": 250,
+                "discount": 0,
+                "tax": 25,
+                "total": 275
+            }
+        ],
+        "subtotal": 250,
+        "taxAmount": 25,
+        "shippingCost": 0,
+        "discount": 0,
+        "totalAmount": 275,
+        "currency": "USD",
+        "paymentStatus": "paid",
+        "paymentMethod": "cash",
+        "paymentDetails": {
+            "paidAt": "2025-10-03T11:39:59.405Z",
+            "paidAmount": 275,
+            "refundedAmount": 0
+        },
+        "shippingAddress": {
+            "firstName": "John",
+            "lastName": "Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888",
+            "addressLine1": "Walk-in Purchase",
+            "city": "N/A",
+            "country": "N/A"
+        },
+        "actualDelivery": "2025-10-03T11:39:59.406Z",
+        "timeline": [
+            {
+                "status": "delivered",
+                "updatedBy": "68c85b8b98104e62d0d25bff",
+                "timestamp": "2025-10-03T11:39:59.550Z"
+            },
+            {
+                "status": "pending",
+                "description": "Order created",
+                "updatedBy": "68c85b8b98104e62d0d25bff",
+                "timestamp": "2025-10-03T11:39:59.564Z"
+            }
+        ],
+        "internalNotes": "In-store purchase - customer ID provided",
+        "tags": [],
+        "createdBy": "68c85b8b98104e62d0d25bff",
+        "deliveredAt": "2025-10-03T11:39:59.406Z",
+        "_id": "68dfb60f1ce2bec657ee6ca5",
+        "createdAt": "2025-10-03T11:39:59.564Z",
+        "updatedAt": "2025-10-03T11:39:59.564Z",
+        "__v": 0,
+        "id": "68dfb60f1ce2bec657ee6ca5"
+    }
+}
+
+
+Patch : update order status : {{baseUrl}}/api/v1/admin/sales/orders/{{orderId}}/status
+
+req body :
+{
+  "status": "processing",
+  "notes": "Order is being processed"
+}
+
+
+server response :
+{
+    "success": true,
+    "message": "Order status updated successfully",
+    "data": {
+        "customerInfo": {
+            "name": "John Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888"
+        },
+        "paymentDetails": {
+            "paidAt": "2025-10-03T11:41:14.581Z",
+            "paidAmount": 275,
+            "refundedAmount": 0
+        },
+        "_id": "68dfb65a1ce2bec657ee6cb9",
+        "orderNumber": "ORD-1759491674600-PC8BE",
+        "type": "offline",
+        "status": "processing",
+        "priority": "normal",
+        "customer": "68dfb38500f10920e1bb1fe4",
+        "items": [
+            {
+                "productSnapshot": {
+                    "name": "Solar Panel 300W - Updated",
+                    "sku": "SP-300W-001",
+                    "price": 250
+                },
+                "product": "68df9b012ad280c734dc97ff",
+                "quantity": 1,
+                "price": 250,
+                "discount": 0,
+                "tax": 25,
+                "total": 275
+            }
+        ],
+        "subtotal": 250,
+        "taxAmount": 25,
+        "shippingCost": 0,
+        "discount": 0,
+        "totalAmount": 275,
+        "currency": "USD",
+        "paymentStatus": "paid",
+        "paymentMethod": "cash",
+        "shippingAddress": {
+            "firstName": "John",
+            "lastName": "Walk-in",
+            "email": "john.walkin@example.com",
+            "phone": "+265999777888",
+            "addressLine1": "Walk-in Purchase",
+            "city": "N/A",
+            "country": "N/A"
+        },
+        "actualDelivery": "2025-10-03T11:41:14.581Z",
+        "timeline": [
+            {
+                "status": "delivered",
+                "updatedBy": "68c85b8b98104e62d0d25bff",
+                "timestamp": "2025-10-03T11:41:14.600Z"
+            },
+            {
+                "status": "pending",
+                "description": "Order created",
+                "updatedBy": "68c85b8b98104e62d0d25bff",
+                "timestamp": "2025-10-03T11:41:14.608Z"
+            },
+            {
+                "status": "processing",
+                "description": "Order is being processed",
+                "updatedBy": "68c85b8b98104e62d0d25bff",
+                "timestamp": "2025-10-03T11:55:39.897Z"
+            }
+        ],
+        "internalNotes": "Returning customer identified by phone - existing customer will be found automatically",
+        "tags": [],
+        "createdBy": "68c85b8b98104e62d0d25bff",
+        "deliveredAt": "2025-10-03T11:41:14.581Z",
+        "createdAt": "2025-10-03T11:41:14.608Z",
+        "updatedAt": "2025-10-03T11:55:39.908Z",
+        "__v": 1,
+        "id": "68dfb65a1ce2bec657ee6cb9"
+    }
+}
+
+
+
+Get All orders : {{baseUrl}}/api/v1/admin/sales/orders?page=1&limit=20&sort=-createdAt
+
+server response :
+{
+    "success": true,
+    "data": {
+        "orders": [
+            {
+                "_id": "68dfb65a1ce2bec657ee6cb9",
+                "orderNumber": "ORD-1759491674600-PC8BE",
+                "type": "offline",
+                "status": "processing",
+                "priority": "normal",
+                "customer": {
+                    "_id": "68dfb38500f10920e1bb1fe4",
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com"
+                },
+                "customerInfo": {
+                    "name": "John Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888"
+                },
+                "items": [
+                    {
+                        "product": {
+                            "_id": "68df9b012ad280c734dc97ff",
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001"
+                        },
+                        "productSnapshot": {
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "price": 250
+                        },
+                        "quantity": 1,
+                        "price": 250,
+                        "discount": 0,
+                        "tax": 25,
+                        "total": 275
+                    }
+                ],
+                "subtotal": 250,
+                "taxAmount": 25,
+                "shippingCost": 0,
+                "discount": 0,
+                "totalAmount": 275,
+                "currency": "USD",
+                "paymentStatus": "paid",
+                "paymentMethod": "cash",
+                "paymentDetails": {
+                    "paidAt": "2025-10-03T11:41:14.581Z",
+                    "paidAmount": 275,
+                    "refundedAmount": 0
+                },
+                "shippingAddress": {
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888",
+                    "addressLine1": "Walk-in Purchase",
+                    "city": "N/A",
+                    "country": "N/A"
+                },
+                "actualDelivery": "2025-10-03T11:41:14.581Z",
+                "timeline": [
+                    {
+                        "status": "delivered",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:41:14.600Z"
+                    },
+                    {
+                        "status": "pending",
+                        "description": "Order created",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:41:14.608Z"
+                    },
+                    {
+                        "status": "processing",
+                        "description": "Order is being processed",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:55:39.897Z"
+                    }
+                ],
+                "internalNotes": "Returning customer identified by phone - existing customer will be found automatically",
+                "tags": [],
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "deliveredAt": "2025-10-03T11:41:14.581Z",
+                "createdAt": "2025-10-03T11:41:14.608Z",
+                "updatedAt": "2025-10-03T11:55:39.908Z",
+                "__v": 1
+            },
+            {
+                "_id": "68dfb60f1ce2bec657ee6ca5",
+                "orderNumber": "ORD-1759491599550-JXXBE",
+                "type": "offline",
+                "status": "delivered",
+                "priority": "normal",
+                "customer": {
+                    "_id": "68dfb38500f10920e1bb1fe4",
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com"
+                },
+                "customerInfo": {
+                    "name": "John Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888"
+                },
+                "items": [
+                    {
+                        "product": {
+                            "_id": "68df9b012ad280c734dc97ff",
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001"
+                        },
+                        "productSnapshot": {
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "price": 250
+                        },
+                        "quantity": 1,
+                        "price": 250,
+                        "discount": 0,
+                        "tax": 25,
+                        "total": 275
+                    }
+                ],
+                "subtotal": 250,
+                "taxAmount": 25,
+                "shippingCost": 0,
+                "discount": 0,
+                "totalAmount": 275,
+                "currency": "USD",
+                "paymentStatus": "paid",
+                "paymentMethod": "cash",
+                "paymentDetails": {
+                    "paidAt": "2025-10-03T11:39:59.405Z",
+                    "paidAmount": 275,
+                    "refundedAmount": 0
+                },
+                "shippingAddress": {
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888",
+                    "addressLine1": "Walk-in Purchase",
+                    "city": "N/A",
+                    "country": "N/A"
+                },
+                "actualDelivery": "2025-10-03T11:39:59.406Z",
+                "timeline": [
+                    {
+                        "status": "delivered",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:39:59.550Z"
+                    },
+                    {
+                        "status": "pending",
+                        "description": "Order created",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:39:59.564Z"
+                    }
+                ],
+                "internalNotes": "In-store purchase - customer ID provided",
+                "tags": [],
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "deliveredAt": "2025-10-03T11:39:59.406Z",
+                "createdAt": "2025-10-03T11:39:59.564Z",
+                "updatedAt": "2025-10-03T11:39:59.564Z",
+                "__v": 0
+            },
+            {
+                "_id": "68dfb4121ce2bec657ee6c97",
+                "orderNumber": "ORD-1759491090527-2Y6ZN",
+                "type": "offline",
+                "status": "delivered",
+                "priority": "normal",
+                "customer": {
+                    "_id": "68dfb38500f10920e1bb1fe4",
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com"
+                },
+                "customerInfo": {
+                    "name": "John Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888"
+                },
+                "items": [
+                    {
+                        "product": {
+                            "_id": "68df9b012ad280c734dc97ff",
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001"
+                        },
+                        "productSnapshot": {
+                            "name": "Solar Panel 300W - Updated",
+                            "sku": "SP-300W-001",
+                            "price": 250
+                        },
+                        "quantity": 2,
+                        "price": 250,
+                        "discount": 10,
+                        "tax": 24,
+                        "total": 514
+                    }
+                ],
+                "subtotal": 490,
+                "taxAmount": 48,
+                "shippingCost": 0,
+                "discount": 20,
+                "totalAmount": 518,
+                "currency": "USD",
+                "paymentStatus": "paid",
+                "paymentMethod": "cash",
+                "paymentDetails": {
+                    "paidAt": "2025-10-03T11:31:30.492Z",
+                    "paidAmount": 528,
+                    "refundedAmount": 0
+                },
+                "shippingAddress": {
+                    "firstName": "John",
+                    "lastName": "Walk-in",
+                    "email": "john.walkin@example.com",
+                    "phone": "+265999777888",
+                    "addressLine1": "Walk-in Purchase",
+                    "city": "N/A",
+                    "country": "N/A"
+                },
+                "actualDelivery": "2025-10-03T11:31:30.492Z",
+                "timeline": [
+                    {
+                        "status": "delivered",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:31:30.527Z"
+                    },
+                    {
+                        "status": "pending",
+                        "description": "Order created",
+                        "updatedBy": "68c85b8b98104e62d0d25bff",
+                        "timestamp": "2025-10-03T11:31:30.554Z"
+                    }
+                ],
+                "internalNotes": "Walk-in customer - paid cash. Customer will be auto-created if not exists.",
+                "tags": [],
+                "createdBy": "68c85b8b98104e62d0d25bff",
+                "deliveredAt": "2025-10-03T11:31:30.492Z",
+                "createdAt": "2025-10-03T11:31:30.553Z",
+                "updatedAt": "2025-10-03T11:31:30.553Z",
+                "__v": 0
+            }
+        ],
+        "pagination": {
+            "total": 3,
+            "page": 1,
+            "pages": 1,
+            "limit": 20
+        }
+    }
+}
+
+
