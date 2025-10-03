@@ -301,78 +301,67 @@ export class SalesAdminService {
    * Create a new order
    */
   async createOrder(orderData: any, userId: string) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // Validate customer
+    const customer = await Customer.findById(orderData.customer);
+    if (!customer) {
+      throw new AppError("Customer not found", 404);
+    }
 
-    try {
-      // Validate customer
-      const customer = await Customer.findById(orderData.customer);
-      if (!customer) {
-        throw new AppError("Customer not found", 404);
+    if (!customer.canMakePurchase()) {
+      throw new AppError("Customer is not allowed to make purchases", 400);
+    }
+
+    // Set customer info
+    orderData.customerInfo = {
+      name: customer.getFullName(),
+      email: customer.email,
+      phone: customer.phone,
+    };
+
+    // Process order items and reserve inventory
+    for (const item of orderData.items) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        throw new AppError(`Product ${item.product} not found`, 404);
       }
 
-      if (!customer.canMakePurchase()) {
-        throw new AppError("Customer is not allowed to make purchases", 400);
-      }
-
-      // Set customer info
-      orderData.customerInfo = {
-        name: customer.getFullName(),
-        email: customer.email,
-        phone: customer.phone,
+      // Set product snapshot
+      item.productSnapshot = {
+        name: product.name,
+        sku: product.sku,
+        price: product.pricing.price,
+        image: product.featuredImage,
       };
 
-      // Process order items and reserve inventory
-      for (const item of orderData.items) {
-        const product = await Product.findById(item.product).session(session);
-        if (!product) {
-          throw new AppError(`Product ${item.product} not found`, 404);
-        }
+      // Calculate item total
+      item.total =
+        item.price * item.quantity - (item.discount || 0) + (item.tax || 0);
 
-        // Set product snapshot
-        item.productSnapshot = {
-          name: product.name,
-          sku: product.sku,
-          price: product.pricing.price,
-          image: product.featuredImage,
-        };
-
-        // Calculate item total
-        item.total =
-          item.price * item.quantity - (item.discount || 0) + (item.tax || 0);
-
-        // Reserve inventory
-        if (product.inventory.trackInventory) {
-          await product.reserveStock(item.quantity);
-        }
+      // Reserve inventory
+      if (product.inventory.trackInventory) {
+        await product.reserveStock(item.quantity);
       }
-
-      // Set creator
-      orderData.createdBy = userId;
-
-      // Create order
-      const order = new Order(orderData);
-      await order.save({ session });
-
-      // Update customer metrics
-      await customer.updateMetrics();
-
-      // Update product sales count
-      for (const item of orderData.items) {
-        const product = await Product.findById(item.product).session(session);
-        if (product) {
-          await product.incrementSalesCount(item.quantity);
-        }
-      }
-
-      await session.commitTransaction();
-      return order;
-    } catch (error: any) {
-      await session.abortTransaction();
-      throw new AppError(error.message || "Failed to create order", 400);
-    } finally {
-      session.endSession();
     }
+
+    // Set creator
+    orderData.createdBy = userId;
+
+    // Create order
+    const order = new Order(orderData);
+    await order.save();
+
+    // Update customer metrics
+    await customer.updateMetrics();
+
+    // Update product sales count
+    for (const item of orderData.items) {
+      const product = await Product.findById(item.product);
+      if (product) {
+        await product.incrementSalesCount(item.quantity);
+      }
+    }
+
+    return order;
   }
 
   /**
@@ -384,11 +373,8 @@ export class SalesAdminService {
     userId: string,
     notes?: string
   ) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
-      const order = await Order.findById(orderId).session(session);
+      const order = await Order.findById(orderId);
       if (!order) {
         throw new AppError("Order not found", 404);
       }
@@ -404,7 +390,7 @@ export class SalesAdminService {
       if (status === OrderStatus.CANCELLED || status === OrderStatus.REFUNDED) {
         // Release reserved inventory
         for (const item of order.items) {
-          const product = await Product.findById(item.product).session(session);
+          const product = await Product.findById(item.product);
           if (product && product.inventory.trackInventory) {
             await product.releaseReservedStock(item.quantity);
 
@@ -414,40 +400,34 @@ export class SalesAdminService {
                 0,
                 product.salesCount - item.quantity
               );
-              await product.save({ session });
+              await product.save();
             }
           }
         }
       } else if (status === OrderStatus.DELIVERED) {
         // Convert reserved stock to sold
         for (const item of order.items) {
-          const product = await Product.findById(item.product).session(session);
+          const product = await Product.findById(item.product);
           if (product && product.inventory.trackInventory) {
             product.inventory.reservedQuantity = Math.max(
               0,
               product.inventory.reservedQuantity - item.quantity
             );
-            await product.save({ session });
+            await product.save();
           }
         }
 
         // Update customer loyalty points
-        const customer = await Customer.findById(order.customer).session(
-          session
-        );
+        const customer = await Customer.findById(order.customer);
         if (customer) {
           const points = Math.floor(order.totalAmount / 10); // 1 point per $10
           await customer.addLoyaltyPoints(points);
         }
       }
 
-      await session.commitTransaction();
       return order;
     } catch (error: any) {
-      await session.abortTransaction();
       throw new AppError(error.message || "Failed to update order status", 400);
-    } finally {
-      session.endSession();
     }
   }
 
@@ -455,9 +435,6 @@ export class SalesAdminService {
    * Record offline sale
    */
   async recordOfflineSale(saleData: any, userId: string) {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
       // Handle customer - find existing or create new
       if (!saleData.customer && saleData.customerInfo) {
@@ -468,12 +445,12 @@ export class SalesAdminService {
         let customer = null;
 
         if (email) {
-          customer = await Customer.findOne({ email }).session(session);
+          customer = await Customer.findOne({ email });
         }
 
         // If not found by email, try phone
         if (!customer && phone) {
-          customer = await Customer.findOne({ phone }).session(session);
+          customer = await Customer.findOne({ phone });
         }
 
         if (customer) {
@@ -495,11 +472,24 @@ export class SalesAdminService {
             createdBy: new mongoose.Types.ObjectId(userId),
           });
 
-          await newCustomer.save({ session });
+          await newCustomer.save();
           console.log(`Created new customer: ${newCustomer.email}`);
           saleData.customer = newCustomer._id;
         }
       }
+
+      // Get customer for customerInfo
+      const customer = await Customer.findById(saleData.customer);
+      if (!customer) {
+        throw new AppError("Customer not found", 404);
+      }
+
+      // Set required customerInfo
+      saleData.customerInfo = {
+        name: customer.getFullName(),
+        email: customer.email,
+        phone: customer.phone || "N/A",
+      };
 
       // Set order type to offline
       saleData.type = "offline";
@@ -517,9 +507,22 @@ export class SalesAdminService {
       saleData.deliveredAt = new Date();
       saleData.actualDelivery = new Date();
 
+      // Create default shipping address if not provided (for offline/walk-in sales)
+      if (!saleData.shippingAddress) {
+        saleData.shippingAddress = {
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          email: customer.email,
+          phone: customer.phone || "N/A",
+          addressLine1: "Walk-in Purchase",
+          city: "N/A",
+          country: "N/A",
+        };
+      }
+
       // Validate and process order items
       for (const item of saleData.items) {
-        const product = await Product.findById(item.product).session(session);
+        const product = await Product.findById(item.product);
         if (!product) {
           throw new AppError(`Product with ID ${item.product} not found`, 404);
         }
@@ -535,10 +538,18 @@ export class SalesAdminService {
           );
         }
 
+        // Calculate item total if not provided
+        if (!item.total) {
+          const itemSubtotal = item.price * item.quantity;
+          const itemDiscount = item.discount || 0;
+          const itemTax = item.tax || 0;
+          item.total = itemSubtotal - itemDiscount + itemTax;
+        }
+
         // Update inventory immediately for offline sales
         await product.updateStock(item.quantity, "subtract");
         await product.incrementSalesCount(item.quantity);
-        await product.save({ session });
+        await product.save();
 
         // Set product snapshot for order history
         item.productSnapshot = {
@@ -567,25 +578,19 @@ export class SalesAdminService {
         ],
       });
 
-      await order.save({ session });
+      await order.save();
 
       // Update customer metrics if not guest
       if (saleData.customer) {
-        const customer = await Customer.findById(saleData.customer).session(
-          session
-        );
+        const customer = await Customer.findById(saleData.customer);
         if (customer && !customer.isGuest) {
           await customer.updateMetrics();
         }
       }
 
-      await session.commitTransaction();
       return order.populate("customer", "firstName lastName email phone");
     } catch (error: any) {
-      await session.abortTransaction();
       throw new AppError(error.message || "Failed to record offline sale", 400);
-    } finally {
-      session.endSession();
     }
   }
 
