@@ -34,40 +34,8 @@ export class SalesAdminService {
         throw new AppError("Product with this SKU already exists", 400);
       }
 
-      // Process images through Appwrite if URLs are provided
-      if (productData.featuredImage) {
-        try {
-          const processedImage = await this.appwriteService.uploadImageFromUrl(
-            productData.featuredImage,
-            "products",
-            `featured_${productData.sku}_${Date.now()}`
-          );
-          productData.featuredImage = processedImage;
-        } catch (imageError) {
-          console.error("Failed to process featured image:", imageError);
-        }
-      }
-
-      // Process gallery images
-      if (productData.images && Array.isArray(productData.images)) {
-        const processedImages: string[] = [];
-        for (let i = 0; i < productData.images.length; i++) {
-          try {
-            const processedImage =
-              await this.appwriteService.uploadImageFromUrl(
-                productData.images[i],
-                "products",
-                `gallery_${productData.sku}_${i}_${Date.now()}`
-              );
-            processedImages.push(processedImage);
-          } catch (imageError) {
-            console.error(`Failed to process gallery image ${i}:`, imageError);
-            // Keep original URL if upload fails
-            processedImages.push(productData.images[i]);
-          }
-        }
-        productData.images = processedImages;
-      }
+      // Images are already uploaded to Appwrite by the controller
+      // No need to re-process them here
 
       // Set creator
       productData.createdBy = userId;
@@ -100,40 +68,8 @@ export class SalesAdminService {
         updateData.slug = slugify(updateData.name, { lower: true });
       }
 
-      // Process featured image through Appwrite if URL is provided
-      if (updateData.featuredImage) {
-        try {
-          const processedImage = await this.appwriteService.uploadImageFromUrl(
-            updateData.featuredImage,
-            "products",
-            `featured_update_${productId}_${Date.now()}`
-          );
-          updateData.featuredImage = processedImage;
-        } catch (imageError) {
-          console.error("Failed to process featured image:", imageError);
-        }
-      }
-
-      // Process gallery images
-      if (updateData.images && Array.isArray(updateData.images)) {
-        const processedImages: string[] = [];
-        for (let i = 0; i < updateData.images.length; i++) {
-          try {
-            const processedImage =
-              await this.appwriteService.uploadImageFromUrl(
-                updateData.images[i],
-                "products",
-                `gallery_update_${productId}_${i}_${Date.now()}`
-              );
-            processedImages.push(processedImage);
-          } catch (imageError) {
-            console.error(`Failed to process gallery image ${i}:`, imageError);
-            // Keep original URL if upload fails
-            processedImages.push(updateData.images[i]);
-          }
-        }
-        updateData.images = processedImages;
-      }
+      // Images are already uploaded to Appwrite by the controller
+      // No need to re-process them here
 
       // Set modifier
       updateData.lastModifiedBy = userId;
@@ -335,33 +271,8 @@ export class SalesAdminService {
       categoryData.slug = slugify(categoryData.name, { lower: true });
       categoryData.createdBy = userId;
 
-      // Process category image through Appwrite if URL is provided
-      if (categoryData.image) {
-        try {
-          const processedImage = await this.appwriteService.uploadImageFromUrl(
-            categoryData.image,
-            "categories",
-            `category_${categoryData.slug}_${Date.now()}`
-          );
-          categoryData.image = processedImage;
-        } catch (imageError) {
-          console.error("Failed to process category image:", imageError);
-        }
-      }
-
-      // Process category icon through Appwrite if URL is provided
-      if (categoryData.icon) {
-        try {
-          const processedIcon = await this.appwriteService.uploadImageFromUrl(
-            categoryData.icon,
-            "categories",
-            `icon_${categoryData.slug}_${Date.now()}`
-          );
-          categoryData.icon = processedIcon;
-        } catch (iconError) {
-          console.error("Failed to process category icon:", iconError);
-        }
-      }
+      // Images are already uploaded to Appwrite by the controller
+      // No need to re-process them here
 
       const category = new Category(categoryData);
       await category.save();
@@ -548,29 +459,46 @@ export class SalesAdminService {
     session.startTransaction();
 
     try {
-      // Handle customer - create guest customer if no customer ID provided
+      // Handle customer - find existing or create new
       if (!saleData.customer && saleData.customerInfo) {
-        // Create a guest customer record for tracking
-        const guestCustomer = new Customer({
-          firstName:
-            saleData.customerInfo.firstName ||
-            saleData.customerInfo.name?.split(" ")[0] ||
-            "Guest",
-          lastName:
-            saleData.customerInfo.lastName ||
-            saleData.customerInfo.name?.split(" ").slice(1).join(" ") ||
-            "Customer",
-          email:
-            saleData.customerInfo.email || `guest_${Date.now()}@offline.local`,
-          phone: saleData.customerInfo.phone || "N/A",
-          type: "individual",
-          status: "active",
-          isGuest: true,
-          source: "offline_sale",
-          createdBy: new mongoose.Types.ObjectId(userId),
-        });
-        await guestCustomer.save({ session });
-        saleData.customer = guestCustomer._id;
+        const { email, phone, firstName, lastName, name } =
+          saleData.customerInfo;
+
+        // Search for existing customer by email or phone
+        let customer = null;
+
+        if (email) {
+          customer = await Customer.findOne({ email }).session(session);
+        }
+
+        // If not found by email, try phone
+        if (!customer && phone) {
+          customer = await Customer.findOne({ phone }).session(session);
+        }
+
+        if (customer) {
+          // Customer exists - use existing customer
+          console.log(`Found existing customer: ${customer.email}`);
+          saleData.customer = customer._id;
+        } else {
+          // Customer doesn't exist - create new customer
+          const newCustomer = new Customer({
+            firstName: firstName || name?.split(" ")[0] || "Guest",
+            lastName:
+              lastName || name?.split(" ").slice(1).join(" ") || "Customer",
+            email: email || `guest_${Date.now()}@offline.local`,
+            phone: phone || "N/A",
+            type: "individual",
+            status: "active",
+            isGuest: !email, // Mark as guest only if no email provided
+            source: "offline_sale",
+            createdBy: new mongoose.Types.ObjectId(userId),
+          });
+
+          await newCustomer.save({ session });
+          console.log(`Created new customer: ${newCustomer.email}`);
+          saleData.customer = newCustomer._id;
+        }
       }
 
       // Set order type to offline

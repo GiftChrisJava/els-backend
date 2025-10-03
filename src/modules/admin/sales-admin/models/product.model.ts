@@ -35,7 +35,7 @@ export interface IProductSpecification {
 }
 
 export interface IProductPricing {
-  cost: number;
+  cost?: number;
   price: number;
   compareAtPrice?: number;
   currency: string;
@@ -227,7 +227,6 @@ const productSchema = new Schema<IProduct>(
     pricing: {
       cost: {
         type: Number,
-        required: [true, "Product cost is required"],
         min: [0, "Cost cannot be negative"],
       },
       price: {

@@ -506,14 +506,53 @@
                 {
                   "key": "image",
                   "type": "file",
-                  "src": []
+                  "src": [],
+                  "disabled": true,
+                  "description": "Optional category banner image"
                 },
                 {
                   "key": "icon",
                   "type": "file",
-                  "src": []
+                  "src": [],
+                  "disabled": true,
+                  "description": "Optional category icon"
                 }
               ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Category (Text Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('categoryId2', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Wind Turbines\",\n  \"description\": \"Clean energy wind turbine systems\",\n  \"isActive\": true,\n  \"isFeatured\": false,\n  \"displayOrder\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/admin/sales/categories",
@@ -672,13 +711,13 @@
           }
         },
         {
-          "name": "Record Offline Sale (Existing Customer)",
+          "name": "Record Offline Sale (Existing Customer ID)",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer\": \"{{customerId}}\",\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 1,\n      \"price\": 250,\n      \"discount\": 0,\n      \"tax\": 25\n    }\n  ],\n  \"subtotal\": 250,\n  \"taxAmount\": 25,\n  \"discount\": 0,\n  \"totalAmount\": 275,\n  \"paymentMethod\": \"cash\",\n  \"shippingAddress\": {\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"email\": \"jane.smith@example.com\",\n    \"phone\": \"+265999654321\",\n    \"addressLine1\": \"456 Market Street\",\n    \"city\": \"Blantyre\",\n    \"country\": \"Malawi\"\n  },\n  \"internalNotes\": \"In-store purchase\"\n}",
+              "raw": "{\n  \"customer\": \"{{customerId}}\",\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 1,\n      \"price\": 250,\n      \"discount\": 0,\n      \"tax\": 25\n    }\n  ],\n  \"subtotal\": 250,\n  \"taxAmount\": 25,\n  \"discount\": 0,\n  \"totalAmount\": 275,\n  \"paymentMethod\": \"cash\",\n  \"internalNotes\": \"In-store purchase - customer ID provided\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -693,13 +732,55 @@
           }
         },
         {
-          "name": "Record Offline Sale (Walk-in Customer)",
+          "name": "Record Offline Sale (Walk-in Customer - New)",
           "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customerInfo\": {\n    \"name\": \"John Walk-in\",\n    \"phone\": \"+265999777888\",\n    \"email\": \"john.walkin@example.com\"\n  },\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 2,\n      \"price\": 250,\n      \"discount\": 10,\n      \"tax\": 24\n    }\n  ],\n  \"subtotal\": 500,\n  \"taxAmount\": 48,\n  \"discount\": 20,\n  \"totalAmount\": 528,\n  \"paymentMethod\": \"cash\",\n  \"shippingAddress\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Walk-in\",\n    \"email\": \"john.walkin@example.com\",\n    \"phone\": \"+265999777888\",\n    \"addressLine1\": \"Shop Counter\",\n    \"city\": \"Lilongwe\",\n    \"country\": \"Malawi\"\n  },\n  \"internalNotes\": \"Walk-in customer - paid cash\"\n}",
+              "raw": "{\n  \"customerInfo\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Walk-in\",\n    \"phone\": \"+265999777888\",\n    \"email\": \"john.walkin@example.com\"\n  },\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 2,\n      \"price\": 250,\n      \"discount\": 10,\n      \"tax\": 24\n    }\n  ],\n  \"subtotal\": 500,\n  \"taxAmount\": 48,\n  \"discount\": 20,\n  \"totalAmount\": 528,\n  \"paymentMethod\": \"cash\",\n  \"internalNotes\": \"Walk-in customer - paid cash. Customer will be auto-created if not exists.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders/offline",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders", "offline"]
+            }
+          }
+        },
+        {
+          "name": "Record Offline Sale (Phone Only - Returning Customer)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerInfo\": {\n    \"phone\": \"+265999777888\"\n  },\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 1,\n      \"price\": 250,\n      \"tax\": 25\n    }\n  ],\n  \"subtotal\": 250,\n  \"taxAmount\": 25,\n  \"totalAmount\": 275,\n  \"paymentMethod\": \"cash\",\n  \"internalNotes\": \"Returning customer identified by phone - existing customer will be found automatically\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/sales/orders/offline",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "sales", "orders", "offline"]
+            }
+          }
+        },
+        {
+          "name": "Record Offline Sale (Email Only)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerInfo\": {\n    \"email\": \"existing.customer@example.com\"\n  },\n  \"items\": [\n    {\n      \"product\": \"{{productId}}\",\n      \"quantity\": 3,\n      \"price\": 250,\n      \"tax\": 75\n    }\n  ],\n  \"subtotal\": 750,\n  \"taxAmount\": 75,\n  \"totalAmount\": 825,\n  \"paymentMethod\": \"mobile_money\",\n  \"internalNotes\": \"Customer identified by email - will find existing or create new\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

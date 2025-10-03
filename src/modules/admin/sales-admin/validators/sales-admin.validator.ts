@@ -7,7 +7,15 @@ import { ProductStatus, ProductType } from "../models/product.model";
 // Helper validation function
 const validate = (schema: Joi.Schema) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req.body);
+    // Clean up empty strings from multipart form data
+    const cleanedBody = { ...req.body };
+    Object.keys(cleanedBody).forEach((key) => {
+      if (cleanedBody[key] === "") {
+        delete cleanedBody[key];
+      }
+    });
+
+    const { error } = schema.validate(cleanedBody);
     if (error) {
       const message = error.details.map((detail) => detail.message).join(", ");
       return next(new AppError(message, 400));
@@ -39,7 +47,7 @@ export const validateCreateProduct = validate(
       .default(ProductStatus.ACTIVE),
 
     pricing: Joi.object({
-      cost: Joi.number().min(0).required(),
+      cost: Joi.number().min(0).optional(),
       price: Joi.number().min(0).required(),
       compareAtPrice: Joi.number().min(0).optional(),
       currency: Joi.string().default("USD"),
@@ -83,8 +91,8 @@ export const validateCreateProduct = validate(
       )
       .optional(),
 
-    images: Joi.array().items(Joi.string()).optional(),
-    featuredImage: Joi.string().optional(),
+    images: Joi.array().items(Joi.string()).optional().allow(""),
+    featuredImage: Joi.string().optional().allow(""),
     videos: Joi.array().items(Joi.string()).optional(),
     documents: Joi.array().items(Joi.string()).optional(),
 
@@ -177,8 +185,8 @@ export const validateUpdateProduct = validate(
       )
       .optional(),
 
-    images: Joi.array().items(Joi.string()).optional(),
-    featuredImage: Joi.string().optional(),
+    images: Joi.array().items(Joi.string()).optional().allow(""),
+    featuredImage: Joi.string().optional().allow(""),
     videos: Joi.array().items(Joi.string()).optional(),
     documents: Joi.array().items(Joi.string()).optional(),
 
@@ -234,16 +242,16 @@ export const validateBulkUpdateInventory = validate(
 export const validateCreateCategory = validate(
   Joi.object({
     name: Joi.string().required().max(100),
-    description: Joi.string().max(500).optional(),
-    parentCategory: Joi.string().optional(),
-    image: Joi.string().optional(),
-    icon: Joi.string().optional(),
+    description: Joi.string().max(500).optional().allow(""),
+    parentCategory: Joi.string().optional().allow(""),
+    image: Joi.string().optional().allow(""),
+    icon: Joi.string().optional().allow(""),
     displayOrder: Joi.number().default(0),
     isActive: Joi.boolean().default(true),
     isFeatured: Joi.boolean().default(false),
     seo: Joi.object({
-      metaTitle: Joi.string().optional(),
-      metaDescription: Joi.string().optional(),
+      metaTitle: Joi.string().optional().allow(""),
+      metaDescription: Joi.string().optional().allow(""),
       keywords: Joi.array().items(Joi.string()).optional(),
     }).optional(),
   })
@@ -305,7 +313,7 @@ export const validateCreateOrder = validate(
       state: Joi.string().optional(),
       country: Joi.string().required(),
       postalCode: Joi.string().optional(),
-    }).required(),
+    }).optional(), // Optional for walk-in/offline sales
 
     billingAddress: Joi.object({
       firstName: Joi.string().required(),
@@ -351,8 +359,10 @@ export const validateRecordOfflineSale = validate(
       firstName: Joi.string().optional(),
       lastName: Joi.string().optional(),
       email: Joi.string().email().optional(),
-      phone: Joi.string().required(),
-    }).optional(),
+      phone: Joi.string().optional(),
+    })
+      .optional()
+      .or("email", "phone"), // At least email OR phone required for customer lookup
 
     items: Joi.array()
       .items(
@@ -391,7 +401,7 @@ export const validateRecordOfflineSale = validate(
       state: Joi.string().optional(),
       country: Joi.string().required(),
       postalCode: Joi.string().optional(),
-    }).required(),
+    }).optional(), // Optional for offline/walk-in sales
 
     customerNotes: Joi.string().optional(),
     internalNotes: Joi.string().optional(),
