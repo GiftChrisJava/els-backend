@@ -1,0 +1,130 @@
+{
+  "timestamp": "2025-11-07T11:45:56.353Z",
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/categories",
+      "description": "Get all active categories with pagination",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/categories?featured=true",
+      "description": "Get featured categories only",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/categories/tree",
+      "description": "Get category hierarchy tree",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/categories/electronics",
+      "description": "Get category by slug (example: electronics)",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/categories/non-existent-category",
+      "description": "Test 404 error handling for categories",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products",
+      "description": "Get all active and published products",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products?page=1&limit=6",
+      "description": "Test pagination (page 1, limit 6)",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products?category=electronics",
+      "description": "Filter products by category slug",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products?minPrice=1000&maxPrice=50000",
+      "description": "Filter products by price range",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products?inStock=true",
+      "description": "Filter products that are in stock",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products?search=solar",
+      "description": "Search products by keyword",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products?sort=pricing.price&order=asc",
+      "description": "Sort products by price (ascending)",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products/featured",
+      "description": "Get featured products (max 8)",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products/solar-panel-200w",
+      "description": "Get product by slug (example)",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    },
+    {
+      "method": "GET",
+      "path": "/products/non-existent-product",
+      "description": "Test 404 error handling for products",
+      "success": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Not Found</pre>\n</body>\n</html>\n"
+    }
+  ],
+  "summary": {
+    "total": 15,
+    "success": 0,
+    "failed": 15
+  }
+}

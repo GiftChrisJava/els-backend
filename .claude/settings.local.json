@@ -10,7 +10,8 @@
       "Bash(newman run:*)",
       "Bash(node test-route-comparison.js:*)",
       "Bash(cat:*)",
-      "Bash(node verify-fixes.js:*)"
+      "Bash(node verify-fixes.js:*)",
+      "Bash(node test-products-categories.js:*)"
     ],
     "deny": [],
     "ask": []

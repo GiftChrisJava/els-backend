@@ -16,6 +16,11 @@ import {
   Testimonial,
   TestimonialStatus,
 } from "../../../modules/admin/web-admin/models/testimonial.model";
+import { Category } from "../../../modules/admin/sales-admin/models/category.model";
+import {
+  Product,
+  ProductStatus,
+} from "../../../modules/admin/sales-admin/models/product.model";
 import { optionalAuth } from "../../../modules/auth/middlewares/auth.middleware";
 import { AppError } from "../../../shared/errors/AppError";
 import { asyncHandler } from "../../../shared/utils/async-handler.util";
@@ -431,6 +436,239 @@ router.get(
     };
 
     ResponseUtil.success(res, stats, "Statistics retrieved successfully");
+  })
+);
+
+// =============== PUBLIC CATEGORIES ===============
+
+router.get(
+  "/categories",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { featured, page = 1, limit = 20 } = req.query;
+
+    const query: any = {
+      isActive: true,
+    };
+
+    if (featured === "true") {
+      query.isFeatured = true;
+    }
+
+    const total = await Category.countDocuments(query);
+    const categories = await Category.find(query)
+      .select("-createdBy -lastModifiedBy")
+      .populate("parentCategory", "name slug")
+      .sort({ displayOrder: 1, name: 1 })
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit));
+
+    ResponseUtil.paginated(
+      res,
+      categories,
+      Number(page),
+      Number(limit),
+      total,
+      "Categories retrieved successfully"
+    );
+  })
+);
+
+router.get(
+  "/categories/tree",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const tree = await Category.buildTree();
+
+    ResponseUtil.success(
+      res,
+      { categories: tree },
+      "Category tree retrieved successfully"
+    );
+  })
+);
+
+router.get(
+  "/categories/:slug",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { slug } = req.params;
+
+    const category = await Category.findOne({
+      slug,
+      isActive: true,
+    })
+      .select("-createdBy -lastModifiedBy")
+      .populate("parentCategory", "name slug");
+
+    if (!category) {
+      throw AppError.notFound("Category not found");
+    }
+
+    // Get subcategories
+    const subcategories = await Category.find({
+      parentCategory: category._id,
+      isActive: true,
+    }).select("name slug image icon");
+
+    // Get products count in this category
+    const productCount = await Product.countDocuments({
+      category: category._id,
+      status: ProductStatus.ACTIVE,
+    });
+
+    ResponseUtil.success(
+      res,
+      {
+        category,
+        subcategories,
+        productCount,
+      },
+      "Category retrieved successfully"
+    );
+  })
+);
+
+// =============== PUBLIC PRODUCTS ===============
+
+router.get(
+  "/products",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const {
+      category,
+      subcategory,
+      minPrice,
+      maxPrice,
+      inStock,
+      search,
+      sort = "createdAt",
+      order = "desc",
+      page = 1,
+      limit = 12,
+    } = req.query;
+
+    const query: any = {
+      status: ProductStatus.ACTIVE,
+      isPublished: true,
+    };
+
+    // Category filter
+    if (category) {
+      const categoryDoc = await Category.findOne({ slug: category });
+      if (categoryDoc) {
+        query.category = categoryDoc._id;
+      }
+    }
+
+    // Subcategory filter
+    if (subcategory) {
+      const subcategoryDoc = await Category.findOne({ slug: subcategory });
+      if (subcategoryDoc) {
+        query.subcategory = subcategoryDoc._id;
+      }
+    }
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      query["pricing.price"] = {};
+      if (minPrice) query["pricing.price"].$gte = Number(minPrice);
+      if (maxPrice) query["pricing.price"].$lte = Number(maxPrice);
+    }
+
+    // Stock filter
+    if (inStock === "true") {
+      query["inventory.stockStatus"] = { $ne: "out-of-stock" };
+    }
+
+    // Search
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+        { tags: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const sortOption: any = {};
+    sortOption[String(sort)] = order === "asc" ? 1 : -1;
+
+    const total = await Product.countDocuments(query);
+    const products = await Product.find(query)
+      .select(
+        "-createdBy -lastModifiedBy -pricing.cost -inventory.warehouse -metadata"
+      )
+      .populate("category", "name slug")
+      .populate("subcategory", "name slug")
+      .sort(sortOption)
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit));
+
+    ResponseUtil.paginated(
+      res,
+      products,
+      Number(page),
+      Number(limit),
+      total,
+      "Products retrieved successfully"
+    );
+  })
+);
+
+router.get(
+  "/products/featured",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const products = await Product.find({
+      status: ProductStatus.ACTIVE,
+      isPublished: true,
+      isFeatured: true,
+    })
+      .select(
+        "-createdBy -lastModifiedBy -pricing.cost -inventory.warehouse -metadata"
+      )
+      .populate("category", "name slug")
+      .limit(8);
+
+    ResponseUtil.success(
+      res,
+      { products },
+      "Featured products retrieved successfully"
+    );
+  })
+);
+
+router.get(
+  "/products/:slug",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { slug } = req.params;
+
+    const product = await Product.findOne({
+      slug,
+      status: ProductStatus.ACTIVE,
+      isPublished: true,
+    })
+      .select("-createdBy -lastModifiedBy -pricing.cost -metadata")
+      .populate("category", "name slug image")
+      .populate("subcategory", "name slug");
+
+    if (!product) {
+      throw AppError.notFound("Product not found");
+    }
+
+    // Get related products (same category)
+    const relatedProducts = await Product.find({
+      _id: { $ne: product._id },
+      category: product.category,
+      status: ProductStatus.ACTIVE,
+      isPublished: true,
+    })
+      .select("name slug pricing.price featuredImage inventory.stockStatus")
+      .limit(4);
+
+    ResponseUtil.success(
+      res,
+      {
+        product,
+        relatedProducts,
+      },
+      "Product retrieved successfully"
+    );
   })
 );
 
