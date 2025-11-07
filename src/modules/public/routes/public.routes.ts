@@ -142,7 +142,10 @@ router.get(
   "/projects/featured",
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     // Get recent projects since we removed the featured functionality
-    const projects = await Project.find({ status: "completed" })
+    const projects = await Project.find({
+      status: "completed",
+      isPublished: true
+    })
       .select("-createdBy -lastModifiedBy -projectValue")
       .populate("relatedServices", "name slug")
       .sort({ createdAt: -1 })
@@ -317,7 +320,7 @@ router.get(
   "/testimonials/featured",
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const testimonials = await Testimonial.findFeatured()
-      .select("-createdBy -approvedBy -lastModifiedBy -metadata -adminNotes")
+      .select("-createdBy -approvedBy -lastModifiedBy -metadata -adminNotes -rejectionReason")
       .populate("project", "title")
       .populate("service", "name")
       .limit(6);

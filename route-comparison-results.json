@@ -1,0 +1,1108 @@
+{
+  "timestamp": "2025-11-07T11:23:10.528Z",
+  "publicRoutes": [
+    {
+      "route": "GET /public/services",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Services retrieved successfully",
+        "data": [
+          {
+            "pricing": {
+              "type": "fixed",
+              "currency": "MWK",
+              "description": "Custom pricing based on requirements"
+            },
+            "seo": {
+              "keywords": []
+            },
+            "_id": "68d308e44692f2de854e152b",
+            "name": "James gordon",
+            "shortDescription": "shshssh shss dhsd sh d shdshd sh shsh dshd hshs s shdsh ds",
+            "longDescription": "csdsgd sgdsgd dsdsgd d hsdhsd dshdsd sd s dhsd sdsd s",
+            "category": "solar",
+            "features": [
+              {
+                "title": "solar",
+                "description": "none",
+                "icon": "sun",
+                "_id": "68d308e44692f2de854e152c"
+              }
+            ],
+            "duration": "1 week",
+            "image": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68db7389eee055f39e40/view?project=68c8105a000d3f6e677f&mode=admin",
+            "gallery": [
+              "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68d39d86401387ad605b/view?project=68c8105a000d3f6e677f&mode=admin"
+            ],
+            "status": "active",
+            "displayOrder": 0,
+            "isFeatured": false,
+            "createdAt": "2025-09-23T20:53:56.030Z",
+            "updatedAt": "2025-09-30T06:07:06.395Z",
+            "__v": 1
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:12.044Z"
+      }
+    },
+    {
+      "route": "GET /public/services/featured",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Featured services retrieved successfully",
+        "data": {
+          "services": []
+        },
+        "timestamp": "2025-11-07T11:23:12.369Z"
+      }
+    },
+    {
+      "route": "GET /public/projects",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Projects retrieved successfully",
+        "data": [
+          {
+            "location": {
+              "city": "Blantyre",
+              "district": "Blantyre",
+              "country": "Malawi"
+            },
+            "images": {
+              "featured": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+              "gallery": [
+                "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1497440001374-f26997328c1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              ],
+              "beforeAfter": []
+            },
+            "statistics": {
+              "views": 0,
+              "shares": 0,
+              "inquiries": 0
+            },
+            "seo": {
+              "keywords": []
+            },
+            "_id": "68cff28b62aa23e1364aeb3b",
+            "title": "Commercial Solar Installation - Blantyre",
+            "client": "XYZ Corporation",
+            "description": "Large-scale commercial solar installation with advanced monitoring system and battery backup for office complex",
+            "category": "commercial",
+            "status": "completed",
+            "startDate": "2024-02-01T00:00:00.000Z",
+            "endDate": "2024-02-15T00:00:00.000Z",
+            "duration": "2 weeks",
+            "technologies": [
+              "High-Efficiency Solar Panels",
+              "String Inverters",
+              "Monitoring System",
+              "Battery Storage"
+            ],
+            "teamSize": 8,
+            "challenges": "Complex roof structure required custom mounting solutions",
+            "solutions": "Designed and fabricated custom mounting brackets for optimal panel placement",
+            "outcomes": [
+              "40% reduction in electricity costs",
+              "15kW system capacity",
+              "10-year warranty coverage"
+            ],
+            "isPublished": true,
+            "displayOrder": 0,
+            "tags": [],
+            "relatedServices": [],
+            "createdAt": "2025-09-21T12:41:47.615Z",
+            "updatedAt": "2025-09-21T12:41:47.615Z",
+            "slug": "commercial-solar-installation-blantyre",
+            "publishedAt": "2025-09-21T12:41:47.615Z",
+            "__v": 0
+          },
+          {
+            "location": {
+              "city": "Lilongwe",
+              "district": "Lilongwe",
+              "country": "Malawi"
+            },
+            "images": {
+              "featured": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa0aa579b7d3625f6/view?project=68c8105a000d3f6e677f&mode=admin",
+              "gallery": [
+                "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa0c4ea629a2634c0/view?project=68c8105a000d3f6e677f&mode=admin"
+              ],
+              "beforeAfter": []
+            },
+            "statistics": {
+              "views": 0,
+              "shares": 0,
+              "inquiries": 0
+            },
+            "seo": {
+              "keywords": []
+            },
+            "_id": "68cfa0c46d5d1a2a55e91e41",
+            "title": "Residential Solar Installation - Lilongwe",
+            "client": "ABC Company",
+            "description": "Complete solar panel installation for residential property with modern technology and battery backup system",
+            "category": "residential",
+            "status": "completed",
+            "startDate": "2024-01-15T00:00:00.000Z",
+            "endDate": "2024-01-20T00:00:00.000Z",
+            "duration": "5 days",
+            "technologies": [
+              "Solar Panels",
+              "Inverters",
+              "Battery Storage"
+            ],
+            "teamSize": 4,
+            "outcomes": [],
+            "isPublished": true,
+            "displayOrder": 0,
+            "tags": [],
+            "relatedServices": [],
+            "createdAt": "2025-09-21T06:52:52.895Z",
+            "updatedAt": "2025-09-21T06:52:52.895Z",
+            "slug": "residential-solar-installation-lilongwe",
+            "publishedAt": "2025-09-21T06:52:52.896Z",
+            "__v": 0
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 2,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:12.386Z"
+      }
+    },
+    {
+      "route": "GET /public/projects/featured",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Featured projects retrieved successfully",
+        "data": {
+          "projects": [
+            {
+              "location": {
+                "city": "Zomba",
+                "district": "Zomba",
+                "country": "Malawi"
+              },
+              "images": {
+                "gallery": [],
+                "featured": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68db72c05f8d0fceb98d/view?project=68c8105a000d3f6e677f&mode=admin",
+                "beforeAfter": []
+              },
+              "statistics": {
+                "views": 0,
+                "shares": 0,
+                "inquiries": 0
+              },
+              "seo": {
+                "keywords": []
+              },
+              "_id": "68d3059059028aeaa44b9314",
+              "title": "hshhs dsdsd sdsds",
+              "client": "shdshdssds shshss",
+              "description": "sdsdsh shdshdsd sh s shdshd shdsdsd shds shd shd shd shdshd sdshd shd shd sd  shdsdshd  hsdshdsd shd shd dshdshss dsh shd s",
+              "category": "industrial",
+              "status": "completed",
+              "startDate": "2025-09-01T00:00:00.000Z",
+              "endDate": "2025-09-27T00:00:00.000Z",
+              "duration": "2 weeks",
+              "technologies": [
+                "Solar"
+              ],
+              "teamSize": 1,
+              "challenges": "Network",
+              "solutions": "Solar",
+              "outcomes": [
+                "improved health"
+              ],
+              "isPublished": false,
+              "displayOrder": 0,
+              "tags": [],
+              "relatedServices": [],
+              "createdAt": "2025-09-23T20:39:44.194Z",
+              "updatedAt": "2025-09-30T06:03:44.885Z",
+              "slug": "hshhs-dsdsd-sdsds",
+              "__v": 0
+            },
+            {
+              "location": {
+                "city": "Blantyre",
+                "district": "Blantyre",
+                "country": "Malawi"
+              },
+              "images": {
+                "featured": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                "gallery": [
+                  "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                  "https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                  "https://images.unsplash.com/photo-1497440001374-f26997328c1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                ],
+                "beforeAfter": []
+              },
+              "statistics": {
+                "views": 0,
+                "shares": 0,
+                "inquiries": 0
+              },
+              "seo": {
+                "keywords": []
+              },
+              "_id": "68cff28b62aa23e1364aeb3b",
+              "title": "Commercial Solar Installation - Blantyre",
+              "client": "XYZ Corporation",
+              "description": "Large-scale commercial solar installation with advanced monitoring system and battery backup for office complex",
+              "category": "commercial",
+              "status": "completed",
+              "startDate": "2024-02-01T00:00:00.000Z",
+              "endDate": "2024-02-15T00:00:00.000Z",
+              "duration": "2 weeks",
+              "technologies": [
+                "High-Efficiency Solar Panels",
+                "String Inverters",
+                "Monitoring System",
+                "Battery Storage"
+              ],
+              "teamSize": 8,
+              "challenges": "Complex roof structure required custom mounting solutions",
+              "solutions": "Designed and fabricated custom mounting brackets for optimal panel placement",
+              "outcomes": [
+                "40% reduction in electricity costs",
+                "15kW system capacity",
+                "10-year warranty coverage"
+              ],
+              "isPublished": true,
+              "displayOrder": 0,
+              "tags": [],
+              "relatedServices": [],
+              "createdAt": "2025-09-21T12:41:47.615Z",
+              "updatedAt": "2025-09-21T12:41:47.615Z",
+              "slug": "commercial-solar-installation-blantyre",
+              "publishedAt": "2025-09-21T12:41:47.615Z",
+              "__v": 0
+            },
+            {
+              "location": {
+                "city": "Lilongwe",
+                "district": "Lilongwe",
+                "country": "Malawi"
+              },
+              "images": {
+                "featured": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa0aa579b7d3625f6/view?project=68c8105a000d3f6e677f&mode=admin",
+                "gallery": [
+                  "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa0c4ea629a2634c0/view?project=68c8105a000d3f6e677f&mode=admin"
+                ],
+                "beforeAfter": []
+              },
+              "statistics": {
+                "views": 0,
+                "shares": 0,
+                "inquiries": 0
+              },
+              "seo": {
+                "keywords": []
+              },
+              "_id": "68cfa0c46d5d1a2a55e91e41",
+              "title": "Residential Solar Installation - Lilongwe",
+              "client": "ABC Company",
+              "description": "Complete solar panel installation for residential property with modern technology and battery backup system",
+              "category": "residential",
+              "status": "completed",
+              "startDate": "2024-01-15T00:00:00.000Z",
+              "endDate": "2024-01-20T00:00:00.000Z",
+              "duration": "5 days",
+              "technologies": [
+                "Solar Panels",
+                "Inverters",
+                "Battery Storage"
+              ],
+              "teamSize": 4,
+              "outcomes": [],
+              "isPublished": true,
+              "displayOrder": 0,
+              "tags": [],
+              "relatedServices": [],
+              "createdAt": "2025-09-21T06:52:52.895Z",
+              "updatedAt": "2025-09-21T06:52:52.895Z",
+              "slug": "residential-solar-installation-lilongwe",
+              "publishedAt": "2025-09-21T06:52:52.896Z",
+              "__v": 0
+            }
+          ]
+        },
+        "timestamp": "2025-11-07T11:23:12.435Z"
+      }
+    },
+    {
+      "route": "GET /public/staff",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Staff members retrieved successfully",
+        "data": [
+          {
+            "socialLinks": {
+              "linkedin": "",
+              "facebook": "",
+              "instagram": ""
+            },
+            "availability": {
+              "isAvailable": true
+            },
+            "statistics": {
+              "projectsCompleted": 0,
+              "clientsServed": 0,
+              "rating": 0,
+              "totalReviews": 0
+            },
+            "_id": "68d3b947481ebada48be29b9",
+            "firstName": "DSEWDSJS",
+            "lastName": "DSHSSDS",
+            "displayName": "GCR",
+            "position": "Data analyst",
+            "department": "sales",
+            "email": "chrisjava77@gmail.com",
+            "phone": "0991486007",
+            "bio": "hshshshs shs shds dshdhsds s dshdshds shd shdds dhsdsd shd s",
+            "profileImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68d3b99a5e13ecc2aa26/view?project=68c8105a000d3f6e677f&mode=admin",
+            "qualifications": [],
+            "skills": [
+              "hshshsdsdssdsds.ssdsdsd"
+            ],
+            "yearsOfExperience": 3,
+            "joinedDate": "2025-09-23T00:00:00.000Z",
+            "achievements": [
+              "ssgsgsgsgs,sdsdsdsds,ssdsdsdsd"
+            ],
+            "specializations": [],
+            "languages": [],
+            "isTeamLead": false,
+            "isFeatured": false,
+            "isPublished": true,
+            "displayOrder": 0,
+            "status": "active",
+            "createdAt": "2025-09-24T09:26:31.032Z",
+            "updatedAt": "2025-09-24T09:28:14.631Z",
+            "__v": 0
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 12,
+          "total": 1,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:13.172Z"
+      }
+    },
+    {
+      "route": "GET /public/staff/team-leads",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Team leads retrieved successfully",
+        "data": {
+          "staff": []
+        },
+        "timestamp": "2025-11-07T11:23:13.257Z"
+      }
+    },
+    {
+      "route": "GET /public/testimonials",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Testimonials retrieved successfully",
+        "data": [
+          {
+            "author": {
+              "name": "Robert Johnson",
+              "position": "Facility Manager",
+              "company": "GreenTech Solutions",
+              "email": "robert@greentech.com",
+              "phone": "+265999987654",
+              "image": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa2f6d8839612115f/view?project=68c8105a000d3f6e677f&mode=admin"
+            },
+            "verificationDetails": {
+              "isVerified": false
+            },
+            "_id": "68cfa2f61c6983a50824c8bf",
+            "type": "video",
+            "content": "Outstanding solar installation service! The team was professional and the results are amazing. Our energy costs have been cut in half.",
+            "rating": 5,
+            "project": {
+              "_id": "68cfa0c46d5d1a2a55e91e41",
+              "title": "Residential Solar Installation - Lilongwe",
+              "slug": "residential-solar-installation-lilongwe"
+            },
+            "service": null,
+            "status": "approved",
+            "isFeatured": true,
+            "isPublished": true,
+            "displayOrder": 0,
+            "tags": [
+              "solar",
+              "commercial",
+              "video-testimonial"
+            ],
+            "source": "Email Campaign",
+            "createdAt": "2025-09-21T07:02:14.862Z",
+            "updatedAt": "2025-09-21T07:08:10.779Z",
+            "__v": 0,
+            "publishedAt": "2025-09-21T07:08:10.778Z"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "averageRating": 5,
+        "totalReviews": 1,
+        "timestamp": "2025-11-07T11:23:13.290Z"
+      }
+    },
+    {
+      "route": "GET /public/testimonials/featured",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Featured testimonials retrieved successfully",
+        "data": {
+          "testimonials": [
+            {
+              "author": {
+                "name": "Robert Johnson",
+                "position": "Facility Manager",
+                "company": "GreenTech Solutions",
+                "email": "robert@greentech.com",
+                "phone": "+265999987654",
+                "image": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa2f6d8839612115f/view?project=68c8105a000d3f6e677f&mode=admin"
+              },
+              "verificationDetails": {
+                "isVerified": false
+              },
+              "_id": "68cfa2f61c6983a50824c8bf",
+              "type": "video",
+              "content": "Outstanding solar installation service! The team was professional and the results are amazing. Our energy costs have been cut in half.",
+              "rating": 5,
+              "project": {
+                "_id": "68cfa0c46d5d1a2a55e91e41",
+                "title": "Residential Solar Installation - Lilongwe"
+              },
+              "service": null,
+              "status": "approved",
+              "isFeatured": true,
+              "isPublished": true,
+              "displayOrder": 0,
+              "tags": [
+                "solar",
+                "commercial",
+                "video-testimonial"
+              ],
+              "source": "Email Campaign",
+              "createdAt": "2025-09-21T07:02:14.862Z",
+              "updatedAt": "2025-09-21T07:08:10.779Z",
+              "__v": 0,
+              "rejectionReason": "Content does not meet our guidelines",
+              "publishedAt": "2025-09-21T07:08:10.778Z"
+            }
+          ]
+        },
+        "timestamp": "2025-11-07T11:23:13.363Z"
+      }
+    },
+    {
+      "route": "GET /public/slides",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Landing slides retrieved successfully",
+        "data": {
+          "slides": []
+        },
+        "timestamp": "2025-11-07T11:23:13.377Z"
+      }
+    },
+    {
+      "route": "GET /public/statistics",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Statistics retrieved successfully",
+        "data": {
+          "projects": {
+            "total": 2,
+            "completed": 2
+          },
+          "services": 1,
+          "staff": 1,
+          "testimonials": {
+            "averageRating": 5,
+            "totalReviews": 1
+          }
+        },
+        "timestamp": "2025-11-07T11:23:13.430Z"
+      }
+    },
+    {
+      "route": "POST /public/contact",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Contact form submitted successfully",
+        "data": {
+          "message": "Thank you for contacting us. We will get back to you soon!"
+        },
+        "timestamp": "2025-11-07T11:23:13.561Z"
+      }
+    }
+  ],
+  "adminRoutes": [
+    {
+      "route": "GET /admin/web/services",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Services retrieved successfully",
+        "data": [
+          {
+            "pricing": {
+              "type": "fixed",
+              "currency": "MWK",
+              "description": "Custom pricing based on requirements"
+            },
+            "metadata": {
+              "views": 0,
+              "inquiries": 0,
+              "lastUpdated": "2025-09-30T06:07:06.397Z"
+            },
+            "seo": {
+              "keywords": []
+            },
+            "_id": "68d308e44692f2de854e152b",
+            "name": "James gordon",
+            "shortDescription": "shshssh shss dhsd sh d shdshd sh shsh dshd hshs s shdsh ds",
+            "longDescription": "csdsgd sgdsgd dsdsgd d hsdhsd dshdsd sd s dhsd sdsd s",
+            "category": "solar",
+            "features": [
+              {
+                "title": "solar",
+                "description": "none",
+                "icon": "sun",
+                "_id": "68d308e44692f2de854e152c"
+              }
+            ],
+            "duration": "1 week",
+            "image": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68db7389eee055f39e40/view?project=68c8105a000d3f6e677f&mode=admin",
+            "gallery": [
+              "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68d39d86401387ad605b/view?project=68c8105a000d3f6e677f&mode=admin"
+            ],
+            "status": "active",
+            "displayOrder": 0,
+            "isFeatured": false,
+            "createdBy": {
+              "_id": "68c85b8c98104e62d0d25c0e",
+              "email": "web@energysolutions.mw",
+              "firstName": "Web",
+              "lastName": "Administrator"
+            },
+            "createdAt": "2025-09-23T20:53:56.030Z",
+            "updatedAt": "2025-09-30T06:07:06.395Z",
+            "__v": 1,
+            "lastModifiedBy": "68c85b8c98104e62d0d25c0e"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:12.352Z"
+      }
+    },
+    {
+      "route": "GET /admin/web/projects",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Projects retrieved successfully",
+        "data": [
+          {
+            "location": {
+              "city": "Zomba",
+              "district": "Zomba",
+              "country": "Malawi"
+            },
+            "images": {
+              "gallery": [],
+              "featured": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68db72c05f8d0fceb98d/view?project=68c8105a000d3f6e677f&mode=admin",
+              "beforeAfter": []
+            },
+            "projectValue": {
+              "amount": 0,
+              "currency": "MWK",
+              "displayPublicly": true
+            },
+            "statistics": {
+              "views": 0,
+              "shares": 0,
+              "inquiries": 0
+            },
+            "seo": {
+              "keywords": []
+            },
+            "_id": "68d3059059028aeaa44b9314",
+            "title": "hshhs dsdsd sdsds",
+            "client": "shdshdssds shshss",
+            "description": "sdsdsh shdshdsd sh s shdshd shdsdsd shds shd shd shd shdshd sdshd shd shd sd  shdsdshd  hsdshdsd shd shd dshdshss dsh shd s",
+            "category": "industrial",
+            "status": "completed",
+            "startDate": "2025-09-01T00:00:00.000Z",
+            "endDate": "2025-09-27T00:00:00.000Z",
+            "duration": "2 weeks",
+            "technologies": [
+              "Solar"
+            ],
+            "teamSize": 1,
+            "challenges": "Network",
+            "solutions": "Solar",
+            "outcomes": [
+              "improved health"
+            ],
+            "isPublished": false,
+            "displayOrder": 0,
+            "tags": [],
+            "relatedServices": [],
+            "createdBy": {
+              "_id": "68c85b8c98104e62d0d25c0e",
+              "email": "web@energysolutions.mw",
+              "firstName": "Web",
+              "lastName": "Administrator"
+            },
+            "createdAt": "2025-09-23T20:39:44.194Z",
+            "updatedAt": "2025-09-30T06:03:44.885Z",
+            "slug": "hshhs-dsdsd-sdsds",
+            "__v": 0,
+            "lastModifiedBy": "68c85b8c98104e62d0d25c0e"
+          },
+          {
+            "location": {
+              "city": "Blantyre",
+              "district": "Blantyre",
+              "country": "Malawi"
+            },
+            "images": {
+              "featured": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+              "gallery": [
+                "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1497440001374-f26997328c1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+              ],
+              "beforeAfter": []
+            },
+            "projectValue": {
+              "amount": 150000,
+              "currency": "MWK",
+              "displayPublicly": true
+            },
+            "statistics": {
+              "views": 0,
+              "shares": 0,
+              "inquiries": 0
+            },
+            "seo": {
+              "keywords": []
+            },
+            "_id": "68cff28b62aa23e1364aeb3b",
+            "title": "Commercial Solar Installation - Blantyre",
+            "client": "XYZ Corporation",
+            "description": "Large-scale commercial solar installation with advanced monitoring system and battery backup for office complex",
+            "category": "commercial",
+            "status": "completed",
+            "startDate": "2024-02-01T00:00:00.000Z",
+            "endDate": "2024-02-15T00:00:00.000Z",
+            "duration": "2 weeks",
+            "technologies": [
+              "High-Efficiency Solar Panels",
+              "String Inverters",
+              "Monitoring System",
+              "Battery Storage"
+            ],
+            "teamSize": 8,
+            "challenges": "Complex roof structure required custom mounting solutions",
+            "solutions": "Designed and fabricated custom mounting brackets for optimal panel placement",
+            "outcomes": [
+              "40% reduction in electricity costs",
+              "15kW system capacity",
+              "10-year warranty coverage"
+            ],
+            "isPublished": true,
+            "displayOrder": 0,
+            "tags": [],
+            "relatedServices": [],
+            "createdBy": {
+              "_id": "68c85b8c98104e62d0d25c0e",
+              "email": "web@energysolutions.mw",
+              "firstName": "Web",
+              "lastName": "Administrator"
+            },
+            "createdAt": "2025-09-21T12:41:47.615Z",
+            "updatedAt": "2025-09-21T12:41:47.615Z",
+            "slug": "commercial-solar-installation-blantyre",
+            "publishedAt": "2025-09-21T12:41:47.615Z",
+            "__v": 0
+          },
+          {
+            "location": {
+              "city": "Lilongwe",
+              "district": "Lilongwe",
+              "country": "Malawi"
+            },
+            "images": {
+              "featured": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa0aa579b7d3625f6/view?project=68c8105a000d3f6e677f&mode=admin",
+              "gallery": [
+                "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa0c4ea629a2634c0/view?project=68c8105a000d3f6e677f&mode=admin"
+              ],
+              "beforeAfter": []
+            },
+            "projectValue": {
+              "amount": 50000,
+              "currency": "MWK",
+              "displayPublicly": false
+            },
+            "statistics": {
+              "views": 0,
+              "shares": 0,
+              "inquiries": 0
+            },
+            "seo": {
+              "keywords": []
+            },
+            "_id": "68cfa0c46d5d1a2a55e91e41",
+            "title": "Residential Solar Installation - Lilongwe",
+            "client": "ABC Company",
+            "description": "Complete solar panel installation for residential property with modern technology and battery backup system",
+            "category": "residential",
+            "status": "completed",
+            "startDate": "2024-01-15T00:00:00.000Z",
+            "endDate": "2024-01-20T00:00:00.000Z",
+            "duration": "5 days",
+            "technologies": [
+              "Solar Panels",
+              "Inverters",
+              "Battery Storage"
+            ],
+            "teamSize": 4,
+            "outcomes": [],
+            "isPublished": true,
+            "displayOrder": 0,
+            "tags": [],
+            "relatedServices": [],
+            "createdBy": {
+              "_id": "68c85b8c98104e62d0d25c0e",
+              "email": "web@energysolutions.mw",
+              "firstName": "Web",
+              "lastName": "Administrator"
+            },
+            "createdAt": "2025-09-21T06:52:52.895Z",
+            "updatedAt": "2025-09-21T06:52:52.895Z",
+            "slug": "residential-solar-installation-lilongwe",
+            "publishedAt": "2025-09-21T06:52:52.896Z",
+            "__v": 0
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 3,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:12.422Z"
+      }
+    },
+    {
+      "route": "GET /admin/web/staff",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Staff members retrieved successfully",
+        "data": [
+          {
+            "socialLinks": {
+              "linkedin": "",
+              "facebook": "",
+              "instagram": ""
+            },
+            "availability": {
+              "isAvailable": true
+            },
+            "statistics": {
+              "projectsCompleted": 0,
+              "clientsServed": 0,
+              "rating": 0,
+              "totalReviews": 0
+            },
+            "_id": "68d3b947481ebada48be29b9",
+            "firstName": "DSEWDSJS",
+            "lastName": "DSHSSDS",
+            "displayName": "GCR",
+            "position": "Data analyst",
+            "department": "sales",
+            "email": "chrisjava77@gmail.com",
+            "phone": "0991486007",
+            "bio": "hshshshs shs shds dshdhsds s dshdshds shd shdds dhsdsd shd s",
+            "profileImage": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68d3b99a5e13ecc2aa26/view?project=68c8105a000d3f6e677f&mode=admin",
+            "qualifications": [],
+            "skills": [
+              "hshshsdsdssdsds.ssdsdsd"
+            ],
+            "yearsOfExperience": 3,
+            "joinedDate": "2025-09-23T00:00:00.000Z",
+            "achievements": [
+              "ssgsgsgsgs,sdsdsdsds,ssdsdsdsd"
+            ],
+            "specializations": [],
+            "languages": [],
+            "isTeamLead": false,
+            "isFeatured": false,
+            "isPublished": true,
+            "displayOrder": 0,
+            "status": "active",
+            "createdBy": {
+              "_id": "68c85b8c98104e62d0d25c0e",
+              "email": "web@energysolutions.mw",
+              "firstName": "Web",
+              "lastName": "Administrator"
+            },
+            "createdAt": "2025-09-24T09:26:31.032Z",
+            "updatedAt": "2025-09-24T09:28:14.631Z",
+            "employeeId": "EMP991035",
+            "__v": 0,
+            "lastModifiedBy": "68c85b8c98104e62d0d25c0e"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:13.241Z"
+      }
+    },
+    {
+      "route": "GET /admin/web/testimonials",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Testimonials retrieved successfully",
+        "data": [
+          {
+            "author": {
+              "name": "Sellina Kawinga",
+              "position": "Facility Manager",
+              "company": "GreenTech Solutions",
+              "email": "skawinga@nrwb.org.mw",
+              "phone": "0995515178",
+              "image": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68d4e45b1276fd3b5626/view?project=68c8105a000d3f6e677f&mode=admin"
+            },
+            "verificationDetails": {
+              "isVerified": false
+            },
+            "_id": "68d4e45bab17402da96a75fc",
+            "type": "text",
+            "content": "hshs  shdshds d shdsd  dhsdshds sdjsds dsdjsdsd hsdsds dhsds ds ddssd",
+            "rating": 5,
+            "status": "rejected",
+            "isFeatured": false,
+            "isPublished": false,
+            "displayOrder": 0,
+            "tags": [
+              "solar",
+              "commercial",
+              "video-testimonial"
+            ],
+            "source": "Email Campaign",
+            "createdBy": "68c85b8c98104e62d0d25c0e",
+            "createdAt": "2025-09-25T06:42:35.470Z",
+            "updatedAt": "2025-09-25T06:47:57.044Z",
+            "__v": 0,
+            "lastModifiedBy": "68c85b8c98104e62d0d25c0e",
+            "rejectionReason": "hhhhhhhhhhh hhhh  h"
+          },
+          {
+            "author": {
+              "name": "Sellina Kawinga",
+              "position": "Facility Manager",
+              "company": "GreenTech Solutions",
+              "email": "skawinga@nrwb.org.mw",
+              "phone": "0995515178",
+              "image": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68d4e1ca2bb90fa59d95/view?project=68c8105a000d3f6e677f&mode=admin"
+            },
+            "verificationDetails": {
+              "isVerified": false
+            },
+            "_id": "68d4e1caab17402da96a75d4",
+            "type": "text",
+            "content": "hshs  shdshds d shdsd  dhsdshds sdjsds dsdjsdsd hsdsds dhsds ds ddssd",
+            "rating": 5,
+            "status": "rejected",
+            "isFeatured": false,
+            "isPublished": false,
+            "displayOrder": 0,
+            "tags": [
+              "solar",
+              "commercial",
+              "video-testimonial"
+            ],
+            "source": "Email Campaign",
+            "createdBy": "68c85b8c98104e62d0d25c0e",
+            "createdAt": "2025-09-25T06:31:38.768Z",
+            "updatedAt": "2025-09-25T06:45:04.665Z",
+            "__v": 0,
+            "lastModifiedBy": "68c85b8c98104e62d0d25c0e",
+            "rejectionReason": "ffffffffffffffffffffffffffff f fd fdd"
+          },
+          {
+            "author": {
+              "name": "Robert Johnson",
+              "position": "Facility Manager",
+              "company": "GreenTech Solutions",
+              "email": "robert@greentech.com",
+              "phone": "+265999987654",
+              "image": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68cfa2f6d8839612115f/view?project=68c8105a000d3f6e677f&mode=admin"
+            },
+            "verificationDetails": {
+              "isVerified": false
+            },
+            "_id": "68cfa2f61c6983a50824c8bf",
+            "type": "video",
+            "content": "Outstanding solar installation service! The team was professional and the results are amazing. Our energy costs have been cut in half.",
+            "rating": 5,
+            "project": {
+              "_id": "68cfa0c46d5d1a2a55e91e41",
+              "title": "Residential Solar Installation - Lilongwe"
+            },
+            "service": null,
+            "status": "approved",
+            "isFeatured": true,
+            "isPublished": true,
+            "displayOrder": 0,
+            "tags": [
+              "solar",
+              "commercial",
+              "video-testimonial"
+            ],
+            "source": "Email Campaign",
+            "createdBy": "68c85b8c98104e62d0d25c0e",
+            "createdAt": "2025-09-21T07:02:14.862Z",
+            "updatedAt": "2025-09-21T07:08:10.779Z",
+            "__v": 0,
+            "lastModifiedBy": "68c85b8c98104e62d0d25c0e",
+            "rejectionReason": "Content does not meet our guidelines",
+            "approvedBy": {
+              "_id": "68c85b8c98104e62d0d25c0e",
+              "firstName": "Web",
+              "lastName": "Administrator"
+            },
+            "publishedAt": "2025-09-21T07:08:10.778Z"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 3,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:13.340Z"
+      }
+    },
+    {
+      "route": "GET /admin/web/slides",
+      "success": true,
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Landing slides retrieved successfully",
+        "data": [
+          {
+            "media": {
+              "imageUrl": "https://cloud.appwrite.io/v1/storage/buckets/68c8111000006c264569/files/68d034e098a0b0cc78b9/view?project=68c8105a000d3f6e677f&mode=admin",
+              "alt": "Professional solar panel installation on residential roof"
+            },
+            "_id": "68d034e14a980dc9c8873e28",
+            "title": "Sustainable Energy Solutions",
+            "status": "inactive",
+            "displayOrder": 0,
+            "createdBy": {
+              "_id": "68c85b8c98104e62d0d25c0e",
+              "email": "web@energysolutions.mw",
+              "firstName": "Web",
+              "lastName": "Administrator"
+            },
+            "createdAt": "2025-09-21T17:24:49.052Z",
+            "updatedAt": "2025-09-30T06:07:47.381Z",
+            "__v": 0
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "totalPages": 1,
+          "hasNext": false,
+          "hasPrev": false
+        },
+        "timestamp": "2025-11-07T11:23:13.414Z"
+      }
+    }
+  ],
+  "inconsistencies": []
+}

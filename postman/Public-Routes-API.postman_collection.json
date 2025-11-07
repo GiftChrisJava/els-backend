@@ -1,0 +1,1188 @@
+{
+  "info": {
+    "name": "Public Routes API - Complete Test Suite",
+    "description": "Comprehensive test collection for all public routes including Services, Projects, Staff, Testimonials, Slides, Statistics, and Contact Form",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "apiVersion",
+      "value": "v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Services",
+      "description": "Public service endpoints",
+      "item": [
+        {
+          "name": "Get All Services",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has success property', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('success', true);",
+                  "});",
+                  "",
+                  "pm.test('Response has data and pagination', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "    pm.expect(jsonData).to.have.property('pagination');",
+                  "});",
+                  "",
+                  "pm.test('Pagination has correct properties', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.pagination).to.have.property('page');",
+                  "    pm.expect(jsonData.pagination).to.have.property('limit');",
+                  "    pm.expect(jsonData.pagination).to.have.property('total');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "services"]
+            },
+            "description": "Retrieve all active services with pagination"
+          }
+        },
+        {
+          "name": "Get Services with Pagination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Page is 1 and limit is 5', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.pagination.page).to.equal(1);",
+                  "    pm.expect(jsonData.pagination.limit).to.equal(5);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/services?page=1&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "services"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Test pagination parameters"
+          }
+        },
+        {
+          "name": "Get Services by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/services?category=solar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "services"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "solar",
+                  "description": "Filter by category (e.g., solar, wind, hydro)"
+                }
+              ]
+            },
+            "description": "Filter services by category"
+          }
+        },
+        {
+          "name": "Get Featured Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/services?featured=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "services"],
+              "query": [
+                {
+                  "key": "featured",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get only featured services"
+          }
+        },
+        {
+          "name": "Get Featured Services (Endpoint)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has services array', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('services');",
+                  "    pm.expect(jsonData.data.services).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Maximum 6 services returned', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.services.length).to.be.at.most(6);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/services/featured",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "services", "featured"]
+            },
+            "description": "Get featured services (max 6)"
+          }
+        },
+        {
+          "name": "Get Service by Slug",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 or 404', function() {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Response has service data', function() {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.data).to.have.property('service');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/services/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "services", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "solar-panel-installation",
+                  "description": "Service slug (replace with actual slug)"
+                }
+              ]
+            },
+            "description": "Get service details by slug and increment views"
+          }
+        },
+        {
+          "name": "Get Non-existent Service",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Success is false', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/services/non-existent-service-123",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "services", "non-existent-service-123"]
+            },
+            "description": "Test 404 error for non-existent service"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "description": "Public project endpoints",
+      "item": [
+        {
+          "name": "Get All Projects",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has pagination', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('pagination');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "projects"]
+            },
+            "description": "Retrieve all published projects"
+          }
+        },
+        {
+          "name": "Get Projects with Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/projects?category=commercial&status=completed&featured=true&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "projects"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "commercial"
+                },
+                {
+                  "key": "status",
+                  "value": "completed"
+                },
+                {
+                  "key": "featured",
+                  "value": "true"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Filter projects by category, status, and featured flag"
+          }
+        },
+        {
+          "name": "Get Featured Projects",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Maximum 6 projects returned', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.projects).to.be.an('array');",
+                  "    pm.expect(jsonData.data.projects.length).to.be.at.most(6);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/projects/featured",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "projects", "featured"]
+            },
+            "description": "Get featured/recent projects (max 6)"
+          }
+        },
+        {
+          "name": "Get Project by Slug",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Response has project and relatedProjects', function() {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.data).to.have.property('project');",
+                  "        pm.expect(jsonData.data).to.have.property('relatedProjects');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/projects/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "projects", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "solar-farm-project",
+                  "description": "Project slug"
+                }
+              ]
+            },
+            "description": "Get project details by slug with related projects"
+          }
+        },
+        {
+          "name": "Get Non-existent Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/projects/non-existent-project-xyz",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "projects", "non-existent-project-xyz"]
+            },
+            "description": "Test 404 for non-existent project"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff",
+      "description": "Public staff member endpoints",
+      "item": [
+        {
+          "name": "Get All Staff",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Default limit is 12', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.pagination.limit).to.equal(12);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "staff"]
+            },
+            "description": "Get all active and published staff members"
+          }
+        },
+        {
+          "name": "Get Staff by Department",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/staff?department=engineering",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "staff"],
+              "query": [
+                {
+                  "key": "department",
+                  "value": "engineering",
+                  "description": "Filter by department"
+                }
+              ]
+            },
+            "description": "Filter staff by department"
+          }
+        },
+        {
+          "name": "Get Featured Staff",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/staff?featured=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "staff"],
+              "query": [
+                {
+                  "key": "featured",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get only featured staff members"
+          }
+        },
+        {
+          "name": "Get Team Leads",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has staff array', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('staff');",
+                  "    pm.expect(jsonData.data.staff).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/staff/team-leads",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "staff", "team-leads"]
+            },
+            "description": "Get all team leads"
+          }
+        },
+        {
+          "name": "Get Staff by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Response has staff member data', function() {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.data).to.have.property('staff');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/staff/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "staff", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "507f1f77bcf86cd799439011",
+                  "description": "Staff member MongoDB ObjectId"
+                }
+              ]
+            },
+            "description": "Get staff member details by ID"
+          }
+        },
+        {
+          "name": "Get Non-existent Staff",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/staff/507f1f77bcf86cd799439011",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "staff", "507f1f77bcf86cd799439011"]
+            },
+            "description": "Test 404 for non-existent staff member"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Testimonials",
+      "description": "Public testimonial endpoints",
+      "item": [
+        {
+          "name": "Get All Testimonials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has metadata with ratings', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.metadata) {",
+                  "        pm.expect(jsonData.metadata).to.have.property('averageRating');",
+                  "        pm.expect(jsonData.metadata).to.have.property('totalReviews');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials"]
+            },
+            "description": "Get all approved testimonials with average rating"
+          }
+        },
+        {
+          "name": "Get Testimonials by Rating",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials?rating=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials"],
+              "query": [
+                {
+                  "key": "rating",
+                  "value": "5",
+                  "description": "Filter by rating (1-5)"
+                }
+              ]
+            },
+            "description": "Filter testimonials by rating"
+          }
+        },
+        {
+          "name": "Get Featured Testimonials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials?featured=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials"],
+              "query": [
+                {
+                  "key": "featured",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get only featured testimonials"
+          }
+        },
+        {
+          "name": "Get Featured Testimonials (Endpoint)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Maximum 6 testimonials returned', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.testimonials.length).to.be.at.most(6);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials/featured",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials", "featured"]
+            },
+            "description": "Get featured testimonials (max 6)"
+          }
+        },
+        {
+          "name": "Submit Testimonial - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Success message returned', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.message).to.include('Thank you');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Excellent service! The team was very professional and delivered beyond our expectations. Highly recommended!\",\n  \"rating\": 5,\n  \"author\": {\n    \"name\": \"John Doe\",\n    \"company\": \"ABC Corporation\",\n    \"email\": \"john.doe@example.com\",\n    \"position\": \"CEO\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials", "submit"]
+            },
+            "description": "Submit a testimonial successfully"
+          }
+        },
+        {
+          "name": "Submit Testimonial with Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"The solar installation project was completed on time and within budget. Great work!\",\n  \"rating\": 5,\n  \"author\": {\n    \"name\": \"Jane Smith\",\n    \"company\": \"Green Energy Ltd\",\n    \"email\": \"jane.smith@example.com\"\n  },\n  \"projectId\": \"507f1f77bcf86cd799439011\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials", "submit"]
+            },
+            "description": "Submit testimonial with project reference"
+          }
+        },
+        {
+          "name": "Submit Testimonial with Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Outstanding consultation service. Very knowledgeable team!\",\n  \"rating\": 4,\n  \"author\": {\n    \"name\": \"Bob Wilson\",\n    \"email\": \"bob.wilson@example.com\"\n  },\n  \"serviceId\": \"507f1f77bcf86cd799439012\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials", "submit"]
+            },
+            "description": "Submit testimonial with service reference"
+          }
+        },
+        {
+          "name": "Submit Testimonial - Missing Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Success is false', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Great service!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/testimonials/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "testimonials", "submit"]
+            },
+            "description": "Test validation - missing required fields"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Landing Slides",
+      "description": "Public landing slides endpoints",
+      "item": [
+        {
+          "name": "Get All Slides",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has slides array', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('slides');",
+                  "    pm.expect(jsonData.data.slides).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/slides",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "slides"]
+            },
+            "description": "Get all active landing slides"
+          }
+        },
+        {
+          "name": "Get Slides for Desktop",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/slides?device=desktop",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "slides"],
+              "query": [
+                {
+                  "key": "device",
+                  "value": "desktop"
+                }
+              ]
+            },
+            "description": "Get slides for desktop devices"
+          }
+        },
+        {
+          "name": "Get Slides for Mobile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/slides?device=mobile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "slides"],
+              "query": [
+                {
+                  "key": "device",
+                  "value": "mobile"
+                }
+              ]
+            },
+            "description": "Get slides for mobile devices"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "description": "Platform statistics endpoint",
+      "item": [
+        {
+          "name": "Get Platform Statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has all required stats', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('projects');",
+                  "    pm.expect(jsonData.data).to.have.property('services');",
+                  "    pm.expect(jsonData.data).to.have.property('staff');",
+                  "    pm.expect(jsonData.data).to.have.property('testimonials');",
+                  "});",
+                  "",
+                  "pm.test('Projects stats have correct structure', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.projects).to.have.property('total');",
+                  "    pm.expect(jsonData.data.projects).to.have.property('completed');",
+                  "    pm.expect(typeof jsonData.data.projects.total).to.equal('number');",
+                  "    pm.expect(typeof jsonData.data.projects.completed).to.equal('number');",
+                  "});",
+                  "",
+                  "pm.test('Testimonial stats have correct structure', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.testimonials).to.have.property('averageRating');",
+                  "    pm.expect(jsonData.data.testimonials).to.have.property('totalReviews');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "statistics"]
+            },
+            "description": "Get platform-wide statistics including projects, services, staff, and testimonials"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contact Form",
+      "description": "Public contact form endpoint",
+      "item": [
+        {
+          "name": "Submit Contact Form - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Success message returned', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.message).to.include('Thank you');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Smith\",\n  \"email\": \"john.smith@example.com\",\n  \"message\": \"I would like to inquire about your solar panel installation services. Please contact me at your earliest convenience.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "contact"]
+            },
+            "description": "Submit contact form with required fields only"
+          }
+        },
+        {
+          "name": "Submit Contact Form - All Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"subject\": \"Solar Panel Inquiry\",\n  \"message\": \"I am interested in installing solar panels for my commercial building. Please provide a quote.\",\n  \"service\": \"solar\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "contact"]
+            },
+            "description": "Submit contact form with all optional fields"
+          }
+        },
+        {
+          "name": "Submit Contact Form - Missing Name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Success is false', function() {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"message\": \"Test message\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "contact"]
+            },
+            "description": "Test validation - missing name"
+          }
+        },
+        {
+          "name": "Submit Contact Form - Missing Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"message\": \"Test message\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "contact"]
+            },
+            "description": "Test validation - missing email"
+          }
+        },
+        {
+          "name": "Submit Contact Form - Missing Message",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "contact"]
+            },
+            "description": "Test validation - missing message"
+          }
+        },
+        {
+          "name": "Submit Contact Form - Empty Body",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/{{apiVersion}}/public/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "{{apiVersion}}", "public", "contact"]
+            },
+            "description": "Test validation - empty request body"
+          }
+        }
+      ]
+    }
+  ]
+}
