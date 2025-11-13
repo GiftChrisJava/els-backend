@@ -64,6 +64,14 @@ router.post(
   salesAdminController.createCategory
 );
 router.get("/categories/tree", salesAdminController.getCategoryTree);
+router.patch(
+  "/categories/:categoryId",
+  salesAdminController.updateCategory
+);
+router.delete(
+  "/categories/:categoryId",
+  salesAdminController.deleteCategory
+);
 
 // ============= ORDER ROUTES =============
 router.post("/orders", validateCreateOrder, salesAdminController.createOrder);

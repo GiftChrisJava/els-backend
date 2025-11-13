@@ -258,20 +258,6 @@ router.delete(
   webAdminController.deleteContactMessage
 );
 
-// =============== CATEGORY MANAGEMENT ROUTES ===============
-
-router.patch(
-  "/categories/:categoryId",
-  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
-  webAdminController.updateCategory
-);
-
-router.delete(
-  "/categories/:categoryId",
-  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
-  webAdminController.deleteCategory
-);
-
 // Error handling for multer file upload errors
 router.use(handleMulterError);
 

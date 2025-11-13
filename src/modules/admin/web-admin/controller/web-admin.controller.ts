@@ -1795,39 +1795,4 @@ export class WebAdminController {
       ResponseUtil.success(res, null, "Contact message deleted successfully");
     }
   );
-
-  // =============== CATEGORY MANAGEMENT ENDPOINTS ===============
-
-  updateCategory = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const { categoryId } = req.params;
-      const adminId = req.user?._id;
-
-      if (!adminId) {
-        throw AppError.unauthorized("User not authenticated");
-      }
-
-      const category = await this.webAdminService.updateCategory(
-        categoryId,
-        req.body,
-        adminId as mongoose.Types.ObjectId
-      );
-
-      ResponseUtil.success(
-        res,
-        { category },
-        "Category updated successfully"
-      );
-    }
-  );
-
-  deleteCategory = asyncHandler(
-    async (req: Request, res: Response): Promise<void> => {
-      const { categoryId } = req.params;
-
-      await this.webAdminService.deleteCategory(categoryId);
-
-      ResponseUtil.success(res, null, "Category deleted successfully");
-    }
-  );
 }

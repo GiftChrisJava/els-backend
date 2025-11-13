@@ -620,6 +620,45 @@ export class SalesAdminController {
       next(error);
     }
   }
+
+  // ============= CATEGORY MANAGEMENT =============
+  async updateCategory(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { categoryId } = req.params;
+      const adminId = req.user!._id.toString();
+      const updateData = req.body;
+
+      const category = await salesAdminService.updateCategory(
+        categoryId,
+        updateData,
+        adminId
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Category updated successfully",
+        data: { category },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteCategory(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { categoryId } = req.params;
+      const adminId = req.user!._id.toString();
+
+      await salesAdminService.deleteCategory(categoryId, adminId);
+
+      res.status(200).json({
+        success: true,
+        message: "Category deleted successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new SalesAdminController();

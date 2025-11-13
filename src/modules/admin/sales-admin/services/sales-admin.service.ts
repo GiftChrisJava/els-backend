@@ -10,6 +10,11 @@ import { Category } from "../models/category.model";
 import { Customer } from "../models/customer.model";
 import { Order, OrderStatus, PaymentStatus } from "../models/order.model";
 import { Product } from "../models/product.model";
+import {
+  ActivityLog,
+  ActivitySeverity,
+  ActivityType,
+} from "../../../../shared/models/activity-log.model";
 
 export class SalesAdminService {
   private appwriteService: AppwriteService;
@@ -1054,6 +1059,121 @@ export class SalesAdminService {
       return csvData;
     } catch (error: any) {
       throw new AppError(error.message || "Failed to export orders", 400);
+    }
+  }
+
+  // ============= CATEGORY MANAGEMENT =============
+
+  /**
+   * Update category
+   */
+  async updateCategory(
+    categoryId: string,
+    updateData: any,
+    adminId: mongoose.Types.ObjectId | string
+  ) {
+    try {
+      const category = await Category.findById(categoryId);
+
+      if (!category) {
+        throw AppError.notFound("Category not found");
+      }
+
+      // If name is being updated, regenerate slug
+      if (updateData.name && updateData.name !== category.name) {
+        updateData.slug = slugify(updateData.name, { lower: true });
+      }
+
+      // Update category fields
+      Object.assign(category, updateData);
+      category.lastModifiedBy = adminId as mongoose.Types.ObjectId;
+
+      await category.save();
+
+      // Log activity
+      await ActivityLog.create({
+        user: adminId,
+        type: ActivityType.USER_UPDATED,
+        action: "UPDATE_CATEGORY",
+        severity: ActivitySeverity.INFO,
+        description: `Updated category: ${category.name}`,
+        ipAddress: "",
+        metadata: {
+          categoryId: category._id,
+          changes: updateData,
+        },
+      });
+
+      return category;
+    } catch (error: any) {
+      throw new AppError(
+        error.message || "Failed to update category",
+        error.statusCode || 400
+      );
+    }
+  }
+
+  /**
+   * Delete category (only if it has no products)
+   */
+  async deleteCategory(
+    categoryId: string,
+    adminId: mongoose.Types.ObjectId | string
+  ) {
+    try {
+      const category = await Category.findById(categoryId);
+
+      if (!category) {
+        throw AppError.notFound("Category not found");
+      }
+
+      // Check if category has products
+      const productCount = await Product.countDocuments({
+        $or: [{ category: categoryId }, { subcategory: categoryId }],
+      });
+
+      if (productCount > 0) {
+        throw AppError.badRequest(
+          `Cannot delete category with ${productCount} products. Please reassign or delete products first.`
+        );
+      }
+
+      // Check if category has subcategories
+      const subcategoryCount = await Category.countDocuments({
+        parentCategory: categoryId,
+      });
+
+      if (subcategoryCount > 0) {
+        throw AppError.badRequest(
+          `Cannot delete category with ${subcategoryCount} subcategories. Please delete subcategories first.`
+        );
+      }
+
+      const categoryName = category.name;
+
+      // Delete the category
+      await category.deleteOne();
+
+      // Log activity
+      await ActivityLog.create({
+        user: adminId,
+        type: ActivityType.USER_DELETED,
+        action: "DELETE_CATEGORY",
+        severity: ActivitySeverity.INFO,
+        description: `Deleted category: ${categoryName}`,
+        ipAddress: "",
+        metadata: {
+          categoryId,
+          categoryName,
+        },
+      });
+
+      return true;
+    } catch (error: any) {
+      throw new AppError(
+        error.message || "Failed to delete category",
+        error.statusCode || 400
+      );
     }
   }
 }

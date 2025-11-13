@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import { appConfig } from "../../../../config/app.config";
-import { Category } from "../../../../modules/admin/sales-admin/models/category.model";
-import { Product } from "../../../../modules/admin/sales-admin/models/product.model";
 import {
   ActivityLog,
   ActivitySeverity,
@@ -1219,76 +1217,6 @@ export class WebAdminService {
     }
 
     await message.deleteOne();
-
-    return true;
-  }
-
-  // =============== CATEGORY MANAGEMENT METHODS ===============
-
-  async updateCategory(
-    categoryId: string,
-    updateData: any,
-    adminId: mongoose.Types.ObjectId
-  ) {
-    const category = await Category.findById(categoryId);
-
-    if (!category) {
-      throw AppError.notFound("Category not found");
-    }
-
-    // Update fields
-    Object.assign(category, updateData);
-    category.lastModifiedBy = adminId;
-
-    await category.save();
-
-    // Log activity
-    await ActivityLog.create({
-      user: adminId,
-      type: ActivityType.USER_UPDATED,
-      action: "UPDATE_CATEGORY",
-      severity: ActivitySeverity.INFO,
-      description: `Updated category: ${category.name}`,
-      ipAddress: "",
-      metadata: {
-        categoryId: category._id,
-        changes: updateData,
-      },
-    });
-
-    return category;
-  }
-
-  async deleteCategory(categoryId: string) {
-    const category = await Category.findById(categoryId);
-
-    if (!category) {
-      throw AppError.notFound("Category not found");
-    }
-
-    // Check if category has products
-    const productCount = await Product.countDocuments({
-      $or: [{ category: categoryId }, { subcategory: categoryId }],
-    });
-
-    if (productCount > 0) {
-      throw AppError.badRequest(
-        `Cannot delete category with ${productCount} products. Please reassign or delete products first.`
-      );
-    }
-
-    // Check if category has subcategories
-    const subcategoryCount = await Category.countDocuments({
-      parentCategory: categoryId,
-    });
-
-    if (subcategoryCount > 0) {
-      throw AppError.badRequest(
-        `Cannot delete category with ${subcategoryCount} subcategories. Please delete subcategories first.`
-      );
-    }
-
-    await category.deleteOne();
 
     return true;
   }
