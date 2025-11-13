@@ -1,4 +1,8 @@
 import { Request, Response, Router } from "express";
+import {
+  ContactMessage,
+  ContactStatus,
+} from "../../../modules/admin/web-admin/models/contact-message.model";
 import { LandingSlide } from "../../../modules/admin/web-admin/models/landing-slide.model";
 import {
   Project,
@@ -683,8 +687,24 @@ router.post(
       throw AppError.badRequest("Name, email, and message are required");
     }
 
-    // This will be handled by helpdesk module in Phase 6
-    // For now, we'll just acknowledge receipt
+    // Save contact message to database
+    const contactMessage = new ContactMessage({
+      name,
+      email,
+      phone,
+      subject,
+      message,
+      service,
+      status: ContactStatus.NEW,
+      metadata: {
+        ipAddress: req.ip,
+        userAgent: req.get("user-agent"),
+        referrer: req.get("referrer"),
+        submittedAt: new Date(),
+      },
+    });
+
+    await contactMessage.save();
 
     ResponseUtil.success(
       res,

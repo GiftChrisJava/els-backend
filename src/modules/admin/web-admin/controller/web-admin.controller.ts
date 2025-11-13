@@ -1697,4 +1697,137 @@ export class WebAdminController {
       );
     }
   );
+
+  // =============== CONTACT MESSAGES ENDPOINTS ===============
+
+  getContactMessages = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { status, priority, page, limit, sortBy, sortOrder } = req.query;
+
+      const result = await this.webAdminService.getContactMessages(
+        {
+          status: status as string,
+          priority: priority as string,
+        },
+        {
+          page: page ? parseInt(page as string) : 1,
+          limit: limit ? parseInt(limit as string) : 10,
+          sortBy: sortBy as string,
+          sortOrder: sortOrder as "asc" | "desc",
+        }
+      );
+
+      ResponseUtil.paginated(
+        res,
+        result.messages,
+        result.pagination.page,
+        result.pagination.limit,
+        result.pagination.total,
+        "Contact messages retrieved successfully"
+      );
+    }
+  );
+
+  getContactMessageById = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { messageId } = req.params;
+
+      const message = await this.webAdminService.getContactMessageById(
+        messageId
+      );
+
+      ResponseUtil.success(
+        res,
+        { message },
+        "Contact message retrieved successfully"
+      );
+    }
+  );
+
+  updateContactMessageStatus = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { messageId } = req.params;
+      const { status, repliedBy } = req.body;
+      const adminId = req.user?._id;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      const message = await this.webAdminService.updateContactMessageStatus(
+        messageId,
+        status,
+        adminId as mongoose.Types.ObjectId
+      );
+
+      ResponseUtil.success(
+        res,
+        { message },
+        "Contact message status updated successfully"
+      );
+    }
+  );
+
+  updateContactMessageNotes = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { messageId } = req.params;
+      const { adminNotes } = req.body;
+
+      const message = await this.webAdminService.updateContactMessageNotes(
+        messageId,
+        adminNotes
+      );
+
+      ResponseUtil.success(
+        res,
+        { message },
+        "Contact message notes updated successfully"
+      );
+    }
+  );
+
+  deleteContactMessage = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { messageId } = req.params;
+
+      await this.webAdminService.deleteContactMessage(messageId);
+
+      ResponseUtil.success(res, null, "Contact message deleted successfully");
+    }
+  );
+
+  // =============== CATEGORY MANAGEMENT ENDPOINTS ===============
+
+  updateCategory = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { categoryId } = req.params;
+      const adminId = req.user?._id;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      const category = await this.webAdminService.updateCategory(
+        categoryId,
+        req.body,
+        adminId as mongoose.Types.ObjectId
+      );
+
+      ResponseUtil.success(
+        res,
+        { category },
+        "Category updated successfully"
+      );
+    }
+  );
+
+  deleteCategory = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { categoryId } = req.params;
+
+      await this.webAdminService.deleteCategory(categoryId);
+
+      ResponseUtil.success(res, null, "Category deleted successfully");
+    }
+  );
 }

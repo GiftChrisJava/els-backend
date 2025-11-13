@@ -226,6 +226,52 @@ router.post(
   webAdminController.deactivateSlide
 );
 
+// =============== CONTACT MESSAGES ROUTES ===============
+
+router.get(
+  "/contact-messages",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getContactMessages
+);
+
+router.get(
+  "/contact-messages/:messageId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getContactMessageById
+);
+
+router.patch(
+  "/contact-messages/:messageId/status",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.updateContactMessageStatus
+);
+
+router.patch(
+  "/contact-messages/:messageId/notes",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.updateContactMessageNotes
+);
+
+router.delete(
+  "/contact-messages/:messageId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.deleteContactMessage
+);
+
+// =============== CATEGORY MANAGEMENT ROUTES ===============
+
+router.patch(
+  "/categories/:categoryId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.updateCategory
+);
+
+router.delete(
+  "/categories/:categoryId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.deleteCategory
+);
+
 // Error handling for multer file upload errors
 router.use(handleMulterError);
 

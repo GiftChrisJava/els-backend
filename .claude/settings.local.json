@@ -11,7 +11,8 @@
       "Bash(node test-route-comparison.js:*)",
       "Bash(cat:*)",
       "Bash(node verify-fixes.js:*)",
-      "Bash(node test-products-categories.js:*)"
+      "Bash(node test-products-categories.js:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []
