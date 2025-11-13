@@ -1093,6 +1093,7 @@ export class SalesAdminService {
       // Log activity
       await ActivityLog.create({
         user: adminId,
+        module: "sales-admin",
         type: ActivityType.USER_UPDATED,
         action: "UPDATE_CATEGORY",
         severity: ActivitySeverity.INFO,
@@ -1157,6 +1158,7 @@ export class SalesAdminService {
       // Log activity
       await ActivityLog.create({
         user: adminId,
+        module: "sales-admin",
         type: ActivityType.USER_DELETED,
         action: "DELETE_CATEGORY",
         severity: ActivitySeverity.INFO,
