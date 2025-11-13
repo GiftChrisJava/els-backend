@@ -258,6 +258,26 @@ router.delete(
   webAdminController.deleteContactMessage
 );
 
+// =============== CUSTOMER EMAIL MARKETING ROUTES ===============
+
+router.get(
+  "/customers/emails",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getCustomerEmails
+);
+
+router.post(
+  "/customers/send-email",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.sendEmailToCustomers
+);
+
+router.get(
+  "/email-campaigns",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  webAdminController.getEmailCampaigns
+);
+
 // Error handling for multer file upload errors
 router.use(handleMulterError);
 

@@ -1795,4 +1795,82 @@ export class WebAdminController {
       ResponseUtil.success(res, null, "Contact message deleted successfully");
     }
   );
+
+  // =============== CUSTOMER EMAIL MARKETING ENDPOINTS ===============
+
+  getCustomerEmails = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { source, search } = req.query;
+
+      const customerEmails = await this.webAdminService.getCustomerEmails({
+        source: source as string,
+        search: search as string,
+      });
+
+      ResponseUtil.success(
+        res,
+        customerEmails,
+        "Customer emails retrieved successfully"
+      );
+    }
+  );
+
+  sendEmailToCustomers = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      const { subject, message, recipients, sendToAll } = req.body;
+
+      if (!subject || !message) {
+        throw AppError.badRequest("Subject and message are required");
+      }
+
+      if (!sendToAll && (!recipients || recipients.length === 0)) {
+        throw AppError.badRequest(
+          "Recipients are required when not sending to all"
+        );
+      }
+
+      const campaign = await this.webAdminService.sendEmailToCustomers(
+        {
+          subject,
+          message,
+          recipients,
+          sendToAll,
+        },
+        adminId as mongoose.Types.ObjectId
+      );
+
+      ResponseUtil.success(
+        res,
+        { campaign },
+        "Email campaign initiated successfully"
+      );
+    }
+  );
+
+  getEmailCampaigns = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const { page, limit, status } = req.query;
+
+      const result = await this.webAdminService.getEmailCampaigns({
+        page: page ? parseInt(page as string) : 1,
+        limit: limit ? parseInt(limit as string) : 10,
+        status: status as string,
+      });
+
+      ResponseUtil.paginated(
+        res,
+        result.campaigns,
+        result.pagination.page,
+        result.pagination.limit,
+        result.pagination.total,
+        "Email campaigns retrieved successfully"
+      );
+    }
+  );
 }

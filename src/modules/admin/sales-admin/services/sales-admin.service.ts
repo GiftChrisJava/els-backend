@@ -14,7 +14,7 @@ import {
   ActivityLog,
   ActivitySeverity,
   ActivityType,
-} from "../../../../shared/models/activity-log.model";
+} from "../../system-admin/models/activity-log.model";
 
 export class SalesAdminService {
   private appwriteService: AppwriteService;

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { appConfig } from "../../../../config/app.config";
+import { Customer } from "../../../../modules/admin/sales-admin/models/customer.model";
 import {
   ActivityLog,
   ActivitySeverity,
@@ -7,8 +8,13 @@ import {
 } from "../../../../modules/admin/system-admin/models/activity-log.model";
 import { AppError } from "../../../../shared/errors/AppError";
 import { AppwriteService } from "../../../../shared/services/appwrite.service";
+import { EmailUtil } from "../../../../shared/utils/email.util";
 import { logger } from "../../../../shared/utils/logger.util";
 import { ContactMessage } from "../models/contact-message.model";
+import {
+  CampaignStatus,
+  EmailCampaign,
+} from "../models/email-campaign.model";
 import { ILandingSlide, LandingSlide } from "../models/landing-slide.model";
 import { IProject, Project } from "../models/project.model";
 import { IService, Service } from "../models/service.model";
@@ -1219,5 +1225,247 @@ export class WebAdminService {
     await message.deleteOne();
 
     return true;
+  }
+
+  // =============== CUSTOMER EMAIL MARKETING METHODS ===============
+
+  async getCustomerEmails(filters: { source?: string; search?: string }) {
+    const emails: {
+      email: string;
+      name: string;
+      source: string;
+      lastContact?: Date;
+    }[] = [];
+
+    const emailSet = new Set<string>(); // To avoid duplicates
+
+    // Get emails from contact messages
+    if (!filters.source || filters.source === "contact") {
+      const contactMessages = await ContactMessage.find({
+        email: filters.search
+          ? { $regex: filters.search, $options: "i" }
+          : { $exists: true },
+      })
+        .select("email name createdAt")
+        .sort({ createdAt: -1 });
+
+      contactMessages.forEach((msg) => {
+        if (!emailSet.has(msg.email)) {
+          emailSet.add(msg.email);
+          emails.push({
+            email: msg.email,
+            name: msg.name,
+            source: "contact",
+            lastContact: msg.createdAt,
+          });
+        }
+      });
+    }
+
+    // Get emails from testimonials
+    if (!filters.source || filters.source === "testimonial") {
+      const testimonials = await Testimonial.find({
+        "author.email": filters.search
+          ? { $regex: filters.search, $options: "i" }
+          : { $exists: true },
+        status: "approved",
+      })
+        .select("author createdAt")
+        .sort({ createdAt: -1 });
+
+      testimonials.forEach((test) => {
+        if (test.author?.email && !emailSet.has(test.author.email)) {
+          emailSet.add(test.author.email);
+          emails.push({
+            email: test.author.email,
+            name: test.author.name,
+            source: "testimonial",
+            lastContact: test.createdAt,
+          });
+        }
+      });
+    }
+
+    // Get emails from orders/customers
+    if (!filters.source || filters.source === "order") {
+      const customers = await Customer.find({
+        email: filters.search
+          ? { $regex: filters.search, $options: "i" }
+          : { $exists: true },
+      })
+        .select("email firstName lastName updatedAt")
+        .sort({ updatedAt: -1 });
+
+      customers.forEach((customer) => {
+        if (!emailSet.has(customer.email)) {
+          emailSet.add(customer.email);
+          emails.push({
+            email: customer.email,
+            name: `${customer.firstName} ${customer.lastName}`,
+            source: "order",
+            lastContact: customer.updatedAt,
+          });
+        }
+      });
+    }
+
+    // Sort by last contact date
+    emails.sort((a, b) => {
+      const dateA = a.lastContact ? new Date(a.lastContact).getTime() : 0;
+      const dateB = b.lastContact ? new Date(b.lastContact).getTime() : 0;
+      return dateB - dateA;
+    });
+
+    return {
+      emails,
+      totalCount: emails.length,
+      sources: {
+        contact: emails.filter((e) => e.source === "contact").length,
+        testimonial: emails.filter((e) => e.source === "testimonial").length,
+        order: emails.filter((e) => e.source === "order").length,
+      },
+    };
+  }
+
+  async sendEmailToCustomers(
+    data: {
+      subject: string;
+      message: string;
+      recipients?: { email: string; name?: string }[];
+      sendToAll?: boolean;
+    },
+    adminId: mongoose.Types.ObjectId
+  ) {
+    const emailUtil = new EmailUtil();
+
+    // Determine recipients
+    let recipients = data.recipients || [];
+
+    if (data.sendToAll) {
+      // Get all customer emails
+      const allEmails = await this.getCustomerEmails({});
+      recipients = allEmails.emails.map((e) => ({
+        email: e.email,
+        name: e.name,
+      }));
+    }
+
+    // Create campaign record
+    const campaign = await EmailCampaign.create({
+      subject: data.subject,
+      message: data.message,
+      recipients: recipients.map((r) => ({
+        email: r.email,
+        name: r.name,
+        source: "contact", // Default source
+      })),
+      recipientCount: recipients.length,
+      status: CampaignStatus.SENDING,
+      sentBy: adminId,
+    });
+
+    // Send emails in background
+    this.sendEmailsInBackground(campaign._id.toString(), recipients, data, emailUtil);
+
+    return campaign;
+  }
+
+  private async sendEmailsInBackground(
+    campaignId: string,
+    recipients: { email: string; name?: string }[],
+    data: { subject: string; message: string },
+    emailUtil: EmailUtil
+  ) {
+    try {
+      let successCount = 0;
+      let failureCount = 0;
+      const errors: string[] = [];
+
+      // Send emails to all recipients
+      for (const recipient of recipients) {
+        try {
+          const personalizedMessage = data.message.replace(
+            /\{name\}/g,
+            recipient.name || "Valued Customer"
+          );
+
+          await emailUtil.sendEmail({
+            to: recipient.email,
+            subject: data.subject,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0;">
+                  <h2 style="margin: 0;">${data.subject}</h2>
+                </div>
+                <div style="padding: 30px; background: #f9f9f9;">
+                  <div style="background: white; padding: 20px; border-radius: 8px;">
+                    ${personalizedMessage.replace(/\n/g, "<br>")}
+                  </div>
+                </div>
+                <div style="background: #333; color: #999; padding: 20px; text-align: center; border-radius: 0 0 10px 10px;">
+                  <p style="margin: 0;">© ${new Date().getFullYear()} Energy Solutions. All rights reserved.</p>
+                </div>
+              </div>
+            `,
+            text: personalizedMessage,
+          });
+
+          successCount++;
+        } catch (error: any) {
+          failureCount++;
+          errors.push(`${recipient.email}: ${error.message}`);
+        }
+      }
+
+      // Update campaign status
+      await EmailCampaign.findByIdAndUpdate(campaignId, {
+        status:
+          failureCount === 0 ? CampaignStatus.SENT : CampaignStatus.FAILED,
+        successCount,
+        failureCount,
+        emailErrors: errors.length > 0 ? errors : undefined,
+        sentAt: new Date(),
+      });
+
+      logger.info(
+        `Email campaign ${campaignId} completed: ${successCount} sent, ${failureCount} failed`
+      );
+    } catch (error: any) {
+      logger.error(`Email campaign ${campaignId} failed:`, error);
+      await EmailCampaign.findByIdAndUpdate(campaignId, {
+        status: CampaignStatus.FAILED,
+        emailErrors: [error.message],
+      });
+    }
+  }
+
+  async getEmailCampaigns(filters: {
+    page: number;
+    limit: number;
+    status?: string;
+  }) {
+    const query: any = {};
+
+    if (filters.status) {
+      query.status = filters.status;
+    }
+
+    const campaigns = await EmailCampaign.find(query)
+      .populate("sentBy", "firstName lastName email")
+      .sort({ createdAt: -1 })
+      .skip((filters.page - 1) * filters.limit)
+      .limit(filters.limit);
+
+    const total = await EmailCampaign.countDocuments(query);
+
+    return {
+      campaigns,
+      pagination: {
+        page: filters.page,
+        limit: filters.limit,
+        total,
+        totalPages: Math.ceil(total / filters.limit),
+      },
+    };
   }
 }
