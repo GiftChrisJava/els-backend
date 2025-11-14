@@ -143,6 +143,7 @@ export class SalesAdminService {
   async getProducts(filters: any = {}, pagination: any = {}) {
     try {
       const {
+        _id,
         search,
         category,
         status,
@@ -157,6 +158,10 @@ export class SalesAdminService {
       const query: any = {};
 
       // Apply filters
+      if (_id) {
+        query._id = _id;
+      }
+
       if (search) {
         query.$or = [
           { name: { $regex: search, $options: "i" } },
