@@ -31,11 +31,11 @@ export const appConfig = {
     host: process.env.EMAIL_HOST || "smtp.gmail.com",
     port: parseInt(process.env.EMAIL_PORT || "587", 10),
     secure: process.env.EMAIL_SECURE === "true",
-    user: process.env.EMAIL_USER || "",
+    user: process.env.EMAIL_USER || "energysolutionsltd24@gmail.com",
     password: process.env.EMAIL_PASSWORD || "",
     from:
       process.env.EMAIL_FROM ||
-      '"Energy Solutions" <noreply@energysolutions.mw>',
+      '"Energy Solutions Customer Support" <energysolutionsltd24@gmail.com>',
   },
 
   appwrite: {
@@ -61,7 +61,7 @@ export const appConfig = {
   },
 
   systemAdmin: {
-    email: process.env.SYSTEM_ADMIN_EMAIL || "admin@energysolutions.mw",
+    email: process.env.SYSTEM_ADMIN_EMAIL || "energysolutionsltd24@gmail.com",
     password: process.env.SYSTEM_ADMIN_PASSWORD || "Admin@123456",
     firstName: process.env.SYSTEM_ADMIN_FIRST_NAME || "System",
     lastName: process.env.SYSTEM_ADMIN_LAST_NAME || "Administrator",

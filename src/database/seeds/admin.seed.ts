@@ -21,7 +21,7 @@ interface AdminSeedData {
 
 const admins: AdminSeedData[] = [
   {
-    email: appConfig.systemAdmin.email || "admin@energysolutions.mw",
+    email: appConfig.systemAdmin.email,
     password: appConfig.systemAdmin.password || "Admin@123456",
     firstName: appConfig.systemAdmin.firstName || "System",
     lastName: appConfig.systemAdmin.lastName || "Administrator",
@@ -163,3 +163,4 @@ if (require.main === module) {
 }
 
 export { removeSeedAdmins, seedAdmins };
+
