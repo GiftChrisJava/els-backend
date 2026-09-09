@@ -170,24 +170,71 @@ categorySchema.methods.getAllSubcategories = async function (): Promise<
 // Static method to build category tree
 categorySchema.statics.buildTree = async function () {
   const categories = await this.find({ isActive: true })
-    .sort("displayOrder")
+    .sort({ displayOrder: 1, name: 1 })
     .lean();
 
-  const buildTree = (parentId: string | null = null): any[] => {
-    return categories
-      .filter((cat: any) => {
-        const parentMatch = parentId
-          ? cat.parentCategory?.toString() === parentId
-          : !cat.parentCategory;
-        return parentMatch;
-      })
-      .map((cat: any) => ({
-        ...cat,
-        subcategories: buildTree(cat._id.toString()),
-      }));
+  const presentIds = new Set(categories.map((cat: any) => cat._id.toString()));
+
+  /**
+   * Children indexed by parent id, so the tree is assembled in one pass rather
+   * than re-scanning the whole list at every level.
+   */
+  const childrenOf = new Map<string, any[]>();
+  for (const cat of categories) {
+    const parentId = cat.parentCategory?.toString();
+    if (!parentId || !presentIds.has(parentId)) continue;
+    if (!childrenOf.has(parentId)) childrenOf.set(parentId, []);
+    childrenOf.get(parentId)!.push(cat);
+  }
+
+  const emitted = new Set<string>();
+
+  const attach = (cat: any, ancestry: Set<string>): any => {
+    const id = cat._id.toString();
+    emitted.add(id);
+
+    const nextAncestry = new Set(ancestry).add(id);
+    const children = childrenOf.get(id) || [];
+
+    return {
+      ...cat,
+      // `ancestry` stops a parent chain that loops back on itself from
+      // recursing until the stack overflows.
+      subcategories: children
+        .filter((child: any) => !nextAncestry.has(child._id.toString()))
+        .map((child: any) => attach(child, nextAncestry)),
+    };
   };
 
-  return buildTree();
+  /**
+   * A category is a root when it has no parent, OR when its parent is not in
+   * this result set - because the parent was deleted, or is `isActive: false`
+   * and was filtered out above.
+   *
+   * That second case was silently dropping categories. Production had 9 active
+   * categories while this returned 7, hiding "Solar Batteries" and
+   * "Solar PV Module" - and their products - from the public site, because both
+   * pointed at a parent that no longer existed.
+   */
+  const tree = categories
+    .filter((cat: any) => {
+      const parentId = cat.parentCategory?.toString();
+      return !parentId || !presentIds.has(parentId);
+    })
+    .map((cat: any) => attach(cat, new Set<string>()));
+
+  /**
+   * Anything still unemitted is part of a parent cycle, so it has a parent that
+   * exists but is not reachable from any root. Surface those as roots as well:
+   * the invariant callers rely on is that every active category appears in the
+   * tree exactly once.
+   */
+  for (const cat of categories) {
+    if (emitted.has(cat._id.toString())) continue;
+    tree.push(attach(cat, new Set<string>()));
+  }
+
+  return tree;
 };
 
 // Update product count

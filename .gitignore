@@ -8,6 +8,11 @@ yarn.lock
 
 # Environment variables
 .env
+# Match any env file, not just ones starting with ".env" - this repo keeps its
+# local config in els-backend.env, which `.env` never matched.
+*.env
+*.env.*
+!.env.example
 .env.local
 .env.development.local
 .env.test.local

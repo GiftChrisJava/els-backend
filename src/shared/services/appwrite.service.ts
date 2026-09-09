@@ -223,7 +223,8 @@ class AppwriteService {
    * @param url - The URL to check
    * @returns boolean - True if it's an Appwrite URL
    */
-  private isAppwriteUrl(url: string): boolean {
+  /** True when the URL points at this project's Appwrite bucket. */
+  public isAppwriteUrl(url: string): boolean {
     return url.includes("appwrite.io") || url.includes(this.endpoint);
   }
 

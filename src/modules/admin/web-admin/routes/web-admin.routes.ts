@@ -5,6 +5,7 @@ import { hasRole } from "../../../../modules/auth/middlewares/role.middleware";
 import {
   handleMulterError,
   uploadLandingSlideImage,
+  uploadNewsImages,
   uploadProjectImages,
   uploadServiceImages,
   uploadStaffProfileImage,
@@ -14,7 +15,9 @@ import {
   parseFormDataJSON,
   validateRequest,
 } from "../../../../shared/middlewares/validation.middleware";
+import { newsController } from "../controller/news.controller";
 import { WebAdminController } from "../controller/web-admin.controller";
+import * as newsValidators from "../validator/news.validator";
 import * as validators from "../validator/web-admin.validator";
 
 const router = Router();
@@ -276,6 +279,57 @@ router.get(
   "/email-campaigns",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   webAdminController.getEmailCampaigns
+);
+
+// =============== NEWS ROUTES ===============
+//
+// Contract: NEWS_API_SPEC.md at the workspace root. The `/news/:newsId`
+// routes are declared after the collection route so "news" is never captured
+// as an id.
+
+router.get(
+  "/news",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  newsController.getNews
+);
+
+router.get(
+  "/news/:newsId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  newsController.getNewsById
+);
+
+router.post(
+  "/news",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadNewsImages,
+  handleMulterError,
+  // Multipart delivers repeated `tags[]` fields as an array already, so only
+  // the boolean/number coercion in the schema is needed.
+  validateRequest(newsValidators.createNewsSchema),
+  newsController.createNews
+);
+
+router.patch(
+  "/news/:newsId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadNewsImages,
+  handleMulterError,
+  validateRequest(newsValidators.updateNewsSchema),
+  newsController.updateNews
+);
+
+router.patch(
+  "/news/:newsId/publish",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  validateRequest(newsValidators.setNewsPublishedSchema),
+  newsController.setNewsPublished
+);
+
+router.delete(
+  "/news/:newsId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  newsController.deleteNews
 );
 
 // Error handling for multer file upload errors

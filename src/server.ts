@@ -1,10 +1,7 @@
-import dotenv from "dotenv";
-// import "module-alias/register";
-import path from "path";
-
-// Load environment variables
-dotenv.config({ path: path.join(__dirname, "../.env") });
-
+// Environment loading lives in ./config/app.config, which is imported below
+// and resolves whichever env file is present. A second dotenv call here read a
+// `.env` that this project does not have, and ran after the imports had
+// already been evaluated, so it never did anything.
 import app from "./app";
 import { appConfig } from "./config/app.config";
 import { DatabaseConnection } from "./config/database.config";
@@ -49,8 +46,10 @@ async function startServer(): Promise<void> {
     // Start cleanup jobs
     startCleanupJobs();
 
-    // Start the server
-    const PORT = process.env.PORT;
+    // Start the server. Taken from the parsed config so an unset PORT falls
+    // back to a known default instead of `undefined`, which makes
+    // `app.listen` bind an arbitrary free port.
+    const PORT = appConfig.port;
 
     logger.info(`Starting server on port ${PORT}`);
     const server = app.listen(PORT, () => {
@@ -70,12 +69,12 @@ async function startServer(): Promise<void> {
       `);
 
       if (appConfig.isDevelopment()) {
+        // The seeded password is deliberately not logged - console output ends
+        // up in shared terminals, CI output and scrollback.
         logger.info(`
         📚 API Documentation: ${appConfig.appUrl}/api
-        🔑 Default Admin Credentials:
-           Email: ${appConfig.systemAdmin.email}
-           Password: ${appConfig.systemAdmin.password}
-        ⚠️  Remember to change the default password!
+        🔑 Seeded system admin: ${appConfig.systemAdmin.email}
+           (password comes from SYSTEM_ADMIN_PASSWORD)
         `);
       }
     });

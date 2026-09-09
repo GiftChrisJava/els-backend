@@ -4,6 +4,7 @@ import {
   ContactStatus,
 } from "../../../modules/admin/web-admin/models/contact-message.model";
 import { LandingSlide } from "../../../modules/admin/web-admin/models/landing-slide.model";
+import { newsService } from "../../../modules/admin/web-admin/service/news.service";
 import {
   Project,
   ProjectStatus,
@@ -28,6 +29,7 @@ import {
 import { optionalAuth } from "../../../modules/auth/middlewares/auth.middleware";
 import { AppError } from "../../../shared/errors/AppError";
 import { asyncHandler } from "../../../shared/utils/async-handler.util";
+import { parsePagination } from "../../../shared/utils/query.util";
 import { ResponseUtil } from "../../../shared/utils/response.util";
 
 const router = Router();
@@ -38,6 +40,11 @@ router.get(
   "/services",
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { category, featured, page = 1, limit = 10 } = req.query;
+
+    // Clamped: rejects NaN, negative pages and unbounded limits.
+    const { page: safePage, limit: safeLimit, skip } = parsePagination(
+      { page, limit }
+    );
 
     const query: any = {
       status: ServiceStatus.ACTIVE,
@@ -55,14 +62,14 @@ router.get(
     const services = await Service.find(query)
       .select("-createdBy -lastModifiedBy -metadata")
       .sort({ displayOrder: 1, createdAt: -1 })
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit));
+      .limit(safeLimit)
+      .skip(skip);
 
     ResponseUtil.paginated(
       res,
       services,
-      Number(page),
-      Number(limit),
+      safePage,
+      safeLimit,
       total,
       "Services retrieved successfully"
     );
@@ -112,6 +119,11 @@ router.get(
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { category, featured, status, page = 1, limit = 10 } = req.query;
 
+    // Clamped: rejects NaN, negative pages and unbounded limits.
+    const { page: safePage, limit: safeLimit, skip } = parsePagination(
+      { page, limit }
+    );
+
     const query: any = {
       isPublished: true,
     };
@@ -133,14 +145,14 @@ router.get(
       .select("-createdBy -lastModifiedBy -projectValue")
       .populate("relatedServices", "name slug")
       .sort({ isFeatured: -1, startDate: -1 })
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit));
+      .limit(safeLimit)
+      .skip(skip);
 
     ResponseUtil.paginated(
       res,
       projects,
-      Number(page),
-      Number(limit),
+      safePage,
+      safeLimit,
       total,
       "Projects retrieved successfully"
     );
@@ -214,6 +226,11 @@ router.get(
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { department, featured, page = 1, limit = 12 } = req.query;
 
+    // Clamped: rejects NaN, negative pages and unbounded limits.
+    const { page: safePage, limit: safeLimit, skip } = parsePagination(
+      { page, limit }
+    );
+
     const query: any = {
       status: StaffStatus.ACTIVE,
       isPublished: true,
@@ -231,14 +248,14 @@ router.get(
     const staff = await Staff.find(query)
       .select("-createdBy -lastModifiedBy -userId -employeeId")
       .sort({ isTeamLead: -1, displayOrder: 1, joinedDate: 1 })
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit));
+      .limit(safeLimit)
+      .skip(skip);
 
     ResponseUtil.paginated(
       res,
       staff,
-      Number(page),
-      Number(limit),
+      safePage,
+      safeLimit,
       total,
       "Staff members retrieved successfully"
     );
@@ -286,6 +303,11 @@ router.get(
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { featured, rating, page = 1, limit = 10 } = req.query;
 
+    // Clamped: rejects NaN, negative pages and unbounded limits.
+    const { page: safePage, limit: safeLimit, skip } = parsePagination(
+      { page, limit }
+    );
+
     const query: any = {
       status: TestimonialStatus.APPROVED,
       isPublished: true,
@@ -307,8 +329,8 @@ router.get(
       .populate("project", "title slug")
       .populate("service", "name slug")
       .sort({ isFeatured: -1, rating: -1, publishedAt: -1 })
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit));
+      .limit(safeLimit)
+      .skip(skip);
 
     // Get average rating
     const stats = await Testimonial.getAverageRating();
@@ -316,8 +338,8 @@ router.get(
     ResponseUtil.paginated(
       res,
       testimonials,
-      Number(page),
-      Number(limit),
+      safePage,
+      safeLimit,
       total,
       "Testimonials retrieved successfully",
       { averageRating: stats.averageRating, totalReviews: stats.totalReviews }
@@ -450,6 +472,11 @@ router.get(
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { featured, page = 1, limit = 20 } = req.query;
 
+    // Clamped: rejects NaN, negative pages and unbounded limits.
+    const { page: safePage, limit: safeLimit, skip } = parsePagination(
+      { page, limit }
+    );
+
     const query: any = {
       isActive: true,
     };
@@ -463,14 +490,14 @@ router.get(
       .select("-createdBy -lastModifiedBy")
       .populate("parentCategory", "name slug")
       .sort({ displayOrder: 1, name: 1 })
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit));
+      .limit(safeLimit)
+      .skip(skip);
 
     ResponseUtil.paginated(
       res,
       categories,
-      Number(page),
-      Number(limit),
+      safePage,
+      safeLimit,
       total,
       "Categories retrieved successfully"
     );
@@ -548,6 +575,11 @@ router.get(
       limit = 12,
     } = req.query;
 
+    // Clamped: rejects NaN, negative pages and unbounded limits.
+    const { page: safePage, limit: safeLimit, skip } = parsePagination(
+      { page, limit }
+    );
+
     const query: any = {
       status: ProductStatus.ACTIVE,
       isPublished: true,
@@ -601,14 +633,14 @@ router.get(
       .populate("category", "name slug")
       .populate("subcategory", "name slug")
       .sort(sortOption)
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit));
+      .limit(safeLimit)
+      .skip(skip);
 
     ResponseUtil.paginated(
       res,
       products,
-      Number(page),
-      Number(limit),
+      safePage,
+      safeLimit,
       total,
       "Products retrieved successfully"
     );
@@ -712,6 +744,78 @@ router.post(
         message: "Thank you for contacting us. We will get back to you soon!",
       },
       "Contact form submitted successfully"
+    );
+  })
+);
+
+// =============== PUBLIC NEWS ===============
+//
+// Contract: NEWS_API_SPEC.md at the workspace root.
+//
+// `publishedOnly` is hard-coded true on both routes, so a draft is never
+// reachable here - not by listing, and not by guessing its slug.
+//
+// `/news/featured` is declared before `/news/:slug` so it is not swallowed by
+// the slug parameter.
+
+router.get(
+  "/news",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { category, tag, featured, search, page, limit } = req.query as Record<
+      string,
+      string
+    >;
+
+    const result = await newsService.listNews(
+      {
+        category: category || undefined,
+        tag: tag || undefined,
+        search: search || undefined,
+        isFeatured: featured === "true" ? true : undefined,
+      },
+      parsePagination({ page, limit }),
+      true
+    );
+
+    ResponseUtil.paginated(
+      res,
+      result.articles,
+      result.page,
+      result.limit,
+      result.total,
+      "News retrieved successfully"
+    );
+  })
+);
+
+router.get(
+  "/news/featured",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const result = await newsService.listNews(
+      { isFeatured: true },
+      { page: 1, limit: Number(req.query.limit) || 5 },
+      true
+    );
+
+    ResponseUtil.success(
+      res,
+      { news: result.articles },
+      "Featured news retrieved successfully"
+    );
+  })
+);
+
+router.get(
+  "/news/:slug",
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { article, relatedArticles } = await newsService.getPublishedBySlug(
+      req.params.slug
+    );
+
+    ResponseUtil.success(
+      res,
+      { article, relatedArticles },
+      "Article retrieved successfully"
     );
   })
 );

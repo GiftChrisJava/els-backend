@@ -99,21 +99,28 @@ export const optionalAuth = async (
   }
 };
 
+/**
+ * Pulls the bearer token off the request.
+ *
+ * Header only, deliberately.
+ *
+ * A `?token=` query parameter was previously accepted "for file downloads".
+ * Nothing in the codebase used it, and it leaked credentials everywhere a URL
+ * goes: morgan's `combined` format writes the full query string to the access
+ * log, and the same value ends up in proxy logs, browser history and the
+ * `Referer` header of any outbound link. Every client here sends the
+ * Authorization header, including the CSV export.
+ *
+ * The cookie branch is also gone: `cookie-parser` is not installed, so
+ * `req.cookies` was always undefined and the branch was unreachable. Add the
+ * parser first if cookie auth is ever wanted.
+ */
 function extractToken(req: Request): string | null {
-  // Check Authorization header
   const authHeader = req.headers.authorization;
+
   if (authHeader && authHeader.startsWith("Bearer ")) {
-    return authHeader.substring(7);
-  }
-
-  // Check cookies
-  if (req.cookies && req.cookies.accessToken) {
-    return req.cookies.accessToken;
-  }
-
-  // Check query parameter (for special cases like file downloads)
-  if (req.query && req.query.token) {
-    return req.query.token as string;
+    const token = authHeader.substring(7).trim();
+    return token.length > 0 ? token : null;
   }
 
   return null;

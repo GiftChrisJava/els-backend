@@ -1,8 +1,54 @@
 import dotenv from "dotenv";
+import fs from "fs";
 import path from "path";
 
-// Load environment variables
-dotenv.config({ path: path.join(__dirname, "../../.env") });
+/**
+ * Loads the first env file that exists.
+ *
+ * This project keeps its local config in `els-backend.env`, but only `.env`
+ * was ever loaded - so locally every value below silently fell back to its
+ * hardcoded default, including `JWT_SECRET`. Tokens were being signed with
+ * "default-secret-change-this", which is public in this file.
+ *
+ * On the hosting platform the variables are injected into `process.env`
+ * directly and no file is needed, so a missing file is not an error.
+ */
+const projectRoot = path.join(__dirname, "../..");
+const candidateEnvFiles = [".env", "els-backend.env"];
+
+for (const filename of candidateEnvFiles) {
+  const candidate = path.join(projectRoot, filename);
+  if (fs.existsSync(candidate)) {
+    // `override: false` keeps real platform variables authoritative over a
+    // stale local file.
+    dotenv.config({ path: candidate, override: false });
+  }
+}
+
+/**
+ * Fails fast on a secret that was never configured.
+ *
+ * A default JWT secret in production means anyone reading this repository can
+ * mint valid admin tokens, so refuse to boot rather than run insecurely.
+ */
+function requireSecret(name: string, value: string | undefined): string {
+  if (value && value.trim()) {
+    return value;
+  }
+
+  const message =
+    `${name} is not set. Set it in the environment (or in ` +
+    `els-backend.env for local development) before starting the server.`;
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(message);
+  }
+
+  console.warn(
+    `[config] ${message} Falling back to an insecure development value.`
+  );
+  return `insecure-dev-${name.toLowerCase()}`;
+}
 
 export const appConfig = {
   env: process.env.NODE_ENV || "development",
@@ -12,9 +58,11 @@ export const appConfig = {
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
 
   jwt: {
-    secret: process.env.JWT_SECRET || "default-secret-change-this",
-    refreshSecret:
-      process.env.JWT_REFRESH_SECRET || "default-refresh-secret-change-this",
+    secret: requireSecret("JWT_SECRET", process.env.JWT_SECRET),
+    refreshSecret: requireSecret(
+      "JWT_REFRESH_SECRET",
+      process.env.JWT_REFRESH_SECRET
+    ),
     expiresIn: process.env.JWT_EXPIRES_IN || "1h",
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
   },
@@ -57,7 +105,12 @@ export const appConfig = {
   },
 
   cors: {
-    origins: process.env.CORS_ORIGINS?.split(",") || ["http://localhost:3000"],
+    // Trimmed and de-duplicated: the configured value contains an entry with a
+    // leading space (", https://...") which could never match an Origin header,
+    // and a trailing slash makes an origin fail an exact comparison.
+    origins: (process.env.CORS_ORIGINS?.split(",") ?? ["http://localhost:3000"])
+      .map((origin) => origin.trim().replace(/\/$/, ""))
+      .filter((origin) => origin.length > 0),
   },
 
   systemAdmin: {

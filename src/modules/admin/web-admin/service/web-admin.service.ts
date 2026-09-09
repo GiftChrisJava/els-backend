@@ -1187,7 +1187,7 @@ export class WebAdminService {
 
     // Log activity
     await ActivityLog.create({
-      user: adminId,
+      userId: adminId,
       type: ActivityType.USER_UPDATED,
       action: "UPDATE_CONTACT_STATUS",
       severity: ActivitySeverity.INFO,

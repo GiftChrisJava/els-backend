@@ -45,6 +45,12 @@ export class SalesAdminService {
       // Set creator
       productData.createdBy = userId;
 
+      if (productData.name) {
+        productData.slug = await this.generateUniqueProductSlug(
+          productData.name
+        );
+      }
+
       // Create product
       const product = new Product(productData);
       await product.save();
@@ -68,9 +74,29 @@ export class SalesAdminService {
    */
   async updateProduct(productId: string, updateData: any, userId: string) {
     try {
+      // Read the pre-update state first. `findByIdAndUpdate({ new: true })`
+      // returns the *updated* document, so reading `product.category`
+      // afterwards gave the new category twice - the previous category's
+      // `metadata.productCount` was never decremented and drifted upwards
+      // forever. Production had a category reporting 3 products while holding
+      // none.
+      const existing = await Product.findById(productId).select(
+        "category status"
+      );
+
+      if (!existing) {
+        throw new AppError("Product not found", 404);
+      }
+
+      const previousCategoryId = existing.category?.toString();
+      const previousStatus = existing.status;
+
       // If name is being updated, regenerate slug
       if (updateData.name) {
-        updateData.slug = slugify(updateData.name, { lower: true });
+        updateData.slug = await this.generateUniqueProductSlug(
+          updateData.name,
+          productId
+        );
       }
 
       // Images are already uploaded to Appwrite by the controller
@@ -88,19 +114,57 @@ export class SalesAdminService {
         throw new AppError("Product not found", 404);
       }
 
-      // Update category product counts if category changed
-      if (updateData.category) {
-        const oldCategory = await Category.findById(product.category);
-        const newCategory = await Category.findById(updateData.category);
+      // Recount whenever the category changed OR the status changed, since the
+      // stored count only tallies products with status "active": archiving a
+      // product without moving it also invalidates the count.
+      const newCategoryId = product.category?.toString();
+      const categoryChanged = previousCategoryId !== newCategoryId;
+      const statusChanged = previousStatus !== product.status;
 
-        if (oldCategory) await oldCategory.updateProductCount();
-        if (newCategory) await newCategory.updateProductCount();
+      if (categoryChanged || statusChanged) {
+        const affectedIds = new Set(
+          [previousCategoryId, newCategoryId].filter(
+            (id): id is string => Boolean(id)
+          )
+        );
+
+        for (const id of affectedIds) {
+          const category = await Category.findById(id);
+          if (category) await category.updateProductCount();
+        }
       }
 
       return product;
     } catch (error: any) {
-      throw new AppError(error.message || "Failed to update product", 400);
+      throw new AppError(
+        error.message || "Failed to update product",
+        error.statusCode || 400
+      );
     }
+  }
+
+  /**
+   * A product slug that is unique across the collection.
+   *
+   * `slug` carries a unique index, so deriving it from the name alone made any
+   * duplicate product name fail the write outright.
+   */
+  private async generateUniqueProductSlug(
+    name: string,
+    excludeId?: string
+  ): Promise<string> {
+    const base = slugify(name, { lower: true, strict: true }) || "product";
+
+    for (let attempt = 0; attempt < 50; attempt++) {
+      const candidate = attempt === 0 ? base : `${base}-${attempt + 1}`;
+      const filter: any = { slug: candidate };
+      if (excludeId) filter._id = { $ne: excludeId };
+
+      const clash = await Product.findOne(filter).select("_id").lean();
+      if (!clash) return candidate;
+    }
+
+    return `${base}-${Date.now()}`;
   }
 
   /**
@@ -278,7 +342,9 @@ export class SalesAdminService {
    */
   async createCategory(categoryData: any, userId: string) {
     try {
-      categoryData.slug = slugify(categoryData.name, { lower: true });
+      categoryData.slug = await this.generateUniqueCategorySlug(
+        categoryData.name
+      );
       categoryData.createdBy = userId;
 
       // Images are already uploaded to Appwrite by the controller
@@ -291,6 +357,27 @@ export class SalesAdminService {
     } catch (error: any) {
       throw new AppError(error.message || "Failed to create category", 400);
     }
+  }
+
+  /**
+   * A category slug that is unique across the collection.
+   */
+  private async generateUniqueCategorySlug(
+    name: string,
+    excludeId?: string
+  ): Promise<string> {
+    const base = slugify(name || "", { lower: true, strict: true }) || "category";
+
+    for (let attempt = 0; attempt < 50; attempt++) {
+      const candidate = attempt === 0 ? base : `${base}-${attempt + 1}`;
+      const filter: any = { slug: candidate };
+      if (excludeId) filter._id = { $ne: excludeId };
+
+      const clash = await Category.findOne(filter).select("_id").lean();
+      if (!clash) return candidate;
+    }
+
+    return `${base}-${Date.now()}`;
   }
 
   /**
@@ -1086,7 +1173,10 @@ export class SalesAdminService {
 
       // If name is being updated, regenerate slug
       if (updateData.name && updateData.name !== category.name) {
-        updateData.slug = slugify(updateData.name, { lower: true });
+        updateData.slug = await this.generateUniqueCategorySlug(
+          updateData.name,
+          categoryId
+        );
       }
 
       // Update category fields
@@ -1097,7 +1187,7 @@ export class SalesAdminService {
 
       // Log activity
       await ActivityLog.create({
-        user: adminId,
+        userId: adminId,
         module: "sales-admin",
         type: ActivityType.USER_UPDATED,
         action: "UPDATE_CATEGORY",
@@ -1162,7 +1252,7 @@ export class SalesAdminService {
 
       // Log activity
       await ActivityLog.create({
-        user: adminId,
+        userId: adminId,
         module: "sales-admin",
         type: ActivityType.USER_DELETED,
         action: "DELETE_CATEGORY",

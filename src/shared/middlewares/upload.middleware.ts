@@ -155,6 +155,19 @@ export const uploadTestimonialFiles = multer({
   { name: "mediaUrl", maxCount: 1 },
 ]);
 
+// Multer configuration for news article images (cover + gallery)
+export const uploadNewsImages = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: MAX_FILE_SIZE,
+    files: MAX_FILES + 1, // +1 for the cover image
+  },
+}).fields([
+  { name: "coverImage", maxCount: 1 },
+  { name: "images", maxCount: MAX_FILES },
+]);
+
 // Multer configuration for client logo
 export const uploadClientLogo = multer({
   storage,

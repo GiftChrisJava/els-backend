@@ -9,7 +9,7 @@ import { appConfig } from "./config/app.config";
 import { errorHandler } from "./shared/middlewares/error.middleware";
 import { notFoundHandler } from "./shared/middlewares/not-found.middleware";
 import { rateLimiter } from "./shared/middlewares/rate-limit.middleware";
-import { loggerStream } from "./shared/utils/logger.util";
+import { logger, loggerStream } from "./shared/utils/logger.util";
 
 // Extend Express Request interface to include custom properties
 declare global {
@@ -62,11 +62,20 @@ class App {
           // Allow requests with no origin (like mobile apps or Postman)
           if (!origin) return callback(null, true);
 
-          if (appConfig.cors.origins.includes(origin)) {
-            callback(null, true);
-          } else {
-            callback(new Error("Not allowed by CORS"));
+          // Compared without a trailing slash, since an Origin header never
+          // carries one but a configured value might.
+          const normalized = origin.replace(/\/$/, "");
+
+          if (appConfig.cors.origins.includes(normalized)) {
+            return callback(null, true);
           }
+
+          // Reject by simply omitting the CORS headers rather than raising.
+          // Passing an Error here surfaced as a 500 from the global error
+          // handler, which reads as "the API is broken" instead of "this
+          // origin is not allowed" - and leaked a stack trace in development.
+          logger.warn(`Blocked CORS request from origin: ${origin}`);
+          return callback(null, false);
         },
         credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -106,8 +115,19 @@ class App {
       this.app.use(morgan("combined", { stream: loggerStream }));
     }
 
-    // Global rate limiting
-    this.app.use("/api", rateLimiter("global", 100, 15));
+    // Trust the hosting platform's proxy. Set before the rate limiter is
+    // mounted so it keys on the real client IP from X-Forwarded-For; keying on
+    // the proxy address would put every visitor in a single bucket and lock
+    // the whole site out at the first 100 requests.
+    this.app.set("trust proxy", 1);
+
+    // Global rate limiting. Public reads are far more frequent than writes, so
+    // the ceiling has to accommodate a normal browsing session: one page view
+    // on the storefront fans out to several endpoints.
+    this.app.use(
+      "/api",
+      rateLimiter("global", appConfig.rateLimit.maxRequests, 15)
+    );
 
     // Request ID middleware
     this.app.use((req: Request, res: Response, next) => {
@@ -115,9 +135,6 @@ class App {
       res.setHeader("X-Request-Id", req.id);
       next();
     });
-
-    // Trust proxy
-    this.app.set("trust proxy", 1);
 
     // Disable X-Powered-By header
     this.app.disable("x-powered-by");

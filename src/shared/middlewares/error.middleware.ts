@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { appConfig } from "../../config/app.config";
 import { AppError } from "../../shared/errors/AppError";
 import { logger } from "../../shared/utils/logger.util";
@@ -16,18 +16,39 @@ interface ErrorResponse {
   requestId?: string;
 }
 
+/**
+ * Global error handler.
+ *
+ * The `next` parameter is required even though it is only used for the
+ * headers-already-sent case: Express identifies error middleware by function
+ * arity, and a 3-argument function is registered as ordinary middleware and
+ * never invoked for errors. That is what happened here - every failure in the
+ * API fell through to Express's default handler and came back as an HTML
+ * "Internal Server Error" page instead of this JSON envelope, so clients could
+ * not read the message and treated real 500s as routing failures.
+ */
 export const errorHandler = (
   err: Error | AppError,
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): void => {
+  // Nothing useful can be sent once the response has started; hand it back so
+  // Express can close the connection.
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  // Spread only copies enumerable own properties, so `name`, `message` and
+  // `stack` are read from the original error rather than the copy.
   let error = { ...err } as any;
   error.message = err.message;
+  error.name = err.name;
 
-  // Log error
   logger.error({
-    message: error.message,
-    stack: error.stack,
+    message: err.message,
+    name: err.name,
+    stack: err.stack,
     url: req.originalUrl,
     method: req.method,
     ip: req.ip,
@@ -87,8 +108,16 @@ export const errorHandler = (
     error = new AppError(message, 400, true, code);
   }
 
-  // MongoDB connection errors
-  if (err.name === "MongoNetworkError" || err.name === "MongoServerError") {
+  // MongoDB connection errors. Checked after the duplicate-key branch above,
+  // since a duplicate key also arrives as a MongoServerError and deserves a
+  // 409 with the offending field rather than a generic 503.
+  if (
+    error.code !== 11000 &&
+    error.code !== "11000" &&
+    (err.name === "MongoNetworkError" ||
+      err.name === "MongoServerError" ||
+      err.name === "MongooseServerSelectionError")
+  ) {
     const message = "Database connection error";
     error = new AppError(message, 503, false, "DATABASE_ERROR");
   }

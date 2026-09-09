@@ -19,6 +19,9 @@ export interface Tokens {
 }
 
 export class TokenService {
+  /** Audience that separates one-off tokens from session access tokens. */
+  private static readonly TEMPORARY_TOKEN_AUDIENCE = "temporary";
+
   private readonly jwtSecret: string;
   private readonly jwtRefreshSecret: string;
   private readonly jwtExpiresIn: string;
@@ -111,13 +114,26 @@ export class TokenService {
     }
   }
 
+  /**
+   * A short-lived token for one-off flows (password reset, email confirmation).
+   *
+   * Stamped with a distinct audience and a `tokenType` claim, both of which
+   * `verifyTemporaryToken` requires. Without them the two token kinds were
+   * interchangeable: they shared this secret and issuer, and the temporary
+   * verifier did not check the audience, so a full access token satisfied it.
+   */
   generateTemporaryToken(payload: any, expiresIn: string = "15m"): string {
     try {
       const options = {
         expiresIn,
         issuer: appConfig.appName,
+        audience: TokenService.TEMPORARY_TOKEN_AUDIENCE,
       };
-      return jwt.sign(payload, this.jwtSecret, options as any);
+      return jwt.sign(
+        { ...payload, tokenType: "temporary" },
+        this.jwtSecret,
+        options as any
+      );
     } catch (error) {
       logger.error("Error generating temporary token:", error);
       throw AppError.internal("Failed to generate temporary token");
@@ -126,11 +142,20 @@ export class TokenService {
 
   verifyTemporaryToken(token: string): any {
     try {
-      const options = {
+      const payload = jwt.verify(token, this.jwtSecret, {
         issuer: appConfig.appName,
-      };
-      return jwt.verify(token, this.jwtSecret, options);
+        audience: TokenService.TEMPORARY_TOKEN_AUDIENCE,
+      }) as any;
+
+      if (payload?.tokenType !== "temporary") {
+        throw AppError.badRequest("Invalid token");
+      }
+
+      return payload;
     } catch (error: any) {
+      if (error instanceof AppError) {
+        throw error;
+      }
       if (error.name === "TokenExpiredError") {
         throw AppError.badRequest("Token has expired");
       } else if (error.name === "JsonWebTokenError") {
