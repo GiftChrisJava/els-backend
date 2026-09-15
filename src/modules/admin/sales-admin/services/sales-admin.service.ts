@@ -529,6 +529,57 @@ export class SalesAdminService {
   }
 
   /**
+   * Update an order's editable fields.
+   *
+   * Only the fields an admin is allowed to change are copied across, so a
+   * crafted request cannot rewrite totals, line items, the customer or the
+   * payment record.
+   *
+   * A status change is delegated to `updateOrderStatus` rather than assigned
+   * directly, because that path also releases or consumes reserved stock and
+   * awards loyalty points. Assigning `status` here would change the label while
+   * leaving inventory wrong.
+   */
+  async updateOrder(orderId: string, updateData: any, userId: string) {
+    try {
+      const order = await Order.findById(orderId);
+      if (!order) {
+        throw new AppError("Order not found", 404);
+      }
+
+      const { status, priority, paymentStatus, internalNotes, tags } =
+        updateData ?? {};
+
+      if (priority !== undefined) order.priority = priority;
+      if (paymentStatus !== undefined) order.paymentStatus = paymentStatus;
+      if (internalNotes !== undefined) order.internalNotes = internalNotes;
+      if (tags !== undefined) {
+        order.tags = Array.isArray(tags)
+          ? tags.map((tag: any) => String(tag).trim()).filter(Boolean)
+          : [];
+      }
+
+      await order.save();
+
+      // Run the status transition last so its inventory side effects apply to
+      // an order that already carries the rest of the edit.
+      if (status !== undefined && status !== order.status) {
+        return await this.updateOrderStatus(
+          orderId,
+          status as OrderStatus,
+          userId,
+          internalNotes
+        );
+      }
+
+      return order;
+    } catch (error: any) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(error.message || "Failed to update order", 400);
+    }
+  }
+
+  /**
    * Record offline sale
    */
   async recordOfflineSale(saleData: any, userId: string) {

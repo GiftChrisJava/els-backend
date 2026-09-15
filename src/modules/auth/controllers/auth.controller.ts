@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { AppError } from "../../../shared/errors/AppError";
 import { asyncHandler } from "../../../shared/utils/async-handler.util";
 import { ResponseUtil } from "../../../shared/utils/response.util";
+import { ActivityLog } from "../../admin/system-admin/models/activity-log.model";
+import { Session } from "../models/session.model";
 import { AuthService } from "../services/auth.service";
 
 export class AuthController {
@@ -288,6 +290,102 @@ export class AuthController {
 
     return req.cookies?.accessToken || null;
   }
+
+  /**
+   * The signed-in user's own active sessions.
+   *
+   * Scoped to `req.user` - an admin can only ever see their own devices here,
+   * never another account's.
+   */
+  getSessions = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const userId = req.user?._id;
+
+      if (!userId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      const sessions = await Session.find({
+        userId,
+        isActive: true,
+        expiresAt: { $gt: new Date() },
+      })
+        .sort({ lastActivity: -1 })
+        .limit(20)
+        .lean();
+
+      // Sessions store the access token they were issued with, so the caller's
+      // own row can be flagged rather than guessed at.
+      const currentToken = (req.headers.authorization || "").replace(
+        /^Bearer\s+/i,
+        ""
+      );
+
+      /** `location` is a nested object on the model, not a display string. */
+      const describeLocation = (location: any): string => {
+        if (!location) return "";
+        return [location.city, location.country].filter(Boolean).join(", ");
+      };
+
+      ResponseUtil.success(
+        res,
+        {
+          sessions: sessions.map((session: any) => ({
+            id: String(session._id),
+            deviceName:
+              session.deviceInfo || session.userAgent || "Unknown device",
+            ipAddress: session.ipAddress || "",
+            location: describeLocation(session.location),
+            lastActive: session.lastActivity ?? session.createdAt,
+            isCurrent: Boolean(currentToken && session.token === currentToken),
+          })),
+        },
+        "Sessions retrieved successfully"
+      );
+    }
+  );
+
+  /**
+   * The signed-in user's own recent activity.
+   *
+   * Never exposes another account's log - the system-wide view stays behind
+   * the system-admin routes.
+   */
+  getActivityLogs = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const userId = req.user?._id;
+
+      if (!userId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      const requested = Number(req.query.limit);
+      const limit =
+        Number.isFinite(requested) && requested > 0
+          ? Math.min(Math.floor(requested), 100)
+          : 20;
+
+      const logs = await ActivityLog.find({ userId })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .lean();
+
+      ResponseUtil.success(
+        res,
+        {
+          activities: logs.map((log: any) => ({
+            id: String(log._id),
+            action: log.type || "activity",
+            description: log.description || "",
+            timestamp: log.createdAt,
+            ipAddress: log.ipAddress || undefined,
+            userAgent: log.userAgent || undefined,
+          })),
+        },
+        "Activity logs retrieved successfully"
+      );
+    }
+  );
 
   private setTokenCookies(res: Response, tokens: any): void {
     // Access token cookie (httpOnly, secure in production)

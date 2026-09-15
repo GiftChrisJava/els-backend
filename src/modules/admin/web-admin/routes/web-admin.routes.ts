@@ -180,6 +180,13 @@ router.post(
   webAdminController.rejectTestimonial
 );
 
+// Testimonials were the only resource with no delete. Rejecting one leaves it
+// in the collection, so spam could be hidden but never removed.
+router.delete(
+  "/testimonials/:testimonialId",
+  webAdminController.deleteTestimonial
+);
+
 // =============== LANDING SLIDES ROUTES ===============
 
 router.get(

@@ -407,6 +407,29 @@ export class SalesAdminController {
   }
 
   /**
+   * Update an order's editable fields
+   */
+  async updateOrder(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+
+      const order = await salesAdminService.updateOrder(
+        id,
+        req.body,
+        req.user?.id as string
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Order updated successfully",
+        data: order,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Record offline sale
    */
   async recordOfflineSale(req: Request, res: Response, next: NextFunction) {

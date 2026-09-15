@@ -1456,6 +1456,24 @@ export class WebAdminController {
     }
   );
 
+  deleteTestimonial = asyncHandler(
+    async (req: Request, res: Response): Promise<void> => {
+      const adminId = req.user?._id;
+      const { testimonialId } = req.params;
+
+      if (!adminId) {
+        throw AppError.unauthorized("User not authenticated");
+      }
+
+      await this.webAdminService.deleteTestimonial(
+        adminId as mongoose.Types.ObjectId,
+        testimonialId
+      );
+
+      ResponseUtil.success(res, null, "Testimonial deleted successfully");
+    }
+  );
+
   getTestimonials = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
       const {

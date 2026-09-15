@@ -853,6 +853,44 @@ export class WebAdminService {
     }
   }
 
+  /**
+   * Permanently removes a testimonial.
+   *
+   * Testimonials are public, visitor-submitted content, so an admin needs a way
+   * to take spam or abuse down rather than only reject it - a rejected
+   * testimonial still sits in the collection.
+   */
+  async deleteTestimonial(
+    adminId: mongoose.Types.ObjectId,
+    testimonialId: string
+  ): Promise<void> {
+    try {
+      const testimonial = await Testimonial.findById(testimonialId);
+      if (!testimonial) {
+        throw AppError.notFound("Testimonial not found");
+      }
+
+      const authorName = testimonial.author?.name || "Unknown";
+      const removedId = String(testimonial._id);
+
+      await testimonial.deleteOne();
+
+      await ActivityLog.create({
+        type: ActivityType.CONTENT_DELETED,
+        severity: ActivitySeverity.INFO,
+        userId: adminId,
+        description: `Testimonial from ${authorName} deleted`,
+        module: "web-admin",
+        action: "delete-testimonial",
+        metadata: { testimonialId: removedId, authorName },
+      });
+
+      logger.info(`Testimonial deleted: ${removedId}`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getTestimonials(filters?: any, pagination?: PaginationOptions) {
     const page = pagination?.page || 1;
     const limit = pagination?.limit || 10;

@@ -78,6 +78,9 @@ router.post("/orders", validateCreateOrder, salesAdminController.createOrder);
 router.get("/orders", salesAdminController.getOrders);
 router.get("/orders/export", salesAdminController.exportOrders);
 router.get("/orders/:id", salesAdminController.getOrder);
+// General order edit (priority, payment status, notes, tags, and status).
+// Registered before "/orders/:id/status" so both paths stay reachable.
+router.patch("/orders/:id", salesAdminController.updateOrder);
 router.patch(
   "/orders/:id/status",
   validateUpdateOrderStatus,

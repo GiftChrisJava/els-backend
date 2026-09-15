@@ -63,6 +63,11 @@ router.post("/logout", authenticate, authController.logout);
 
 router.get("/me", authenticate, authController.getCurrentUser);
 
+// The signed-in user's own sessions and activity, used by the CMS profile page.
+router.get("/sessions", authenticate, authController.getSessions);
+
+router.get("/activity-logs", authenticate, authController.getActivityLogs);
+
 router.patch(
   "/me",
   authenticate,
