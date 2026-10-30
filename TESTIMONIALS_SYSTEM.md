@@ -338,7 +338,7 @@ POST /api/v1/public/testimonials/submit
 
 ```javascript
 // Fetch featured testimonials for homepage
-fetch('https://els-backend-n9e9.onrender.com/api/v1/public/testimonials/featured')
+fetch('https://esl-api.onrender.com/api/v1/public/testimonials/featured')
   .then(res => res.json())
   .then(data => {
     const testimonials = data.data.testimonials;
@@ -346,7 +346,7 @@ fetch('https://els-backend-n9e9.onrender.com/api/v1/public/testimonials/featured
   });
 
 // Fetch all testimonials with filters
-fetch('https://els-backend-n9e9.onrender.com/api/v1/public/testimonials?rating=5&limit=10')
+fetch('https://esl-api.onrender.com/api/v1/public/testimonials?rating=5&limit=10')
   .then(res => res.json())
   .then(data => {
     const testimonials = data.data;
@@ -385,7 +385,7 @@ document.getElementById('testimonialForm').addEventListener('submit', async (e) 
     }
   };
 
-  const response = await fetch('https://els-backend-n9e9.onrender.com/api/v1/public/testimonials/submit', {
+  const response = await fetch('https://esl-api.onrender.com/api/v1/public/testimonials/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)

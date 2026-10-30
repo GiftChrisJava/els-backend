@@ -8,11 +8,11 @@
 
 ## 🚨 Problem
 
-Your frontend at `https://esl-alpha.vercel.app` was getting CORS errors when calling the API at `https://els-backend-n9e9.onrender.com`:
+Your frontend at `https://esl-alpha.vercel.app` was getting CORS errors when calling the API at `https://esl-api.onrender.com`:
 
 ```
 Cross-Origin Request Blocked: The Same Origin Policy disallows reading
-the remote resource at https://els-backend-n9e9.onrender.com/api/v1/public/projects/featured.
+the remote resource at https://esl-api.onrender.com/api/v1/public/projects/featured.
 (Reason: CORS header 'Access-Control-Allow-Origin' missing). Status code: 500.
 ```
 
@@ -91,7 +91,7 @@ this.app.use(
 
 #### Steps:
 1. Go to [Render.com Dashboard](https://dashboard.render.com/)
-2. Select your backend service: `els-backend-n9e9`
+2. Select your backend service: `esl-api`
 3. Go to **Environment** tab
 4. Find the `CORS_ORIGINS` variable
 5. Update its value to:
@@ -115,7 +115,7 @@ http://localhost:3000,http://localhost:3001,http://localhost:5173,https://esl-al
 Once deployed, test from your frontend:
 ```javascript
 // In your frontend (Vercel)
-fetch('https://els-backend-n9e9.onrender.com/api/v1/public/projects/featured')
+fetch('https://esl-api.onrender.com/api/v1/public/projects/featured')
   .then(res => res.json())
   .then(data => console.log('Success!', data))
   .catch(err => console.error('Error:', err));
@@ -134,7 +134,7 @@ curl -H "Origin: https://esl-alpha.vercel.app" \
      -H "Access-Control-Request-Method: GET" \
      -H "Access-Control-Request-Headers: Content-Type" \
      -X OPTIONS \
-     http://localhost:5000/api/v1/public/projects/featured -v
+     https://esl-api.onrender.com/api/v1/public/projects/featured -v
 ```
 
 Expected headers in response:
@@ -303,7 +303,7 @@ If you continue to experience CORS issues after following this guide:
 3. **Test with curl:**
    ```bash
    curl -H "Origin: https://esl-alpha.vercel.app" \
-        https://els-backend-n9e9.onrender.com/api/v1/public/services
+        https://esl-api.onrender.com/api/v1/public/services
    ```
 
 ---

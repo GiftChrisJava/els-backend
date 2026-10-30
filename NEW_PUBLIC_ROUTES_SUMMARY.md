@@ -451,37 +451,37 @@ node test-products-categories.js
 **Categories:**
 ```bash
 # Get all categories
-curl http://localhost:5000/api/v1/public/categories
+curl https://esl-api.onrender.com/api/v1/public/categories
 
 # Get category tree
-curl http://localhost:5000/api/v1/public/categories/tree
+curl https://esl-api.onrender.com/api/v1/public/categories/tree
 
 # Get specific category
-curl http://localhost:5000/api/v1/public/categories/electronics
+curl https://esl-api.onrender.com/api/v1/public/categories/electronics
 ```
 
 **Products:**
 ```bash
 # Get all products
-curl http://localhost:5000/api/v1/public/products
+curl https://esl-api.onrender.com/api/v1/public/products
 
 # Featured products
-curl http://localhost:5000/api/v1/public/products/featured
+curl https://esl-api.onrender.com/api/v1/public/products/featured
 
 # Filter by category
-curl "http://localhost:5000/api/v1/public/products?category=solar-equipment"
+curl "https://esl-api.onrender.com/api/v1/public/products?category=solar-equipment"
 
 # Price range filter
-curl "http://localhost:5000/api/v1/public/products?minPrice=10000&maxPrice=50000"
+curl "https://esl-api.onrender.com/api/v1/public/products?minPrice=10000&maxPrice=50000"
 
 # Search products
-curl "http://localhost:5000/api/v1/public/products?search=solar"
+curl "https://esl-api.onrender.com/api/v1/public/products?search=solar"
 
 # In-stock only
-curl "http://localhost:5000/api/v1/public/products?inStock=true"
+curl "https://esl-api.onrender.com/api/v1/public/products?inStock=true"
 
 # Get specific product
-curl http://localhost:5000/api/v1/public/products/solar-panel-200w
+curl https://esl-api.onrender.com/api/v1/public/products/solar-panel-200w
 ```
 
 ---

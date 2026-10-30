@@ -29,7 +29,7 @@ The collection uses these variables (set automatically or manually):
 
 | Variable                 | Description          | Auto-set | Example                            |
 | ------------------------ | -------------------- | -------- | ---------------------------------- |
-| `baseUrl`                | API base URL         | No       | `http://localhost:5000`            |
+| `baseUrl`                | API base URL         | No       | `https://esl-api.onrender.com`            |
 | `salesAdminEmail`        | Sales admin email    | No       | `sales@energysolutions.com`        |
 | `salesAdminPassword`     | Sales admin password | No       | `Sales@Admin123`                   |
 | `salesAdminToken`        | Access token         | Yes      | Auto-set on login                  |
@@ -503,5 +503,5 @@ pending → processing → shipped → delivered
 For issues or questions:
 
 - Check server logs: `logs/combined.log`
-- API Documentation: `http://localhost:5000/api`
+- API Documentation: `https://esl-api.onrender.com/api`
 - GitHub Issues: [Repository Issues](https://github.com/GiftChrisJava/els-backend/issues)

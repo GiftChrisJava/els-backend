@@ -4,7 +4,7 @@
 
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:5000/api/v1/public';
+const BASE_URL = (process.env.API_BASE_URL || 'https://esl-api.onrender.com/api/v1/public').replace(/\/+$/, '');
 
 const results = {
   timestamp: new Date().toISOString(),

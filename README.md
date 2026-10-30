@@ -85,7 +85,7 @@ nano .env
 NODE_ENV=development
 PORT=5000
 APP_NAME=Energy Solutions
-APP_URL=http://localhost:5000
+APP_URL=https://esl-api.onrender.com
 FRONTEND_URL=http://localhost:3000
 
 # Database
@@ -146,8 +146,14 @@ After running the seed, the following admin accounts will be created:
 ### Base URL
 
 ```
-http://localhost:5000/api/v1
+https://esl-api.onrender.com/api/v1
 ```
+
+Set `APP_URL=https://esl-api.onrender.com` in the Render environment. This
+origin also defines JWT audiences; sessions issued with a previous audience
+will require a fresh sign-in after it changes. Local scripts and Postman
+collections default to this deployed API; use an explicit URL override when
+testing a local server.
 
 ### Authentication Endpoints
 

@@ -6,7 +6,7 @@
 const axios = require('axios');
 const fs = require('fs');
 
-const BASE_URL = 'http://localhost:5000/api/v1';
+const BASE_URL = (process.env.API_BASE_URL || 'https://esl-api.onrender.com/api/v1').replace(/\/+$/, '');
 const ADMIN_CREDENTIALS = {
   email: 'web@energysolutions.mw',
   password: 'Web@123456'

@@ -4,7 +4,7 @@
 
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:5000/api/v1';
+const BASE_URL = (process.env.API_BASE_URL || 'https://esl-api.onrender.com/api/v1').replace(/\/+$/, '');
 
 async function checkFeaturedProjects() {
   console.log('🔍 Checking Featured Projects Endpoint...\n');

@@ -44,27 +44,29 @@ The Public Routes API collection provides comprehensive testing for all publicly
 
 You can use the existing environment files or create a new one:
 
-- `Energy-Solutions-Development.postman_environment.json` (for local development)
+- `Energy-Solutions-Development.postman_environment.json` (development variables; defaults to Render)
 - `Energy-Solutions-Production.postman_environment.json` (for production)
 
 Or create a new environment with these variables:
 
 ```json
 {
-  "baseUrl": "http://localhost:5000",
+  "baseUrl": "https://esl-api.onrender.com",
   "apiVersion": "v1"
 }
 ```
 
 ### 3. Ensure Server is Running
 
-Before testing, make sure your backend server is running:
+The supplied environments and collections target the deployed Render API.
+For local testing, set the environment's `baseUrl` to your local server and run:
 
 ```bash
 npm run dev
 ```
 
-The server should be accessible at `http://localhost:5000` (or your configured port).
+Use `https://esl-api.onrender.com` when testing the deployed API. Starting a
+local server does not change the Render service.
 
 ---
 
@@ -237,7 +239,7 @@ Each request includes automated tests that verify:
 
 ```json
 {
-  "baseUrl": "http://localhost:5000",
+  "baseUrl": "https://esl-api.onrender.com",
   "apiVersion": "v1"
 }
 ```
@@ -355,7 +357,7 @@ Error responses follow this structure:
 
 #### 1. Connection Refused
 
-**Problem:** Cannot connect to `http://localhost:5000`
+**Problem:** Cannot connect to `https://esl-api.onrender.com`
 
 **Solution:**
 - Ensure the server is running (`npm run dev`)
