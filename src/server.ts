@@ -62,8 +62,8 @@ async function startServer(): Promise<void> {
         📧 Email Service: ${
           appConfig.email.host ? "Configured" : "Not Configured"
         }
-        💾 Appwrite Storage: ${
-          appConfig.appwrite.endpoint ? "Configured" : "Not Configured"
+        💾 Supabase Storage: ${
+          appConfig.supabase.secretKey ? "Configured" : "Not Configured"
         }
         ################################################
       `);

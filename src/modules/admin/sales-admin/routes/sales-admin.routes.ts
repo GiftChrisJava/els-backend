@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { UserRole } from "../../../../core/constants/role.constants";
 import { authenticate } from "../../../../modules/auth/middlewares/auth.middleware";
+import { storeUploadedFiles } from "../../../../shared/middlewares/stored-upload.middleware";
 import { hasRole } from "../../../../modules/auth/middlewares/role.middleware";
 import {
   uploadCategoryImage,
@@ -10,6 +11,7 @@ import salesAdminController from "../controllers/sales-admin.controller";
 import {
   validateBulkUpdateInventory,
   validateCreateCategory,
+  validateUpdateCategory,
   validateCreateOrder,
   validateCreateProduct,
   validateRecordOfflineSale,
@@ -36,6 +38,7 @@ router.get("/products/:id", salesAdminController.getProduct);
 router.put(
   "/products/:id",
   uploadProductImages,
+  storeUploadedFiles({ featuredImage: { path: "featuredImage", folder: "products" }, images: { path: "images", folder: "products/gallery", multiple: true } }),
   validateUpdateProduct,
   salesAdminController.updateProduct
 );
@@ -66,6 +69,9 @@ router.post(
 router.get("/categories/tree", salesAdminController.getCategoryTree);
 router.patch(
   "/categories/:categoryId",
+  uploadCategoryImage,
+  storeUploadedFiles({ image: { path: "image", folder: "categories" }, icon: { path: "icon", folder: "categories/icons" } }),
+  validateUpdateCategory,
   salesAdminController.updateCategory
 );
 router.delete(

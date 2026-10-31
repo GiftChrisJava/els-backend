@@ -5,7 +5,7 @@ import {
   ActivityType,
 } from "../../../../modules/admin/system-admin/models/activity-log.model";
 import { AppError } from "../../../../shared/errors/AppError";
-import { appwriteService } from "../../../../shared/services/appwrite.service";
+import { storageService } from "../../../../shared/services/storage.service";
 import { logger } from "../../../../shared/utils/logger.util";
 import { INews, News } from "../models/news.model";
 
@@ -266,9 +266,9 @@ export class NewsService {
       dto.coverImage &&
       previousCover &&
       previousCover !== dto.coverImage &&
-      appwriteService.isAppwriteUrl?.(previousCover)
+      storageService.isStoredUrl?.(previousCover)
     ) {
-      appwriteService.deleteImage(previousCover).catch((error) => {
+      storageService.deleteImage(previousCover).catch((error) => {
         logger.warn("Failed to delete replaced news cover image", {
           previousCover,
           error: error instanceof Error ? error.message : error,
@@ -339,9 +339,9 @@ export class NewsService {
     // Best-effort cleanup after the record is gone: a storage failure must not
     // leave an article that cannot be deleted.
     for (const url of storedImages) {
-      if (!appwriteService.isAppwriteUrl?.(url)) continue;
+      if (!storageService.isStoredUrl?.(url)) continue;
 
-      appwriteService.deleteImage(url).catch((error) => {
+      storageService.deleteImage(url).catch((error) => {
         logger.warn("Failed to delete news image from storage", {
           url,
           error: error instanceof Error ? error.message : error,

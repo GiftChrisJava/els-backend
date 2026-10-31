@@ -50,6 +50,7 @@ Thumbs.db
 
 # Testing
 coverage/
+/migration-reports/
 .nyc_output/
 *.lcov
 

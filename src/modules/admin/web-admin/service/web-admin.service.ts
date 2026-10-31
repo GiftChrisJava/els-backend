@@ -7,7 +7,7 @@ import {
   ActivityType,
 } from "../../../../modules/admin/system-admin/models/activity-log.model";
 import { AppError } from "../../../../shared/errors/AppError";
-import { AppwriteService } from "../../../../shared/services/appwrite.service";
+import { StorageService } from "../../../../shared/services/storage.service";
 import { EmailUtil } from "../../../../shared/utils/email.util";
 import { logger } from "../../../../shared/utils/logger.util";
 import { ContactMessage } from "../models/contact-message.model";
@@ -122,10 +122,10 @@ export interface SlideDto {
 }
 
 export class WebAdminService {
-  private appwriteService: AppwriteService;
+  private storageService: StorageService;
 
   constructor() {
-    this.appwriteService = new AppwriteService();
+    this.storageService = new StorageService();
   }
   // Helper method to handle transactions in development vs production
   private async executeWithOptionalTransaction<T>(
@@ -163,14 +163,14 @@ export class WebAdminService {
       if (dto.image) {
         try {
           const processedImageUrl =
-            await this.appwriteService.uploadImageFromUrl(
+            await this.storageService.uploadImageFromUrl(
               dto.image,
               "services",
               `service_main_${Date.now()}`
             );
           dto.image = processedImageUrl;
 
-          logger.info("Service main image processed and uploaded to Appwrite", {
+          logger.info("Service main image processed and uploaded to Supabase", {
             originalUrl: dto.image,
             processedUrl: processedImageUrl,
           });
@@ -195,7 +195,7 @@ export class WebAdminService {
             const galleryImageUrl = dto.gallery[i];
             try {
               const processedUrl =
-                await this.appwriteService.uploadImageFromUrl(
+                await this.storageService.uploadImageFromUrl(
                   galleryImageUrl,
                   "services",
                   `service_gallery_${Date.now()}_${i}`
@@ -218,7 +218,7 @@ export class WebAdminService {
           dto.gallery = processedGalleryUrls;
 
           logger.info(
-            "Service gallery images processed and uploaded to Appwrite",
+            "Service gallery images processed and uploaded to Supabase",
             {
               originalCount: dto.gallery.length,
               processedCount: processedGalleryUrls.length,
@@ -279,14 +279,14 @@ export class WebAdminService {
       if (dto.image) {
         try {
           const processedImageUrl =
-            await this.appwriteService.uploadImageFromUrl(
+            await this.storageService.uploadImageFromUrl(
               dto.image,
               "services",
               `service_main_${serviceId}_${Date.now()}`
             );
           dto.image = processedImageUrl;
 
-          logger.info("Service main image processed and uploaded to Appwrite", {
+          logger.info("Service main image processed and uploaded to Supabase", {
             serviceId,
             originalUrl: dto.image,
             processedUrl: processedImageUrl,
@@ -313,7 +313,7 @@ export class WebAdminService {
             const galleryImageUrl = dto.gallery[i];
             try {
               const processedUrl =
-                await this.appwriteService.uploadImageFromUrl(
+                await this.storageService.uploadImageFromUrl(
                   galleryImageUrl,
                   "services",
                   `service_gallery_${serviceId}_${Date.now()}_${i}`
@@ -337,7 +337,7 @@ export class WebAdminService {
           dto.gallery = processedGalleryUrls;
 
           logger.info(
-            "Service gallery images processed and uploaded to Appwrite",
+            "Service gallery images processed and uploaded to Supabase",
             {
               serviceId,
               originalCount: dto.gallery.length,
@@ -474,14 +474,14 @@ export class WebAdminService {
       if (dto.mainImageUrl) {
         try {
           const processedImageUrl =
-            await this.appwriteService.uploadImageFromUrl(
+            await this.storageService.uploadImageFromUrl(
               dto.mainImageUrl,
               "projects",
               `project_main_${projectId}_${Date.now()}`
             );
           dto.mainImageUrl = processedImageUrl;
 
-          logger.info("Project main image processed and uploaded to Appwrite", {
+          logger.info("Project main image processed and uploaded to Supabase", {
             projectId,
             originalUrl: dto.mainImageUrl,
             processedUrl: processedImageUrl,
@@ -506,7 +506,7 @@ export class WebAdminService {
         try {
           const processedGalleryImages = await Promise.allSettled(
             dto.galleryImages.map(async (imageUrl, index) => {
-              return await this.appwriteService.uploadImageFromUrl(
+              return await this.storageService.uploadImageFromUrl(
                 imageUrl,
                 "projects",
                 `project_gallery_${projectId}_${index}_${Date.now()}`
@@ -673,16 +673,16 @@ export class WebAdminService {
       // Handle image processing if image URL is provided
       if (dto.imageUrl) {
         try {
-          // If it's an external URL, upload it to Appwrite
+          // If it's an external URL, upload it to Supabase
           const processedImageUrl =
-            await this.appwriteService.uploadImageFromUrl(
+            await this.storageService.uploadImageFromUrl(
               dto.imageUrl,
               "staff",
               `staff_${staffId}_${Date.now()}`
             );
           dto.imageUrl = processedImageUrl;
 
-          logger.info("Staff image processed and uploaded to Appwrite", {
+          logger.info("Staff image processed and uploaded to Supabase", {
             staffId,
             originalUrl: dto.imageUrl,
             processedUrl: processedImageUrl,
@@ -985,16 +985,16 @@ export class WebAdminService {
       // Handle image processing if image URL is provided
       if (dto.imageUrl) {
         try {
-          // If it's an external URL, upload it to Appwrite
+          // If it's an external URL, upload it to Supabase
           const processedImageUrl =
-            await this.appwriteService.uploadImageFromUrl(
+            await this.storageService.uploadImageFromUrl(
               dto.imageUrl,
               "landing-slides",
               `slide_${slideId}_${Date.now()}`
             );
           dto.imageUrl = processedImageUrl;
 
-          logger.info("Slide image processed and uploaded to Appwrite", {
+          logger.info("Slide image processed and uploaded to Supabase", {
             slideId,
             originalUrl: dto.imageUrl,
             processedUrl: processedImageUrl,

@@ -157,14 +157,19 @@ export class SystemAdminController {
 
   getAllUsers = asyncHandler(
     async (req: Request, res: Response): Promise<void> => {
-      const { role, status, search, page, limit, sortBy, sortOrder } =
+      const { role, status, search, emailVerified, page, limit, sortBy, sortOrder } =
         req.query;
+
+      if (emailVerified !== undefined && emailVerified !== "true" && emailVerified !== "false") {
+        throw AppError.badRequest("emailVerified must be true or false");
+      }
 
       const result = await this.systemAdminService.getAllUsers(
         {
           role: role as any,
           status: status as any,
           search: search as string,
+          emailVerified: emailVerified === undefined ? undefined : emailVerified === "true",
         },
         {
           page: page ? parseInt(page as string) : 1,

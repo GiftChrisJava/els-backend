@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { AppError } from "../../../../shared/errors/AppError";
-import { appwriteService } from "../../../../shared/services/appwrite.service";
+import { storageService } from "../../../../shared/services/storage.service";
 import { asyncHandler } from "../../../../shared/utils/async-handler.util";
 import { ResponseUtil } from "../../../../shared/utils/response.util";
 import { WebAdminService } from "../service/web-admin.service";
@@ -90,7 +90,7 @@ export class WebAdminController {
         try {
           // Upload main image
           if (files.image && files.image[0]) {
-            const imageUrl = await appwriteService.uploadImage(
+            const imageUrl = await storageService.uploadImage(
               files.image[0],
               "services"
             );
@@ -99,7 +99,7 @@ export class WebAdminController {
 
           // Upload gallery images
           if (files.galleryImages && files.galleryImages.length > 0) {
-            const galleryUrls = await appwriteService.uploadMultipleImages(
+            const galleryUrls = await storageService.uploadMultipleImages(
               files.galleryImages,
               "services"
             );
@@ -164,7 +164,7 @@ export class WebAdminController {
         try {
           // Upload main image
           if (files.image && files.image[0]) {
-            const imageUrl = await appwriteService.uploadImage(
+            const imageUrl = await storageService.uploadImage(
               files.image[0],
               "services"
             );
@@ -173,7 +173,7 @@ export class WebAdminController {
 
           // Upload gallery images
           if (files.galleryImages && files.galleryImages.length > 0) {
-            const galleryUrls = await appwriteService.uploadMultipleImages(
+            const galleryUrls = await storageService.uploadMultipleImages(
               files.galleryImages,
               "services"
             );
@@ -296,7 +296,7 @@ export class WebAdminController {
         try {
           // Upload featured image
           if (files.featuredImage && files.featuredImage[0]) {
-            const featuredImageUrl = await appwriteService.uploadImage(
+            const featuredImageUrl = await storageService.uploadImage(
               files.featuredImage[0],
               "projects"
             );
@@ -308,7 +308,7 @@ export class WebAdminController {
 
           // Upload gallery images
           if (files.galleryImages && files.galleryImages.length > 0) {
-            const galleryUrls = await appwriteService.uploadMultipleImages(
+            const galleryUrls = await storageService.uploadMultipleImages(
               files.galleryImages,
               "projects/gallery"
             );
@@ -320,11 +320,11 @@ export class WebAdminController {
 
           // Upload before/after images
           if (files.beforeImages && files.afterImages) {
-            const beforeUrls = await appwriteService.uploadMultipleImages(
+            const beforeUrls = await storageService.uploadMultipleImages(
               files.beforeImages,
               "projects/before"
             );
-            const afterUrls = await appwriteService.uploadMultipleImages(
+            const afterUrls = await storageService.uploadMultipleImages(
               files.afterImages,
               "projects/after"
             );
@@ -437,7 +437,7 @@ export class WebAdminController {
         // Handle featured image
         if (files.featuredImage && files.featuredImage[0]) {
           try {
-            const featuredImageUrl = await appwriteService.uploadImage(
+            const featuredImageUrl = await storageService.uploadImage(
               files.featuredImage[0],
               "projects"
             );
@@ -458,7 +458,7 @@ export class WebAdminController {
           try {
             const galleryUrls = await Promise.all(
               files.galleryImages.map((file) =>
-                appwriteService.uploadImage(file, "projects")
+                storageService.uploadImage(file, "projects")
               )
             );
             projectData.images = projectData.images || {};
@@ -605,7 +605,7 @@ export class WebAdminController {
         // Handle featured image upload
         if (files.featuredImage && files.featuredImage[0]) {
           try {
-            const featuredImageUrl = await appwriteService.uploadImage(
+            const featuredImageUrl = await storageService.uploadImage(
               files.featuredImage[0],
               "projects"
             );
@@ -626,7 +626,7 @@ export class WebAdminController {
           try {
             const galleryUrls = await Promise.all(
               files.galleryImages.map((file) =>
-                appwriteService.uploadImage(file, "projects")
+                storageService.uploadImage(file, "projects")
               )
             );
             projectData.images = projectData.images || {};
@@ -809,7 +809,7 @@ export class WebAdminController {
 
       if (req.file) {
         try {
-          const profileImageUrl = await appwriteService.uploadImage(
+          const profileImageUrl = await storageService.uploadImage(
             req.file,
             "staff"
           );
@@ -937,7 +937,7 @@ export class WebAdminController {
       // Handle profile image upload
       if (req.file) {
         try {
-          const profileImageUrl = await appwriteService.uploadImage(
+          const profileImageUrl = await storageService.uploadImage(
             req.file,
             "staff"
           );
@@ -1110,7 +1110,7 @@ export class WebAdminController {
       // Handle profile image upload if new file is provided
       if (req.file) {
         try {
-          const profileImageUrl = await appwriteService.uploadImage(
+          const profileImageUrl = await storageService.uploadImage(
             req.file,
             "staff"
           );
@@ -1321,7 +1321,7 @@ export class WebAdminController {
         // Handle author image upload
         if (files.authorImage && files.authorImage[0]) {
           try {
-            const authorImageUrl = await appwriteService.uploadImage(
+            const authorImageUrl = await storageService.uploadImage(
               files.authorImage[0],
               "testimonials"
             );
@@ -1340,7 +1340,7 @@ export class WebAdminController {
         // Handle media file upload
         if (files.mediaUrl && files.mediaUrl[0]) {
           try {
-            const mediaUrl = await appwriteService.uploadImage(
+            const mediaUrl = await storageService.uploadImage(
               files.mediaUrl[0],
               "testimonials"
             );
@@ -1538,7 +1538,7 @@ export class WebAdminController {
 
       if (req.file) {
         try {
-          const imageUrl = await appwriteService.uploadImage(
+          const imageUrl = await storageService.uploadImage(
             req.file,
             "landing-slides"
           );

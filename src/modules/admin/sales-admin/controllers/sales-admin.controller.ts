@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { Parser } from "json2csv";
 import { AppError } from "../../../../shared/errors/AppError";
-import { AppwriteService } from "../../../../shared/services/appwrite.service";
+import { StorageService } from "../../../../shared/services/storage.service";
 import { AnalyticsPeriod } from "../../sales-admin/models/analytics.model";
 import { OrderStatus } from "../models/order.model";
 import salesAdminService from "../services/sales-admin.service";
 
-const appwriteService = new AppwriteService();
+const storageService = new StorageService();
 
 export class SalesAdminController {
   // ============= PRODUCT CONTROLLERS =============
@@ -16,28 +16,28 @@ export class SalesAdminController {
    */
   async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      // Process uploaded files and upload to Appwrite
+      // Process uploaded files and upload to Supabase
       if (req.files) {
         const files = req.files as {
           [fieldname: string]: Express.Multer.File[];
         };
 
-        // Upload featured image to Appwrite if provided
+        // Upload featured image to Supabase if provided
         if (
           files.featuredImage &&
           files.featuredImage.length > 0 &&
           files.featuredImage[0]
         ) {
-          const featuredImageUrl = await appwriteService.uploadImage(
+          const featuredImageUrl = await storageService.uploadImage(
             files.featuredImage[0],
             "products"
           );
           req.body.featuredImage = featuredImageUrl;
         }
 
-        // Upload gallery images to Appwrite if provided
+        // Upload gallery images to Supabase if provided
         if (files.images && files.images.length > 0) {
-          const imageUrls = await appwriteService.uploadMultipleImages(
+          const imageUrls = await storageService.uploadMultipleImages(
             files.images,
             "products/gallery"
           );
@@ -114,28 +114,28 @@ export class SalesAdminController {
     try {
       const { id } = req.params;
 
-      // Process uploaded files and upload to Appwrite
+      // Process uploaded files and upload to Supabase
       if (req.files) {
         const files = req.files as {
           [fieldname: string]: Express.Multer.File[];
         };
 
-        // Upload featured image to Appwrite if provided
+        // Upload featured image to Supabase if provided
         if (
           files.featuredImage &&
           files.featuredImage.length > 0 &&
           files.featuredImage[0]
         ) {
-          const featuredImageUrl = await appwriteService.uploadImage(
+          const featuredImageUrl = await storageService.uploadImage(
             files.featuredImage[0],
             "products"
           );
           req.body.featuredImage = featuredImageUrl;
         }
 
-        // Upload gallery images to Appwrite if provided
+        // Upload gallery images to Supabase if provided
         if (files.images && files.images.length > 0) {
-          const imageUrls = await appwriteService.uploadMultipleImages(
+          const imageUrls = await storageService.uploadMultipleImages(
             files.images,
             "products/gallery"
           );
@@ -259,24 +259,24 @@ export class SalesAdminController {
    */
   async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      // Process uploaded files and upload to Appwrite
+      // Process uploaded files and upload to Supabase
       if (req.files) {
         const files = req.files as {
           [fieldname: string]: Express.Multer.File[];
         };
 
-        // Upload category image to Appwrite if provided
+        // Upload category image to Supabase if provided
         if (files.image && files.image.length > 0 && files.image[0]) {
-          const imageUrl = await appwriteService.uploadImage(
+          const imageUrl = await storageService.uploadImage(
             files.image[0],
             "categories"
           );
           req.body.image = imageUrl;
         }
 
-        // Upload category icon to Appwrite if provided
+        // Upload category icon to Supabase if provided
         if (files.icon && files.icon.length > 0 && files.icon[0]) {
-          const iconUrl = await appwriteService.uploadImage(
+          const iconUrl = await storageService.uploadImage(
             files.icon[0],
             "categories/icons"
           );
@@ -458,11 +458,7 @@ export class SalesAdminController {
 
       const data = await salesAdminService.exportOrders(filters);
 
-      if (data.length === 0) {
-        throw new AppError("No orders found to export", 404);
-      }
-
-      const parser = new Parser();
+      const parser = new Parser({ fields: ["Order Number", "Date", "Customer", "Email", "Total", "Status", "Payment Status", "Payment Method", "Items"] });
       const csv = parser.parse(data);
 
       res.header("Content-Type", "text/csv");

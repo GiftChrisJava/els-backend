@@ -258,6 +258,18 @@ export const validateCreateCategory = validate(
 );
 
 // ============= ORDER VALIDATORS =============
+export const validateUpdateCategory = validate(
+  Joi.object({
+    name: Joi.string().max(100).optional(),
+    description: Joi.string().max(500).allow("").optional(),
+    parentCategory: Joi.string().allow("", null).optional(),
+    image: Joi.string().uri().allow("").optional(),
+    icon: Joi.string().allow("").optional(),
+    displayOrder: Joi.number().integer().min(0).optional(),
+    isActive: Joi.boolean().optional(),
+    isFeatured: Joi.boolean().optional(),
+  })
+);
 
 export const validateCreateOrder = validate(
   Joi.object({

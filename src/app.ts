@@ -141,8 +141,9 @@ class App {
   }
 
   private initializeRoutes(): void {
-    // Health check endpoint
-    this.app.get("/health", (req: Request, res: Response) => {
+    // Render also probes HEAD /. Express handles HEAD automatically for GET
+    // routes, so both paths provide the same unauthenticated liveness check.
+    this.app.get(["/", "/health"], (req: Request, res: Response) => {
       res.status(200).json({
         status: "healthy",
         timestamp: new Date().toISOString(),

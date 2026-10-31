@@ -397,6 +397,7 @@ export class SystemAdminService {
       role?: UserRole;
       status?: UserStatus;
       search?: string;
+      emailVerified?: boolean;
     },
     pagination?: {
       page?: number;
@@ -418,6 +419,10 @@ export class SystemAdminService {
 
     if (filters?.status) {
       query.status = filters.status;
+    }
+
+    if (filters?.emailVerified !== undefined) {
+      query.emailVerified = filters.emailVerified;
     }
 
     if (filters?.search) {
@@ -760,9 +765,8 @@ export class SystemAdminService {
       return headers
         .map((header) => {
           const value = obj[header];
-          return typeof value === "string" && value.includes(",")
-            ? `"${value}"`
-            : value;
+          const text = value == null ? "" : typeof value === "object" ? JSON.stringify(value) : String(value);
+          return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
         })
         .join(",");
     });

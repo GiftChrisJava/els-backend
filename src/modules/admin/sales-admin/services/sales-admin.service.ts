@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import slugify from "slugify";
 import { AppError } from "../../../../shared/errors/AppError";
-import { AppwriteService } from "../../../../shared/services/appwrite.service";
 import {
   Analytics,
   AnalyticsPeriod,
@@ -17,11 +16,7 @@ import {
 } from "../../system-admin/models/activity-log.model";
 
 export class SalesAdminService {
-  private appwriteService: AppwriteService;
 
-  constructor() {
-    this.appwriteService = new AppwriteService();
-  }
 
   // ============= PRODUCT MANAGEMENT =============
 
@@ -39,7 +34,7 @@ export class SalesAdminService {
         throw new AppError("Product with this SKU already exists", 400);
       }
 
-      // Images are already uploaded to Appwrite by the controller
+      // Images are already uploaded to Supabase by the controller
       // No need to re-process them here
 
       // Set creator
@@ -99,7 +94,7 @@ export class SalesAdminService {
         );
       }
 
-      // Images are already uploaded to Appwrite by the controller
+      // Images are already uploaded to Supabase by the controller
       // No need to re-process them here
 
       // Set modifier
@@ -347,7 +342,7 @@ export class SalesAdminService {
       );
       categoryData.createdBy = userId;
 
-      // Images are already uploaded to Appwrite by the controller
+      // Images are already uploaded to Supabase by the controller
       // No need to re-process them here
 
       const category = new Category(categoryData);

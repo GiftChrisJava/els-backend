@@ -86,6 +86,12 @@ export const appConfig = {
       '"Energy Solutions Customer Support" <energysolutionsltd24@gmail.com>',
   },
 
+  supabase: {
+    url: (process.env.SUPABASE_URL || "https://elvoejaktvqdhxddezbk.supabase.co").replace(/\/+$/, ""),
+    bucket: process.env.SUPABASE_STORAGE_BUCKET || "elsfiles",
+    secretKey: process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "",
+  },
+
   appwrite: {
     endpoint: process.env.APPWRITE_ENDPOINT || "https://cloud.appwrite.io/v1",
     projectId: process.env.APPWRITE_PROJECT_ID || "",

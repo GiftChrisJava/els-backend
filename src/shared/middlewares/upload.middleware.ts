@@ -55,14 +55,17 @@ export const uploadMultipleImages = multer({
   },
 }).array("images", MAX_FILES);
 
-// Multer configuration for staff profile image
+// Staff forms send both a portrait and an optional cover image.
 export const uploadStaffProfileImage = multer({
   storage,
   fileFilter,
   limits: {
     fileSize: MAX_FILE_SIZE,
   },
-}).single("profileImage");
+}).fields([
+  { name: "profileImage", maxCount: 1 },
+  { name: "coverImage", maxCount: 1 },
+]);
 
 // Multer configuration for project images (featured + gallery)
 export const uploadProjectImages = multer({

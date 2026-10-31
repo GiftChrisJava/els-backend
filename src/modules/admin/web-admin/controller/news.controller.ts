@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { AppError } from "../../../../shared/errors/AppError";
-import { appwriteService } from "../../../../shared/services/appwrite.service";
+import { storageService } from "../../../../shared/services/storage.service";
 import { asyncHandler } from "../../../../shared/utils/async-handler.util";
 import { ResponseUtil } from "../../../../shared/utils/response.util";
 import { newsService, NewsDto } from "../service/news.service";
@@ -25,14 +25,14 @@ async function attachUploadedImages(
 
   try {
     if (files.coverImage?.[0]) {
-      payload.coverImage = await appwriteService.uploadImage(
+      payload.coverImage = await storageService.uploadImage(
         files.coverImage[0],
         "news"
       );
     }
 
     if (files.images?.length) {
-      payload.images = await appwriteService.uploadMultipleImages(
+      payload.images = await storageService.uploadMultipleImages(
         files.images,
         "news"
       );

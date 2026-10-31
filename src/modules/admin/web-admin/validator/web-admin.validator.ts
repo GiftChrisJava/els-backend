@@ -175,7 +175,7 @@ export const updateProjectSchema = createProjectSchema.fork(
     "images",
   ],
   (schema) => schema.optional()
-);
+).prefs({ noDefaults: true });
 
 // =============== STAFF VALIDATORS ===============
 
@@ -267,7 +267,7 @@ export const updateStaffSchema = createStaffSchema.fork(
     "profileImage",
   ],
   (schema) => schema.optional()
-);
+).prefs({ noDefaults: true });
 
 // =============== TESTIMONIAL VALIDATORS ===============
 
@@ -357,7 +357,7 @@ export const createSlideSchema = Joi.object({
 
 export const updateSlideSchema = createSlideSchema.fork(["media"], (schema) =>
   schema.optional()
-);
+).prefs({ noDefaults: true });
 
 export const reorderSlidesSchema = Joi.object({
   slides: Joi.array()

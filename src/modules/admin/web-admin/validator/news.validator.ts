@@ -66,6 +66,8 @@ export const createNewsSchema = Joi.object({
 });
 
 export const updateNewsSchema = Joi.object({
+  coverImage: Joi.string().uri().optional(),
+  images: Joi.array().items(Joi.string().uri()).optional(),
   title: Joi.string().trim().min(3).max(200).optional(),
 
   summary: Joi.string().trim().min(10).max(500).optional(),

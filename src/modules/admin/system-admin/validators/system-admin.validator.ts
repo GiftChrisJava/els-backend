@@ -1,4 +1,6 @@
 import Joi from "joi";
+import { UserRole } from "../../../../core/constants/role.constants";
+import { UserStatus } from "../../../../core/constants/status.constants";
 
 const passwordPattern =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -26,7 +28,7 @@ export const createAdminSchema = Joi.object({
     "any.required": "Last name is required",
   }),
 
-  role: Joi.string().required().messages({
+  role: Joi.string().valid(...Object.values(UserRole)).required().messages({
     "any.required": "Role is required",
   }),
 
@@ -50,9 +52,9 @@ export const updateUserSchema = Joi.object({
 
   company: Joi.string().max(200).trim().optional().allow("", null),
 
-  status: Joi.string().optional(),
+  status: Joi.string().valid(...Object.values(UserStatus)).optional(),
 
-  role: Joi.string().optional(),
+  role: Joi.string().valid(...Object.values(UserRole)).optional(),
 
   permissions: Joi.array().items(Joi.string().trim()).optional(),
 }).min(1); // At least one field must be provided
@@ -66,7 +68,7 @@ export const suspendUserSchema = Joi.object({
 });
 
 export const changeRoleSchema = Joi.object({
-  role: Joi.string().required().messages({
+  role: Joi.string().valid(...Object.values(UserRole)).required().messages({
     "any.required": "New role is required",
   }),
 });
@@ -79,8 +81,8 @@ export const bulkUpdateSchema = Joi.object({
   }),
 
   updates: Joi.object({
-    status: Joi.string().optional(),
-    role: Joi.string().optional(),
+    status: Joi.string().valid(...Object.values(UserStatus)).optional(),
+    role: Joi.string().valid(...Object.values(UserRole)).optional(),
     permissions: Joi.array().items(Joi.string().trim()).optional(),
   })
     .min(1)

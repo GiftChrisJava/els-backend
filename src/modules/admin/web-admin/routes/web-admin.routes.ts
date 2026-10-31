@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { UserRole } from "../../../../core/constants/role.constants";
 import { authenticate } from "../../../../modules/auth/middlewares/auth.middleware";
+import { storeUploadedFiles } from "../../../../shared/middlewares/stored-upload.middleware";
 import { hasRole } from "../../../../modules/auth/middlewares/role.middleware";
 import {
   handleMulterError,
@@ -129,6 +130,7 @@ router.post(
   "/staff",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadStaffProfileImage,
+  storeUploadedFiles({ profileImage: { path: "profileImage", folder: "staff" }, coverImage: { path: "coverImage", folder: "staff/covers" } }),
   webAdminController.createStaffWithFileUpload
 );
 
@@ -136,6 +138,7 @@ router.patch(
   "/staff/:staffId",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadStaffProfileImage,
+  storeUploadedFiles({ profileImage: { path: "profileImage", folder: "staff" }, coverImage: { path: "coverImage", folder: "staff/covers" } }),
   webAdminController.updateStaffWithFileUpload
 );
 
@@ -184,6 +187,7 @@ router.post(
 // in the collection, so spam could be hidden but never removed.
 router.delete(
   "/testimonials/:testimonialId",
+  hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   webAdminController.deleteTestimonial
 );
 
@@ -200,6 +204,7 @@ router.post(
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadLandingSlideImage,
   parseFormDataJSON(["media"]),
+  storeUploadedFiles({ slideImage: { path: "media.imageUrl", folder: "landing-slides" } }),
   validateRequest(validators.createSlideSchema),
   webAdminController.createSlide
 );
@@ -207,6 +212,9 @@ router.post(
 router.patch(
   "/slides/:slideId",
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
+  uploadLandingSlideImage,
+  parseFormDataJSON(["media"]),
+  storeUploadedFiles({ slideImage: { path: "media.imageUrl", folder: "landing-slides" } }),
   validateRequest(validators.updateSlideSchema),
   webAdminController.updateSlide
 );
@@ -322,6 +330,7 @@ router.patch(
   hasRole(UserRole.WEB_ADMIN, UserRole.SYSTEM_ADMIN),
   uploadNewsImages,
   handleMulterError,
+  storeUploadedFiles({ coverImage: { path: "coverImage", folder: "news" }, images: { path: "images", folder: "news", multiple: true } }),
   validateRequest(newsValidators.updateNewsSchema),
   newsController.updateNews
 );
